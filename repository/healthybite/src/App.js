@@ -4,7 +4,7 @@ import ResetPassword from './pages/ResetPassword/ResetPassword';
 function App() {
   return (
     <div>
-      <ResetPassword/>
+      <Login/>
     </div>
   );
 }
