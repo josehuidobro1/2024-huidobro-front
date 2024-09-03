@@ -31,6 +31,8 @@ module.exports = {
       colors:{
         darkGray: '#333333',
         healthyGray: '#E5EBDF',
+        healthyGray1: '#c3c3c3',
+        healthyDarkGray1: '#8e8b8b',
         healthyGreen: '#a1bc1f',
         healthyDarkGreen: '#8ba020',
         healthyOrange:'#EE772C',
