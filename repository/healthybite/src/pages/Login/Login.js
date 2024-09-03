@@ -3,6 +3,7 @@ import loginImg from '../../assets/login.png'
 import loginMobile from '../../assets/loginMobile.png'
 import Input from "../../components/Input";
 import Data from "../Data";
+import axios from 'axios';
 
 function Login() {
     const [inValidation,setInValidation]=useState(false)
@@ -38,20 +39,54 @@ function Login() {
             setMessage("Passwords do not match")
             return 
         }
-    }
 
-    const handleLogin=()=>{
-        setInValidation(true)
-        if (password==='' || email===''){
-            setMessage("The information is incomplete")
-            return
+    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        handleValidation();
+        console.log(JSON.stringify({ name, surname: surname, dateOfBirth: birthDate, weight, height, email, password }));
+    
+        try {
+            const response = await fetch('http://localhost:8000/users/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, surname: surname, dateOfBirth: birthDate, weight, height, email, password }),
+            });
+    
+            if (response.ok) {
+                alert('User registered successfully');
+            } else {
+                const errorData = await response.json();
+                console.error('Error registering user:', errorData);
+                alert('Error registering user');
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            alert('Error registering user');
         }
+    };
+    
 
-        
-        const user=Data.find(user => user.email == email)
-        user ? (user.password==password && setInfoOk(true)) : setMessage('The information does not match') 
+    const handleLogin=async()=>{
+        setMessage('');
+        try {
+            const response = await axios.post('http://localhost:8000/users/login', {
+                email,
+                password,
+            });
+
+            if (response.data.success) {
+                // Redirect or show success message
+                alert('Login successful!');
+            } else {
+                setMessage('Invalid email or password');
+            }
+        } catch (error) {
+            setMessage('An error occurred during login');
+        }
     }
-
 
     return (
         <div className=" bg-healthyGray h-screen flex justify-center items-center bg-healthyGray ">
@@ -75,8 +110,9 @@ function Login() {
                                 <Input required={inValidation && height===''} label="Height" inputType="number" inputValue={height} placeholder="e.g., 170 cm" onChange={(e) => setHeight(e.target.value)}/>
                                 <Input required={inValidation && password===''} label="Password" inputType="password" inputValue={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                                 <Input required={inValidation && confirmPw===''} label="Confirm password" inputType="password" inputValue={confirmPw} placeholder="Password" onChange={(e) => setConfirmPw(e.target.value)} />
+                                
                                 <div className="flex flex-col-reverse sm:flex-row justify-between items-center">
-                                    <button onClick={handleValidation} className="font-quicksand bg-healthyOrange p-2 w-full sm:w-1/2 rounded-xl  text-white font-semibold mb-12 sm:my-4 hover:bg-healthyDarkOrange">Submit</button>
+                                    <button onClick={handleSubmit} className="font-quicksand bg-healthyOrange p-2 w-full sm:w-1/2 rounded-xl  text-white font-semibold mb-12 sm:my-4 hover:bg-healthyDarkOrange">Submit</button>
                                     {message && <p className="font-quicksand underline underline-offset-4 text-sm font-semibold p-1 rounded-md text-healthyOrange">{message}</p>}
                                 </div>
                             </div>
