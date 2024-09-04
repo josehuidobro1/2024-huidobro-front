@@ -16,7 +16,7 @@ const Data={
             measure: "gr",
             amount: 250,
             calories: 488,
-            image: "https://www.simplyrecipes.com/thmb/E0ViAOn_ycXW7bYvAUR7l_7NUC0=/960x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Crispy-Baked-Chicken-Thighs-LEAD-01-bd1899c0b38f4713a0b9c4ab2fa6ad8d.jpg",  // Reemplaza esta URL con una imagen real
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/21/Crispy_Chicken_Strips_-_FotoosVanRobin.jpg/640px-Crispy_Chicken_Strips_-_FotoosVanRobin.jpg",  // Reemplaza esta URL con una imagen real
         },
         {
             name: "Apple",
@@ -37,49 +37,49 @@ const Data={
             measure: "gr",
             amount: 200,
             calories: 260,
-            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Boiled_rice.jpg/1920px-Boiled_rice.jpg"
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/White_rice_in_Bangladesh.jpg/640px-White_rice_in_Bangladesh.jpg"
         },
         {
             name: "Broccoli",
             measure: "gr",
             amount: 100,
             calories: 34,
-            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Broccoli_close_up.jpg/800px-Broccoli_close_up.jpg"
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Brocoli_03.jpg/640px-Brocoli_03.jpg"
         },
         {
             name: "Salmon",
             measure: "gr",
             amount: 150,
             calories: 280,
-            image: "https://upload.wikimedia.org/wikipedia/commons/6/6d/Salmon_with_Pepper_and_Lemon.jpg"
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/%D5%8D%D5%A1%D5%B2%D5%B4%D5%B8%D5%B6.JPG/640px-%D5%8D%D5%A1%D5%B2%D5%B4%D5%B8%D5%B6.JPG"
         },
         {
             name: "Egg",
             measure: "unit",
             amount: 1,
             calories: 70,
-            image: "https://upload.wikimedia.org/wikipedia/commons/7/70/Chicken_Eggs.jpg"
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Chicken_eggs_20101113.jpg/640px-Chicken_eggs_20101113.jpg"
         },
         {
             name: "Avocado",
             measure: "unit",
             amount: 1,
             calories: 240,
-            image: "https://upload.wikimedia.org/wikipedia/commons/5/5a/Avocado_cross_section.jpg"
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Avocado_Hass_-_single_and_halved.jpg/640px-Avocado_Hass_-_single_and_halved.jpg"
         },
         {
             name: "Bread",
             measure: "slice",
             amount: 2,
             calories: 160,
-            image: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Rye_bread_slices.jpg"
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Paderborner_Landbrot_Slice.JPG/640px-Paderborner_Landbrot_Slice.JPG"
         },
         {
             name: "Milk",
             measure: "ml",
             amount: 250,
             calories: 103,
-            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Glass_of_milk_with_eggs_and_pistachios.jpg/1280px-Glass_of_milk_with_eggs_and_pistachios.jpg"
+            image: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Glass_of_Milk_%2833657535532%29.jpg/640px-Glass_of_Milk_%2833657535532%29.jpg"
         },
     ]
 }
