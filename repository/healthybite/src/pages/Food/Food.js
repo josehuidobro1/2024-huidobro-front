@@ -17,13 +17,16 @@ function Food() {
 
     const handleNewFood=()=>{
         setInValidation(true)
-        Data.food.push({name:name, measure:measure, amount:amount, calories:calories, image:imagePreview})
-        setNewFood(false)
-        setName('')
-        setMeasure('')
-        setAmount('')
-        setCalories('')
-        setImage(null)
+        if (name!=='' & calories!=='' & measure!=='' & amount!==''){
+            Data.food.push({name:name, measure:measure, amount:amount, calories:calories, image:imagePreview})
+            setNewFood(false)
+            setName('')
+            setMeasure('')
+            setAmount('')
+            setCalories('')
+            setImage(null)
+            setInValidation(false)
+        }
     }
 
     const handleImage=(e)=>{
@@ -34,6 +37,16 @@ function Food() {
             setImagePreview(reader.result);
         };
         reader.readAsDataURL(file)
+    }
+
+    const handleClose=()=>{
+        setNewFood(false)
+        setInValidation(false)
+        setName('')
+        setMeasure('')
+        setAmount('')
+        setCalories('')
+        setImage(null)
     }
 
     return (
@@ -80,7 +93,7 @@ function Food() {
                             <p className="font-belleza font-bold text-xl text-healthyOrange">New food</p>
                             <div className="flex flex-row justify-end items-center">
                                 <FontAwesomeIcon onClick={handleNewFood} icon={faCirclePlus} className='text-healthyGreen cursor-pointer hover:text-healthyDarkGreen bg-white rounded-full' size='2xl'/>
-                                <FontAwesomeIcon onClick={()=>setNewFood(false)} icon={faCircleXmark} className='text-healthyGray1 cursor-pointer hover:text-healthyDarkGray1 bg-white rounded-full ml-3'   size='2xl'/>
+                                <FontAwesomeIcon onClick={handleClose} icon={faCircleXmark} className='text-healthyGray1 cursor-pointer hover:text-healthyDarkGray1 bg-white rounded-full ml-3'   size='2xl'/>
                             </div>
                         </div>
                         <Input required={inValidation && name==''} label='Name' placeholder='Chicken' value={name} inputType='text' onChange={e=>setName(e)}/>
