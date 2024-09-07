@@ -4,8 +4,25 @@ import loginMobile from '../../assets/loginMobile.png'
 import Input from "../../components/Input";
 import Data from "../Data";
 import axios from 'axios';
+import { Link,  } from 'react-router-dom';
+import { getAuth, signInWithPopup,currentUser,createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordResetEmail } from 'firebase/auth';
+import { getFirestore,collection, addDoc, serverTimestamp, query, orderBy, limit } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
 
 function Login() {
+    const firebaseConfig = {
+        apiKey: "AIzaSyABXtMyR7Fi-xshZaVaelZMwkAldt4WB0M",
+        authDomain: "healthybite-b2a20.firebaseapp.com",
+        databaseURL: "https://healthybite-b2a20-default-rtdb.firebaseio.com",
+        projectId: "healthybite-b2a20",
+        storageBucket: "healthybite-b2a20.appspot.com",
+        messagingSenderId: "1061070227538",
+        appId: "1:1061070227538:web:7c622ae4edd5d0e68ff78b",
+        measurementId: "G-K873CFX9CS"
+      };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app)
+    const firestore =getFirestore(app)
     const [inValidation,setInValidation]=useState(false)
     const [signUp, setSignUp]=useState(false)
     const [message, setMessage]=useState(false)
@@ -17,8 +34,18 @@ function Login() {
     const [birthDate, setBirthDate] = useState('');
     const [height, setHeight] = useState('');
     const [name, setName] = useState('');
-    const [infoOk, setInfoOk]=useState(false)
-    const [forgot, setForgot]=useState(false)
+    const [infoOk, setInfoOk]=useState(false);
+    const [forgot, setForgot]=useState(false);
+    console.log(email)
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        try {
+          await sendPasswordResetEmail(auth, email);
+          setMessage('Correo de restablecimiento enviado!');
+        } catch (error) {
+          setMessage('Error al enviar el correo: ' + error.message);
+        }
+      };
 
     const handleValidation=()=> {
         setInValidation(true);
@@ -41,52 +68,43 @@ function Login() {
         }
 
     }
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         handleValidation();
-        console.log(JSON.stringify({ name, surname: surname, dateOfBirth: birthDate, weight, height, email, password }));
-    
         try {
-            const response = await fetch('http://localhost:8000/users/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, surname: surname, dateOfBirth: birthDate, weight, height, email, password }),
+            // 1. Registrar al usuario en Firebase Authentication
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+            console.log(userCredential.user)
+      
+            // 2. Agregar el nuevo usuario a la colección "User" en Firestore
+            await addDoc(collection(firestore, 'User'), {
+              id_user: user.uid,  // ID único del usuario generado por Firebase Auth
+              name: name,
+              surname: surname,
+              weight: weight,
+              height: height,
+              birthDate: birthDate
             });
-    
-            if (response.ok) {
-                alert('User registered successfully');
-            } else {
-                const errorData = await response.json();
-                console.error('Error registering user:', errorData);
-                alert('Error registering user');
-            }
-        } catch (error) {
-            console.error('Fetch error:', error);
-            alert('Error registering user');
-        }
+      
+            console.log('Usuario registrado y agregado a Firestore:', user.uid);
+          } catch (error) {
+            console.error('Error al registrar usuario o agregar a Firestore:', error);
+          }
+
+          console.log("hola")
     };
     
 
-    const handleLogin=async()=>{
-        setMessage('');
+    const handleLogin = async (e) => {
+        e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8000/users/login', {
-                email,
-                password,
-            });
-
-            if (response.data.success) {
-                // Redirect or show success message
-                alert('Login successful!');
-            } else {
-                setMessage('Invalid email or password');
-            }
-        } catch (error) {
-            setMessage('An error occurred during login');
-        }
-    }
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            console.log('Inicio de sesión exitoso:', userCredential.user);
+          } catch (error) {
+            console.error('Error al iniciar sesión:', error);
+        }}
 
     return (
         <div className=" bg-healthyGray h-screen flex justify-center items-center bg-healthyGray ">
@@ -115,7 +133,7 @@ function Login() {
                                     <Input required={inValidation && confirmPw===''} label="Confirm password" inputType="password" inputValue={confirmPw} placeholder="Password" onChange={(e) => setConfirmPw(e.target.value)} />
                                 </div>
                                 <div className="flex sm:sticky sm:bottom-0 bg-healthyGray flex-col-reverse sm:flex-row justify-between items-center">
-                                    <button onClick={handleValidation} className="font-quicksand bg-healthyOrange p-2 w-full sm:w-1/2 rounded-xl  text-white font-semibold mb-12 sm:my-4 hover:bg-healthyDarkOrange">Submit</button>
+                                    <button onClick={handleSubmit} className="font-quicksand bg-healthyOrange p-2 w-full sm:w-1/2 rounded-xl  text-white font-semibold mb-12 sm:my-4 hover:bg-healthyDarkOrange">Submit</button>
                                     {message && <p className="font-quicksand underline underline-offset-4 text-sm font-semibold p-1 rounded-md text-healthyOrange">{message}</p>}
                                 </div>
                             </div>
@@ -128,7 +146,7 @@ function Login() {
                                 <p className="font-quicksand text-md text-center text-darkGray">If you have forgotten your password, please enter your email address below. We will send you a link to a page where you can easily create a new&nbsp;password.</p>
                                 <Input required={inValidation && email===''} label="Email" inputType="email" inputValue={email} placeholder="jane@example.com" onChange={(e)=>setEmail(e.target.value)} />
                                 <div className="flex flex-col items-center justify-center mt-3">
-                                    <button className="font-quicksand bg-healthyGreen hover:bg-healthyDarkGreen text-md text-white p-1 font-semibold rounded-md w-full xs:w-1/2 ">Send</button>
+                                    <button onClick={handleResetPassword}  className="font-quicksand bg-healthyGreen hover:bg-healthyDarkGreen text-md text-white p-1 font-semibold rounded-md w-full xs:w-1/2 ">Send</button>
                                     <p onClick={()=>setForgot(false)} className="font-quicksand text-healthyOrange hover:text-healthyDarkOrange underline hover:underline-offset-4 hover:cursor-pointer  font-bold text-md mt-3">Go back to Log in</p>
                                 </div>
                             </div>

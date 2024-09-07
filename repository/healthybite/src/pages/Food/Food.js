@@ -3,6 +3,10 @@ import Data from "../Data";
 import Input from "../../components/Input";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus,faCircleXmark,faImage } from '@fortawesome/free-solid-svg-icons'; 
+import { getAuth,  } from 'firebase/auth';
+import { getFirestore,collection, addDoc, } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { v4 as uuidv4 } from 'uuid';
 
 function Food() {
     const foodData=Data.food
@@ -14,19 +18,46 @@ function Food() {
     const [image, setImage]=useState('')
     const [imagePreview, setImagePreview]=useState(null)
     const [inValidation,setInValidation]=useState(false)
+    const firebaseConfig = {
+        apiKey: "AIzaSyABXtMyR7Fi-xshZaVaelZMwkAldt4WB0M",
+        authDomain: "healthybite-b2a20.firebaseapp.com",
+        databaseURL: "https://healthybite-b2a20-default-rtdb.firebaseio.com",
+        projectId: "healthybite-b2a20",
+        storageBucket: "healthybite-b2a20.appspot.com",
+        messagingSenderId: "1061070227538",
+        appId: "1:1061070227538:web:7c622ae4edd5d0e68ff78b",
+        measurementId: "G-K873CFX9CS"
+      };
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app)
+    const firestore =getFirestore(app)
 
-    const handleNewFood=()=>{
+    const handleNewFood= async()=>{
         setInValidation(true)
-        if (name!=='' & calories!=='' & measure!=='' & amount!==''){
-            Data.food.push({name:name, measure:measure, amount:amount, calories:calories, image:imagePreview})
-            setNewFood(false)
-            setName('')
-            setMeasure('')
-            setAmount('')
-            setCalories('')
-            setImage(null)
-            setInValidation(false)
-        }
+        console.log(auth.currentUser)
+        console.log(name,measure,amount,calories)
+        try {
+            // Agregar el nuevo alimento a la colección "Food" en Firestore
+            await addDoc(collection(firestore, 'Food'), {
+              name: name,
+              id_food:uuidv4() ,
+               // Asegúrate de convertir a número si es necesario
+              measure: measure, // Asegúrate de convertir a número si es necesario
+              measure_portion: Number(amount), // Asegúrate de convertir a número si es necesario
+              calories_portion: Number(calories), // Asegúrate de convertir a número si es necesario
+            });
+      
+            // Limpiar los campos del formulario
+            setName('');
+            setMeasure('');
+            setAmount('');
+            setCalories('');
+      
+            console.log('Comida agregada a Firestore con éxito');
+          } catch (error) {
+            console.error('Error al agregar comida a Firestore:', error);
+          }
+          setNewFood(false)
     }
 
     const handleImage=(e)=>{
@@ -59,6 +90,8 @@ function Food() {
                             <p className="font-quicksand text-xl  text-darkGray font-base pt-4 xs:pt-0 pl-0 sm:pl-8">Food database</p>
                         </div>
                         <p onClick={()=>setNewFood(true)} className="font-quicksand text-lg text-white bg-healthyOrange hover:bg-healthyDarkOrange p-2 px-6 rounded-md font-bold cursor-pointer mt-6 md:mt-0">ADD NEW FOOD</p>
+                        <p onClick={()=>auth.signOut()} className="font-quicksand text-lg text-white bg-healthyOrange hover:bg-healthyDarkOrange p-2 px-6 rounded-md font-bold cursor-pointer mt-6 md:mt-0">Sign Out</p>
+
                     </div>
                     <div className="flex flex-wrap  items-center justify-evenly mt-8 md:mt-16 ">
                     {
@@ -96,10 +129,10 @@ function Food() {
                                 <FontAwesomeIcon onClick={handleClose} icon={faCircleXmark} className='text-healthyGray1 cursor-pointer hover:text-healthyDarkGray1 bg-white rounded-full ml-3'   size='2xl'/>
                             </div>
                         </div>
-                        <Input required={inValidation && name==''} label='Name' placeholder='Chicken' value={name} inputType='text' onChange={e=>setName(e)}/>
-                        <Input required={inValidation && measure==''} label='Measure' placeholder='gr' value={measure} inputType='text' onChange={e=>setMeasure(e)}/>
-                        <Input required={inValidation && amount==''} label="Amount" placeholder='250' value={amount} inputType='number' onChange={e=>setAmount(e)}/>
-                        <Input required={inValidation && calories==''} label="Calories" placeholder="448" value={calories} inputType='number' onChange={e=>setCalories(e)}/>
+                        <Input required={inValidation && name==''} label='Name' placeholder='Chicken' value={name} inputType='text' onChange={e=>setName(e.target.value)}/>
+                        <Input required={inValidation && measure==''} label='Measure' placeholder='gr' value={measure} inputType='text' onChange={e=>setMeasure(e.target.value)}/>
+                        <Input required={inValidation && amount==''} label="Amount" placeholder='250' value={amount} inputType='number' onChange={e=>setAmount(e.target.value)}/>
+                        <Input required={inValidation && calories==''} label="Calories" placeholder="448" value={calories} inputType='number' onChange={e=>setCalories(e.target.value)}/>
                         <input  type='file' accept="image/*"  onChange={handleImage} id="imageInput"   className="w-full  my-3 text-center text-darkGray  font-quicksand text-sm font-semibold "/>
                     </div>
                 </div>
