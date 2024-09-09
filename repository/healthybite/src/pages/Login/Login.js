@@ -2,27 +2,11 @@ import React, {useState,useEffect} from "react";
 import loginImg from '../../assets/login.png'
 import loginMobile from '../../assets/loginMobile.png'
 import Input from "../../components/Input";
-<<<<<<< HEAD
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordResetEmail ,fetchSignInMethodsForEmail} from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import { auth,firestore } from '../../firebaseConfig';
 
 function Login() {
-=======
-import Data from "../Data";
-import { Link,  } from 'react-router-dom';
-import { getAuth, signInWithPopup,currentUser,createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordResetEmail } from 'firebase/auth';
-import { getFirestore,collection, addDoc, serverTimestamp, query, orderBy, limit } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
-
-function Login() {
-    const firebaseConfig = {
-        // AGREGAR CREDENCIales aca
-      };
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app)
-    const firestore =getFirestore(app)
->>>>>>> dev
     const [inValidation,setInValidation]=useState(false)
     const [signUp, setSignUp]=useState(false)
     const [message, setMessage]=useState(false)
