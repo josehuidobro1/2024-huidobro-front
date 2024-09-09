@@ -8,7 +8,7 @@ function App() {
   const [user]= useAuthState(auth)
   return (
     <div>
-      {user? <Food/>: <Login/>}
+      {user? <Home/>: <Login/>}
     </div>
   );
 }
