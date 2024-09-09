@@ -1,15 +1,15 @@
-import React,{useState} from "react";
+import React,{useEffect, useState} from "react";
 import Data from "../Data";
 import Input from "../../components/Input";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus,faCircleXmark,faImage } from '@fortawesome/free-solid-svg-icons'; 
 import { getAuth,  } from 'firebase/auth';
-import { getFirestore,collection, addDoc, } from 'firebase/firestore';
+import { getFirestore,collection, addDoc,getDocs } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { v4 as uuidv4 } from 'uuid';
 
 function Food() {
-    const foodData=Data.food
+    const [foodData, setFoodData]=useState()
     const [newFood, setNewFood]=useState(false)
     const [name,setName]=useState('')
     const [measure, setMeasure]=useState('')
@@ -19,17 +19,36 @@ function Food() {
     const [imagePreview, setImagePreview]=useState(null)
     const [inValidation,setInValidation]=useState(false)
     const firebaseConfig = {
-        apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-        authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-        storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.REACT_APP_FIREBASE_APP_ID,
-        measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
-    }
+        apiKey: "AIzaSyABXtMyR7Fi-xshZaVaelZMwkAldt4WB0M",
+        authDomain: "healthybite-b2a20.firebaseapp.com",
+        databaseURL: "https://healthybite-b2a20-default-rtdb.firebaseio.com",
+        projectId: "healthybite-b2a20",
+        storageBucket: "healthybite-b2a20.appspot.com",
+        messagingSenderId: "1061070227538",
+        appId: "1:1061070227538:web:7c622ae4edd5d0e68ff78b",
+        measurementId: "G-K873CFX9CS"
+      };
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app)
     const firestore =getFirestore(app)
+
+    
+    const fetchFoods = async () => {
+        const firestore = getFirestore();
+        const querySnapshot = await getDocs(collection(firestore, 'Food'));
+      
+            const foods = querySnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }))
+
+        setFoodData(foods)
+        console.log(foods)
+
+    }
+
+    fetchFoods()
+
 
     const handleNewFood= async()=>{
         setInValidation(true)
@@ -39,7 +58,7 @@ function Food() {
             // Agregar el nuevo alimento a la colección "Food" en Firestore
             await addDoc(collection(firestore, 'Food'), {
               name: name,
-              id_food:uuidv4() ,
+              id_Food:uuidv4() ,
                // Asegúrate de convertir a número si es necesario
               measure: measure, // Asegúrate de convertir a número si es necesario
               measure_portion: Number(amount), // Asegúrate de convertir a número si es necesario
@@ -94,6 +113,8 @@ function Food() {
                     </div>
                     <div className="flex flex-wrap  items-center justify-evenly mt-8 md:mt-16 ">
                     {
+                        foodData.length==0 ?
+                        <p>Arraaay vacio</p>:
                         foodData.map(e=>
                         <div className="mb-3 w-full lg:min-w-[200px] lg:max-w-[300px] md:min-w-[100px] md:w-5/12 xs:min-w-[180px] xs:w-2/5 h-[100px] xs:h-[100px] md:h-[120px] lg:h-[130px] my-2   rounded-md flex  shadow-md bg-white flex flex-row items-center justify-between ">
                             <div className="  w-1/2 !overflow-hidden rounded-l-md h-[100px] xs:h-[100px] md:h-[120px] lg:h-[130px]">
