@@ -3,10 +3,9 @@ import Data from "../Data";
 import Input from "../../components/Input";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCirclePlus,faCircleXmark,faImage } from '@fortawesome/free-solid-svg-icons'; 
-import { getAuth,  } from 'firebase/auth';
-import { getFirestore,collection, addDoc, } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
+import { collection, addDoc, } from 'firebase/firestore';
 import { v4 as uuidv4 } from 'uuid';
+import { auth,firestore } from '../../firebaseConfig';
 
 function Food() {
     const foodData=Data.food
@@ -18,18 +17,6 @@ function Food() {
     const [image, setImage]=useState('')
     const [imagePreview, setImagePreview]=useState(null)
     const [inValidation,setInValidation]=useState(false)
-    const firebaseConfig = {
-        apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-        authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-        projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-        storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-        messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-        appId: process.env.REACT_APP_FIREBASE_APP_ID,
-        measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
-    }
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app)
-    const firestore =getFirestore(app)
 
     const handleNewFood= async()=>{
         setInValidation(true)
