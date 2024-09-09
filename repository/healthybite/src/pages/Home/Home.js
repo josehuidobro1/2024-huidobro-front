@@ -1,12 +1,6 @@
 import React,{useEffect, useState} from "react";
-import Data from "../Data";
-import Input from "../../components/Input";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus,faCheck, faMagnifyingGlass,faCirclePlus, faXmark, faCircleXmark } from '@fortawesome/free-solid-svg-icons'; 
-import { getAuth,  } from 'firebase/auth';
-import { getFirestore,collection, addDoc,getDocs } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
-import { v4 as uuidv4 } from 'uuid';
+import { faPlus } from '@fortawesome/free-solid-svg-icons'; 
 import bgImage from '../../assets/imgHome.jpg'
 import Calendar from "./components/Calendar";
 import NavBar from "../../components/NavBar";
@@ -14,11 +8,7 @@ import { format } from 'date-fns';
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { auth, firestore } from '../../firebaseConfig';
 import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods } from "../../firebaseService";
-
-
-
 
 function Home() {
     const [foodData, setFoodData]=useState([]) // datos de tabla Food
