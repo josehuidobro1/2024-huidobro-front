@@ -27,9 +27,7 @@ function App() {
   const [user]= useAuthState(auth)
   return (
     <div>
-      {//user? <Food/>: <Login/>
-      <Home/>
-      }
+      {user? <Home/>: <Login/>}
     </div>
   );
 }

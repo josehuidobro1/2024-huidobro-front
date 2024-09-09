@@ -15,7 +15,7 @@ const PopUp = ({setAddMeal,foodData,handleAddMeal, setNewFood,selection, setSele
 
     return (
     <div className="w-full h-screen absolute top-0 z-10 flex justify-center items-center bg-black/30">
-        <div className="w-full flex flex-col justify-center shadow-lg items-center max-w-[600px] bg-healthyGray rounded-2xl px-8 pb-8 pt-4">
+        <div className="w-11/12 sm:w-full flex flex-col justify-center shadow-lg items-center max-w-[600px] bg-healthyGray rounded-2xl px-8 pb-8 pt-4">
             <div className="w-full flex justify-end items-start mb-2">
                 {selection && 
                 <button onClick={handleAddMeal} className="font-quicksand text-sm px-3 py-1 flex items-center  rounded-xl bg-healthyOrange text-white font-bold mr-3 hover:cursor-pointer hover:bg-healthyDarkOrange "> <FontAwesomeIcon icon={faCheck} className="text-white text-lg mr-2"/> Save change</button>}
@@ -23,9 +23,9 @@ const PopUp = ({setAddMeal,foodData,handleAddMeal, setNewFood,selection, setSele
             </div>
             <div className="flex flex-row  w-full ">
                 <Search foodData={foodData} setSearchFood={setSearchFood}/>
-                <div onClick={()=>setAddFood(true)} className="flex w-4/12 flex-row ml-3 justify-center items-center py-2 px-4 rounded-2xl font-semibold text-md  text-darkGray  font-quicksand hover:cursor-pointer bg-white/70 hover:bg-white/90">
-                    <FontAwesomeIcon icon={faPlus} className="text-darkGray text-xl mr-2" />
-                    <p className="text-center">Add food</p>
+                <div onClick={()=>setAddFood(true)} className="flex w-2/12 sm:w-4/12 flex-row ml-3 justify-center items-center py-2 px-4 rounded-2xl font-semibold text-md  text-darkGray  font-quicksand hover:cursor-pointer bg-white/70 hover:bg-white/90">
+                    <FontAwesomeIcon icon={faPlus} className="text-darkGray text-lg sm:text-xl" />
+                    {window.innerWidth > '640' && <p className="ml-2 text-center">Add food</p>}
                 </div>
             </div>
             {addFodd && <NewFood setAddFood={setAddFood} setNewFood={setNewFood}  />}
