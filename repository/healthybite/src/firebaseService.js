@@ -2,6 +2,7 @@ import { collection, addDoc, getDocs } from "firebase/firestore";
 import { auth, firestore } from "../src/firebaseConfig";
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
+import { Timestamp } from "firebase/firestore";
 
 export const fetchUserFoods = async (date) => {
     const queryUserFood = await getDocs(collection(firestore, 'UserFood'));
@@ -9,7 +10,14 @@ export const fetchUserFoods = async (date) => {
         id: doc.id,
         ...doc.data()
     }))
-    .filter(doc => doc.id_User === auth.currentUser.uid && format(new Date(doc.date_ingested.seconds * 1000), 'yyyy-MM-dd') === date);
+    .filter(doc => {
+        const ingestedDate = new Date(doc.date_ingested.seconds * 1000);
+        return doc.id_User === auth.currentUser.uid &&
+        ingestedDate.getDate() === date.getDate() &&
+        ingestedDate.getMonth() === date.getMonth() &&
+        ingestedDate.getFullYear() === date.getFullYear() 
+
+    });
     
     return userFood;
 };
@@ -27,8 +35,8 @@ export const addUserFood = async (selection, date, amount) => {
         id_user_food: uuidv4(),
         id_Food: selection.id_food,
         id_User: auth.currentUser.uid,
-        date_ingested: new Date(date),
-        amount_eaten: Number(amount),
+        date_ingested: Timestamp.fromDate(date),
+        amount_eaten: Number(selection.amount),
     };
     await addDoc(collection(firestore, 'UserFood'), newData);
     return newData;

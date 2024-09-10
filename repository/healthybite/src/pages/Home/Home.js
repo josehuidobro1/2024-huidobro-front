@@ -13,7 +13,7 @@ import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods } from "../../fi
 function Home() {
     const [foodData, setFoodData]=useState([]) // datos de tabla Food
     const [userFood, setUserFood]=useState([]) // datos de tabla UserFood
-    const [date,setDate]=useState(format(new Date(), 'yyyy-MM-dd'))
+    const [date,setDate]=useState(new Date())
     const [amount,setAmount]=useState()
     const [selection, setSelection]=useState()
     const [addMeal, setAddMeal]=useState(false)
@@ -22,7 +22,6 @@ function Home() {
 
     const fetchFoods = async () => {
         try {
-            console.log(date)
             const userFood = await fetchUserFoods(date)
             const food= await fetchAllFoods();
             setFoodData(food)
@@ -75,7 +74,7 @@ function Home() {
         <div className="flex flex-col lg:flex-row  justify-between items-center w-full lg:h-screen ">
             <div className="w-full sm:w-11/12 lg:w-9/12 sm:h-screen lg:h-full pt-8 sm:pt-24 flex flex-col sm:flex-row justify-start items-start px-8">
                 <div className=" sticky top-0 w-full sm:w-1/4 pb-4 sm:pb-12  flex flex-col h-full justify-start sm:justify-between items-center">
-                    <Calendar value={date} onChange={e=>setDate(format(new Date(e), "yyyy-MM-dd"))} />
+                    <Calendar value={date} onChange={e=>setDate(new Date(e))} />
                     <Calories userFood={userFood} />
                 </div>
                 <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12 ">
@@ -84,7 +83,7 @@ function Home() {
                         <p className="font-quicksand bg-healthyOrange/80  text-md text-white py-2 px-4 rounded-3xl font-semibold ">Calories</p>
                     </div>
                     <div className="flex flex-col w-full">
-                        {userFood.map((usfood)=> <FoodConsumed usfood={usfood} />)}
+                        {userFood.map((usfood)=> <FoodConsumed key={usfood.id_user_food} usfood={usfood} />)}
                         <div className="flex w-full items-center justify-center bg-white sticky bottom-0">
                             <div onClick={()=>setAddMeal(true)} className="flex w-full mb-2 flex-row justify-start items-center py-2 px-4 mt-2 sm:mt-4 rounded-2xl font-semibold text-lg  text-darkGray bg-healthyGreen/30 font-quicksand hover:cursor-pointer hover:bg-healthyGreen/50">
                                 <FontAwesomeIcon icon={faPlus} className="text-darkGray text-xl mr-3" />

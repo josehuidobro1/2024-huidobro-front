@@ -9,7 +9,7 @@ const FoodConsumed = ({usfood}) => {
                 <p className="text-xs text-darkGray">{usfood.amount_eaten} {usfood.measure}</p>
             </div>
             <div className="flex flex-col items-end justify-center">
-                <p className="text-md">{(usfood.calories*usfood.amount_eaten)/usfood.amount} cal</p>
+                <p className="text-md">{((usfood.calories*usfood.amount_eaten)/usfood.amount).toFixed(2)} cal</p>
                 <p className="text-xs">{format(usfood.date_ingested * 1000,"HH:MM")}</p>
             </div>
         </div>
