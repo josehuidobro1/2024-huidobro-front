@@ -1,4 +1,4 @@
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs,deleteDoc,doc } from "firebase/firestore";
 import { auth, firestore } from "../src/firebaseConfig";
 import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
@@ -51,3 +51,13 @@ export const addNewFood = async (newFood) => {
         calories_portion: Number(newFood.calories),
     });
 };
+export const deleteUserFood = async (doc_id) => {
+    try {
+        await deleteDoc(doc(firestore, 'UserFood', doc_id));
+        console.log(doc_id)
+        console.log('Comida eliminada de UserFood > Firestore con éxito');
+    } catch (error) {
+        console.error('Error al eliminar la comida: ' + error.message);
+    }
+};
+
