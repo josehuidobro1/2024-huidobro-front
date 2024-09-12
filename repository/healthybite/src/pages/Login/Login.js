@@ -103,8 +103,10 @@ function Login() {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             console.log('Inicio de sesión exitoso:', userCredential.user);
 
+
           } catch (error) {
             console.error('Error al iniciar sesión:', error);
+            setLoginError('Invalid Email or Password, please try again')
 
         }}
         
