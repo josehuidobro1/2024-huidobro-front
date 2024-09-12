@@ -24,14 +24,19 @@ const FoodItem = ({ food, setSelection }) => {
                 <p className="font-bold text-sm sm:text-lg text-darkGray px-2">{food.name}</p>
             </div>
             <div className="flex flex-row items-center justify-end">
-                <input 
-                    className="font-quicksand text-xs sm:text-md w-16 text-right outline-none border-none px-1 py-1 rounded-md bg-white mr-2" 
-                    placeholder="000" 
-                    type="number" 
-                    value={amount} 
-                    onChange={handleAmountChange} 
-                />
-                <p className='text-xs sm:text-md'>{food.measure}</p>
+                <div className='flex items-center justify-end max-w-[40px]'>
+                    <input 
+                        className="font-quicksand text-xs sm:text-md w-16 text-right outline-none border-none px-1 py-1 rounded-md bg-white mr-2" 
+                        placeholder="000" 
+                        type="number" 
+                        value={amount} 
+                        onChange={handleAmountChange} 
+                    />
+                </div>
+                <div className='flex items-center justify-start w-[60px]'>
+                    <p className='text-xs sm:text-md'>{food.measure}</p>
+                </div>
+                
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faXmark, faCircleXmark } from '@fortawesome/free-solid-svg-icons'; 
 import FoodItem from './FoodItem';
@@ -9,6 +9,10 @@ import NewFood from './NewFood';
 const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, setSelection }) => {
     const [searchFood, setSearchFood] = useState(foodData);
     const [addFood, setAddFood] = useState(false);
+
+    useEffect(()=>{
+        setSearchFood(foodData)
+    },[foodData])
 
     return (
         <div className="w-full h-screen absolute top-0 z-10 flex justify-center items-center bg-black/30">
