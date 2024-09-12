@@ -33,7 +33,7 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
                             </div>
                         </div>
                         {!addFood && searchFood.length > 0 && (
-                            <div className="bg-white/40 p-2 rounded-lg mt-4 w-full">
+                            <div className="bg-white/40 p-2 rounded-lg mt-4 w-full max-h-[350px] md:max-h-[500px] lg:max-h-[330px]  overflow-y-auto">
                                 {searchFood.map(food => (
                                     <FoodItem key={food.id_Food} food={food} setSelection={setSelection} />
                                 ))}

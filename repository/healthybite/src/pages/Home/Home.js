@@ -40,6 +40,10 @@ function Home() {
         }
     };
 
+    useEffect(()=>{
+        fetchFoods();
+    },[])
+
     useEffect(() => {
         fetchFoods();
     }, [date, selection]);
@@ -57,10 +61,11 @@ function Home() {
     }
 
     useEffect(() => {
+        console.log('cambio la comidaaaaaa')
         newFood && addNewFood(newFood).then(() => {
             setNewFood(null);
-            fetchFoods();
         })
+        fetchFoods();
     }, [newFood]);
 
     const handleDeleteMeal = async (idDoc_user_food) => {
