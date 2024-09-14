@@ -5,7 +5,7 @@ import Input from "../../components/Input";
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordResetEmail ,fetchSignInMethodsForEmail} from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import { auth,firestore } from '../../firebaseConfig';
-
+import {handleInputChange} from '../inputValidation';
 function Login() {
     const [inValidation,setInValidation]=useState(false)
     const [signUp, setSignUp]=useState(false)
@@ -15,13 +15,23 @@ function Login() {
     const [password, setPassword] = useState('');
     const [confirmPw, setConfirmPw] = useState('');
     const [surname, setSurname] = useState('');
-    const [weight, setWeight] = useState('');
+    const [weight, setWeight] = useState();
     const [birthDate, setBirthDate] = useState('');
-    const [height, setHeight] = useState('');
+    const [height, setHeight] = useState();
     const [name, setName] = useState('');
     const [infoOk, setInfoOk]=useState(false);
     const [forgot, setForgot]=useState(false);
     const [loginError, setLoginError] = useState('');
+
+    const handleWeightChange = (e) => {
+        handleInputChange(e.target.value, 0, 500, setWeight);
+    };
+    
+    const handleHeightChange = (e) => {
+        handleInputChange(e.target.value, 0, 500, setHeight);
+    };
+    
+    
     useEffect(() => {
         // Clear messages and form fields when component mounts or when navigating
         setName('')
@@ -74,26 +84,28 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         handleValidation();
+
         try {
             // 1. Registrar al usuario en Firebase Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
             console.log(userCredential.user)
-      
+    
             // 2. Agregar el nuevo usuario a la colección "User" en Firestore
             await addDoc(collection(firestore, 'User'), {
-              id_user: user.uid,  // ID único del usuario generado por Firebase Auth
-              name: name,
-              surname: surname,
-              weight: weight,
-              height: height,
-              birthDate: birthDate
+            id_user: user.uid,  // ID único del usuario generado por Firebase Auth
+            name: name,
+            surname: surname,
+            weight: parseInt(weight),
+            height: parseInt(height),
+            birthDate: birthDate
             });
-      
+    
             console.log('Usuario registrado y agregado a Firestore:', user.uid);
-          } catch (error) {
+        } catch (error) {
             console.error('Error al registrar usuario o agregar a Firestore:', error);
-          }
+        }
+
     };
     
 
@@ -133,8 +145,12 @@ function Login() {
                                     <Input required={inValidation && surname===''} label="Surname" inputType="text" inputValue={surname} placeholder="Doe" onChange={(e)=>setSurname(e.target.value)} />
                                     <Input required={inValidation && email===''} label="Email" inputType="email" inputValue={email} placeholder="jane@example.com" onChange={(e)=>setEmail(e.target.value)} />
                                     <Input required={inValidation && birthDate===''} label="Date of birth" inputType="date" inputValue={birthDate} placeholder="DD-MM-YYYY" onChange={(e)=>setBirthDate(e.target.value)} />
-                                    <Input required={inValidation && weight===''} label="Weight" inputType="number" inputValue={weight} placeholder="e.g., 70 kg" onChange={(e) => setWeight(e.target.value)}/>
-                                    <Input required={inValidation && height===''} label="Height" inputType="number" inputValue={height} placeholder="e.g., 170 cm" onChange={(e) => setHeight(e.target.value)}/>
+                                    <Input required={inValidation && weight <= 0}label="Weight" inputType="number" inputValue={weight} placeholder="e.g., 70 kg" onChange={handleWeightChange}/>
+                                    {inValidation && weight < 0 && <p className='text-red-500 text-xs'>weight must be a positive number.</p>}
+                                    {inValidation && weight >= 500 && <p className='text-red-500 text-xs'>weight must be under 600kg.</p>}
+                                    <Input required={inValidation && height <= 0} label="Height" inputType="number" inputValue={height} placeholder="e.g., 170 cm" onChange={handleHeightChange}/>
+                                    {inValidation && height < 0 && <p className='text-red-500 text-xs'>height must be a positive number.</p>}
+                                    {inValidation && height >= 500 && <p className='text-red-500 text-xs'>height must under 600cm.</p>}
                                     <Input required={inValidation && password===''} label="Password" inputType="password" inputValue={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                                     <Input required={inValidation && confirmPw===''} label="Confirm password" inputType="password" inputValue={confirmPw} placeholder="Password" onChange={(e) => setConfirmPw(e.target.value)} />
                                 </div>
