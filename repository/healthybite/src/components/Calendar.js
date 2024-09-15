@@ -11,7 +11,6 @@ const Calendar = ({value, onChange}) => {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer className='font-quicksand' components={['DatePicker', 'DatePicker']}>
           <DatePicker
-            label="Controlled picker"
             value={dayjsValue}
             onChange={onChange}
             className='font-quicksand'
