@@ -4,6 +4,15 @@ import { v4 as uuidv4 } from 'uuid';
 import { format } from 'date-fns';
 import { Timestamp } from "firebase/firestore";
 
+export const fetchUser= async () => {
+    const queryUser = await getDocs(collection(firestore, 'User'));
+    const user = queryUser.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    })).find( item => item.id_user==auth.currentUser.uid)
+    return user;
+};
+
 export const fetchUserFoods = async (date) => {
     const queryUserFood = await getDocs(collection(firestore, 'UserFood'));
     const userFood = queryUserFood.docs.map(doc => ({
