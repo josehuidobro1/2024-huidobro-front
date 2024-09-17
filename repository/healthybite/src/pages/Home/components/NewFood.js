@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Input from '../../../components/Input';
 import {handleInputChange} from '../../inputValidation';
 
-const NewFood = ({ setAddFood, setNewFood, setNewFoodAdded}) => {
+const NewFood = ({ setAddFood, setNewFood}) => {
     const [inValidation, setInValidation] = useState(false);
     const [name, setName] = useState('');
     const [measure, setMeasure] = useState('');
@@ -34,7 +34,6 @@ const NewFood = ({ setAddFood, setNewFood, setNewFoodAdded}) => {
             setAmount('');
             setCalories('');
             setAddFood(false);
-            setNewFoodAdded(true);
         } else {
             setInValidation(true);
         }

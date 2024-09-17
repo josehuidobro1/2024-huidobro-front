@@ -17,7 +17,7 @@ const FoodItem = ({ food, setSelection }) => {
         <div key={food.id_Food} className="flex flex-row items-center justify-between font-quicksand bg-white/60 p-2 rounded-lg mb-2">
             <div className="flex flex-row justify-start items-center">
                 <FontAwesomeIcon 
-                    onClick={() => setSelection({ id_food: food.id_Food, name: food.name, amount, measure: food.measure })} 
+                    onClick={() => setSelection({ id_food: food.id, name: food.name, amount, measure: food.measure })} 
                     icon={faCirclePlus} 
                     className="text-xl sm:text-3xl text-darkGray mx-1 hover:text-healthyDarkGray1 hover:cursor-pointer"
                 />

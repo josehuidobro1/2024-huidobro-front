@@ -113,15 +113,29 @@ function Login() {
         e.preventDefault();
         try {
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            const token = await userCredential.user.getIdToken();
             console.log('Inicio de sesión exitoso:', userCredential.user);
 
+            const userData = await getUserData(token);
+            console.log('Fetched user data from backend:', userData);
 
           } catch (error) {
             console.error('Error al iniciar sesión:', error);
             setLoginError('Invalid Email or Password, please try again')
 
         }}
-        
+        const getUserData = async (token) => {
+            const response = await fetch("http://127.0.0.1:8000/api/user", {
+              method: "GET",
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json"  
+              }
+            });
+          
+            const data = await response.json();
+            return data;
+          };
 
     return (
         <div className=" bg-healthyGray h-screen flex justify-center items-center bg-healthyGray ">

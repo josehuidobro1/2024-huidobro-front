@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood } from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID} from "../../firebaseService";
 
 function Home() {
     const [foodData, setFoodData] = useState([]); // datos de tabla Food
@@ -20,25 +20,36 @@ function Home() {
 
     const fetchFoods = async () => {
         try {
+            // Validate the 'date' before using it
+            if (isNaN(new Date(date).getTime())) {
+                throw new Error('Invalid date value');
+            }
+    
+            // Fetch user foods and all foods
             const userFood = await fetchUserFoods(date);
             const food = await fetchAllFoods();
             setFoodData(food);
-            const userFoodDetails = userFood.map((item) => {
-                const foodDetails = food.find(element => element.id_Food === item.id_Food);
+    
+            // Fetch food details for each user food using Promise.all
+            const userFoodDetails = await Promise.all(userFood.map(async (item) => {
+                const foodDetails = await fetchFoodByID(item.id_Food);
+    
                 return {
                     ...item,
                     name: foodDetails?.name || 'Unknown',
                     measure: foodDetails?.measure || '',
-                    amount: foodDetails?.measure_portion || null,
-                    calories: Math.round(foodDetails?.calories_portion) || 0
-
-                }
-            });
+                    measure_portion: foodDetails?.measure_portion || null,
+                    calories_portion: Math.round(foodDetails?.calories_portion) || 0
+                };
+            }));
+    
+            // Set user food with the resolved details
             setUserFood(userFoodDetails);
         } catch (err) {
             console.log('Error al obtener los datos: ' + err.message);
         }
     };
+    
 
     useEffect(()=>{
         fetchFoods();

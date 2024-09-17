@@ -5,7 +5,7 @@ const Calories = ({userFood}) => {
     const calculateCalories=()=>{
         var calories=0
         userFood.forEach((food)=>{
-            calories+=(food.calories*food.amount_eaten)/food.amount
+            calories+=(food.calories_portion*food.amount_eaten)/food.measure_portion
         })
         return calories
     }

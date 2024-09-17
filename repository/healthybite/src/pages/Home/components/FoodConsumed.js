@@ -3,6 +3,8 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns';
 
 const FoodConsumed = ({ usfood, handleDeleteMeal }) => {
+    console.log(usfood.id)
+
     return (
         <div className="flex justify-between items-center w-full py-1 px-4 rounded-2xl bg-hbGreen font-quicksand my-1">
             <div className="flex flex-col items-start justify-center">
@@ -12,9 +14,10 @@ const FoodConsumed = ({ usfood, handleDeleteMeal }) => {
             <div className='flex flex-row items-center justify-end'>
                 <div className="flex flex-col items-end justify-center pr-2">
                     <p className="text-md">
-                    {Math.ceil((usfood.calories * usfood.amount_eaten) / usfood.amount)} cal
+                        {Math.ceil((usfood.calories_portion * usfood.amount_eaten) / usfood.measure_portion)} cal
                     </p>
-                    <p className="text-xs">{format(usfood.date_ingested * 1000, "HH:mm")}</p>
+                    {/* Correct date handling here */}
+                    <p className="text-xs">{format(new Date(usfood.date_ingested), "HH:mm")}</p>
                 </div>
                 <button 
                     onClick={() => {
@@ -26,9 +29,9 @@ const FoodConsumed = ({ usfood, handleDeleteMeal }) => {
                     <FontAwesomeIcon icon={faTimes} />
                 </button>
             </div>
-            
         </div>
-    )
-}
+    );
+};
+
 
 export default FoodConsumed
