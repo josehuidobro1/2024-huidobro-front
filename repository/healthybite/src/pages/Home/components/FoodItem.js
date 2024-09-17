@@ -8,7 +8,7 @@ const FoodItem = ({ food, setSelection }) => {
     const handleAmountChange = (e) => {
         const value = Number(e.target.value);
         // Only update the state if the value is a non-negative number
-        if (!isNaN(value) && value >= 0) {
+        if (!isNaN(value) && value >= 0 && value<=1000) {
             setAmount(value);
         }
     };
