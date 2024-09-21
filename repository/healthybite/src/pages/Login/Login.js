@@ -138,7 +138,7 @@ function Login() {
           };
 
     return (
-        <div className=" bg-healthyGray h-screen flex justify-center items-center bg-healthyGray ">
+        <div className="  bg-healthyGray h-screen flex justify-center items-center  ">
             {window.innerWidth<640 ? 
             <img src={loginMobile} alt="Login" className=" h-full w-full z-0 relative object-cover" />
             :
@@ -150,7 +150,7 @@ function Login() {
                     
                     {signUp ? (
                         <div classname='  w-full '>
-                            <div className="sm:mt-6 flex flex-col bg-healthyGray w-full sm:max-h-[580px] md:max-h-[550px]    lg:max-h-[500px] xl:max-h-[550px] sm:overflow-y-auto  lg:max-w-[400px] ">
+                            <div className="sm:mt-6 flex flex-col bg-healthyGray w-full sm:max-h-[580px] md:max-h-[550px]    lg:max-h-[500px] xl:max-h-[430px] 2xl:max-h-[500px]  sm:overflow-y-auto  lg:max-w-[400px] ">
                                 <div className="flex w-full bg-healthyGray sm:sticky sm:top-0">
                                     <button onClick={()=>setSignUp(false) } className="font-quicksand  bg-healthyGreen p-2   w-full rounded-xl  text-white font-semibold my-4 hover:bg-healthyDarkGreen">Log in</button>
                                 </div>
