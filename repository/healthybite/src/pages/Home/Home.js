@@ -99,10 +99,6 @@ function Home() {
                         <Calories userFood={userFood} />
                     </div>
                     <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12">
-                        <div className="flex flex-row justify-between items-start w-full pb-4">
-                            <p className="font-quicksand bg-healthyOrange/80 text-md text-white py-2 px-4 rounded-3xl font-semibold">Food</p>
-                            <p className="font-quicksand bg-healthyOrange/80 text-md text-white py-2 px-4 rounded-3xl font-semibold">Calories</p>
-                        </div>
                         <div className="flex flex-col w-full">
                             {userFood.map((usfood) => (
                                 <FoodConsumed
