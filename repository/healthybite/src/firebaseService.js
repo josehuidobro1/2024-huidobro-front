@@ -1,6 +1,8 @@
 import { auth, firestore } from "../src/firebaseConfig";
 import axios from "axios";
 
+
+
 export const fetchUserFoods = async (date) => {
     const userFood = await userFoodMeals(); // Wait for the promise to resolve
     if (!userFood) return []; // Handle if there's no data

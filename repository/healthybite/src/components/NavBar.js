@@ -6,6 +6,11 @@ import React, { useEffect, useState } from "react";
 
 function NavBar() {
     const [openBar, setOpenBar]=useState(false)
+
+    const handleLogOut=()=>{
+        auth.signOut()
+
+    }
     return (
         <>
         <div className=" top-0 sticky sm:absolute bg-healthyGreen shadow-xl py-3 w-full flex flex-col items-center justify-center">
@@ -33,7 +38,7 @@ function NavBar() {
                             <Link to="/" className="text-white font-quicksand text-xl xs:text-xs hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faLayerGroup} />Category </Link>
                             <Link to="/" className="text-white font-quicksand text-xl xs:text-xs hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faChartLine} />Dashboard </Link>
                             <Link to="/" className="text-white font-quicksand text-xl xs:text-xs hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faUser} />User Profile </Link>
-                            <button onClick={()=>auth.signOut()} className="font-quicksand font-semibold text-xl xs:text-sm text-healthyGreen hover:mt-1  px-4 py-2 xs:px-3 xs:py-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</button>
+                            <Link to="/" onClick={()=>auth.signOut()} className="font-quicksand font-semibold text-xl xs:text-sm text-healthyGreen hover:mt-1  px-4 py-2 xs:px-3 xs:py-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>
                         </div>
                     </div>
 
