@@ -5,6 +5,7 @@ import { auth } from './firebaseConfig';
 import Home from './pages/Home/Home';
 import NavBar from './components/NavBar';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import UserProfile from './pages/UserProfile/UserProfile';
 
 function App() {
   const [user]= useAuthState(auth)
@@ -12,8 +13,9 @@ function App() {
     <Router>
         <Routes>
           <Route path="/" element={ user ? <Home /> : <Login />} />
-          {/*<Route path="/dashboard" element={<Dashboard />} />
           <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/resetPassword/:token" element={<ResetPassword />} />
+          {/*<Route path="/dashboard" element={<Dashboard />} />
           <Route path="/category" element={<Category />} />*/}
         </Routes>
       </Router>

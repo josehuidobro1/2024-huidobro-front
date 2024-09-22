@@ -1,16 +1,57 @@
+
+import { convertFieldResponseIntoMuiTextFieldProps } from "@mui/x-date-pickers/internals";
 import { auth, firestore } from "../src/firebaseConfig";
+import { deleteUser, signOut } from 'firebase/auth';
 import axios from "axios";
 
+export const fetchUser=async()=>{
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/User/${auth.currentUser.uid}`);
+        
+        return response.data; // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error fetching user by ID:', error);
+        return null; // Return null or handle the error as needed
+    }
+}
 
+export const editUserData=async(data)=>{
+    try {
+        const response = await axios.put(`http://127.0.0.1:8000/update_user/${auth.currentUser.uid}`, data);
+        
+        return response.data; // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error editing user data by ID:', error);
+        return null; // Return null or handle the error as needed
+    }
+}
 
-export const fetchUser= async () => {
-    const queryUser = await getDocs(collection(firestore, 'User'));
-    const user = queryUser.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    })).find( item => item.id_user==auth.currentUser.uid)
-    return user;
-};
+export const deleteUserAc=async()=>{
+    try {
+        await axios.delete(`http://127.0.0.1:8000/delete-user/${auth.currentUser.uid}`); // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error deleting user by ID:', error);
+        return null; // Return null or handle the error as needed
+    }
+}
+
+export const resetPassword=async (data)=>{
+    try{
+        await fetch('http://localhost:8000/reset-password/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                token: data.token,  // Token actual del usuario
+                new_password: data.newPassword
+            })
+        });
+    } catch (error) {
+        console.error('Error:', error);
+    }
+}
+
 
 export const fetchUserFoods = async (date) => {
     const userFood = await userFoodMeals(); // Wait for the promise to resolve
