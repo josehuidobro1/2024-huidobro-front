@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID} from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood} from "../../firebaseService";
 
 function Home() {
     const [foodData, setFoodData] = useState([]); // datos de tabla Food
@@ -17,6 +17,7 @@ function Home() {
     const [selection, setSelection] = useState();
     const [addMeal, setAddMeal] = useState(false);
     const [newFood, setNewFood] = useState();
+    const [foodEdition,setFoodEdition]=useState(false)
 
     const fetchFoods = async () => {
         try {
@@ -45,6 +46,7 @@ function Home() {
     
             // Set user food with the resolved details
             setUserFood(userFoodDetails);
+            setFoodEdition(false)
         } catch (err) {
             console.log('Error al obtener los datos: ' + err.message);
         }
@@ -57,7 +59,7 @@ function Home() {
 
     useEffect(() => {
         fetchFoods();
-    }, [date, selection]);
+    }, [date, selection,foodEdition]);
 
     const handleAddMeal = async () => {
         try {
@@ -89,6 +91,16 @@ function Home() {
         }
     };
 
+    const handleEditFoodConsumed = async  (idDoc_user_food, data) => {
+        try {
+            await editUserFood(idDoc_user_food, data); 
+            setFoodEdition(true)
+            console.log('Comida editada de UserFood > Firestore con éxito');
+        } catch (err) {
+            console.log('Error al editar la comida: ' + err.message);
+        }
+    };
+
     return (
         <div className="h-screen w-full">
             <NavBar />
@@ -105,6 +117,7 @@ function Home() {
                                     key={usfood.id}
                                     usfood={usfood}
                                     handleDeleteMeal={handleDeleteMeal} // Pass the delete function here
+                                    handleEditFoodConsumed={handleEditFoodConsumed}
                                 />
                             ))}
                             <div className="flex w-full items-center justify-center bg-white sticky bottom-0">

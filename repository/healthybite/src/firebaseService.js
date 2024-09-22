@@ -116,11 +116,24 @@ export const addNewFood = async (newFood) => {
         console.error("Error adding food:", error);
     }
 };
+
 export const deleteUserFood = async (doc_id) => {
 
     try {
         console.log(doc_id)
         await axios.delete(`http://127.0.0.1:8000/DeleteMealUser/${doc_id}`); // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error fetching food by ID:', error);
+        return null; // Return null or handle the error as needed
+    }
+};
+
+
+export const editUserFood = async (doc_id,data) => {
+
+    try {
+        console.log(doc_id,data)
+        await axios.put(`http://127.0.0.1:8000/UpdateUserFood/${doc_id}`,data); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
