@@ -9,12 +9,23 @@ const Calendar = ({value, onChange}) => {
     const dayjsValue = dayjs(value);
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer className='font-quicksand' components={['DatePicker', 'DatePicker']}>
+        <DemoContainer  components={['DatePicker', 'DatePicker']}>
           <DatePicker
-            label="Controlled picker"
             value={dayjsValue}
             onChange={onChange}
-            className='font-quicksand'
+            sx={{
+              fontFamily: 'Quicksand, sans-serif',
+              '.MuiPickersToolbar-root': {
+                color: '#E5EBDF',  // Cambia el color de la barra superior
+                backgroundColor: '#8ba020',  // Fondo de la barra superior
+                fontFamily: 'Quicksand, sans-serif',
+              },
+              '.MuiInputBase-root': {
+                fontFamily: 'Quicksand, sans-serif',  // Fuente para el campo de texto
+                color: '#333333',  // Color del texto en el input
+                borderColor: '#8ba020', 
+              },
+            }}
           />
         </DemoContainer>
       </LocalizationProvider>
