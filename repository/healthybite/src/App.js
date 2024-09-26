@@ -7,6 +7,7 @@ import NavBar from './components/NavBar';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import UserProfile from './pages/UserProfile/UserProfile';
 import Category from './pages/Category/Category';
+import Dashboard from './pages/Dashboard/Dashboard';
 
 function App() {
   const [user]= useAuthState(auth)
@@ -17,7 +18,7 @@ function App() {
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/resetPassword/:token" element={<ResetPassword />} />
           <Route path="/category" element={<Category/>} />
-          {/*<Route path="/dashboard" element={<Dashboard />} />*/}
+          <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </Router>
 

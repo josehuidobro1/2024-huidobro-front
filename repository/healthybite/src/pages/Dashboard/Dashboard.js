@@ -40,6 +40,7 @@ export default function Dashboard() {
         <div className='flex flex-col md:flex-row justify-center items-center md:items-start  w-full lg:w-10/12 md:mt-24 px-2 xs:px-6 pb-10 '>
             <div className="w-full md:w-1/4 my-4 xs:mt-0 bg-white flex flex-col xs:flex-row md:flex-col items-center  md:items-start font-quicksand justify-center md:justify-start  max-h-72">
                 <Calendar value={date} onChange={e => setDate(new Date(e))}/>
+                <div className="mt-6 flex w-full items-start justify-start">
                 <PieChart
                     colors={palette}
                     series={[
@@ -54,6 +55,8 @@ export default function Dashboard() {
                     width={window.innerWidth <'768' ? 300 :250}
                     height={130}
                     />
+
+                    </div>
             </div>
             <div className="flex flex-col w-full mt-4 md:mt-0 md:w-3/4 md:ml-12 bg-white font-quicksand ">
                 <div className="flex flex-row justify-between w-full p-3 rounded-xl bg-hbGreen items-center  ">
@@ -63,7 +66,7 @@ export default function Dashboard() {
                 </div>
                 <div className="flex flex-col w-full rounded-xl pt-2">
                     <div className="w-full p-2 bg-healthyGreen rounded-t-xl">
-                        <p className="font-belleza text-lg text-darkGray pl-3">Catgory chart</p>
+                        <p className="font-belleza text-lg text-darkGray pl-3">Category chart</p>
                     </div>
                     <div className="bg-hbGreen p-2 rounded-b-xl ">
                     <LineChart
