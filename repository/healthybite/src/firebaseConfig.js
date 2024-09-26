@@ -4,7 +4,6 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
 // Firebase configuration
-/*
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
   authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
@@ -14,17 +13,6 @@ const firebaseConfig = {
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
   databaseURL: "https://healthybite-b2a20-default-rtdb.firebaseio.com",
-};
-*/
-const firebaseConfig = {
-  apiKey: "AIzaSyABXtMyR7Fi-xshZaVaelZMwkAldt4WB0M",
-  authDomain: "healthybite-b2a20.firebaseapp.com",
-  databaseURL: "https://healthybite-b2a20-default-rtdb.firebaseio.com",
-  projectId: "healthybite-b2a20",
-  storageBucket: "healthybite-b2a20.appspot.com",
-  messagingSenderId: "1061070227538",
-  appId: "1:1061070227538:web:7c622ae4edd5d0e68ff78b",
-  measurementId: "G-K873CFX9CS"
 };
 
 // Initialize Firebase
