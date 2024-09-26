@@ -19,7 +19,7 @@ function NavBar() {
                 {window.innerWidth > '768' ? 
                 <>
                     <Link to="/" className="text-white font-quicksand text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " > <FontAwesomeIcon className="text-white text-md pr-2" icon={faHouse} />Home </Link>
-                    <Link to="/" className="text-white font-quicksand text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faLayerGroup} />Category </Link>
+                    <Link to="/category" className="text-white font-quicksand text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faLayerGroup} />Category </Link>
                     <Link to="/" className="text-white font-quicksand text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faChartLine} />Dashboard </Link>
                     <Link to="/user-profile" className="text-white font-quicksand text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faUser} />User Profile </Link>
                     <Link to="/"  onClick={()=>auth.signOut()} className="font-quicksand font-semibold text-sm text-healthyGreen hover:mt-1  px-3 py-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>

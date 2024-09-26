@@ -190,3 +190,43 @@ export const editUserFood = async (doc_id,data) => {
     }
 };
 
+export const getCategories = async()=>{
+    const uid=auth.currentUser.uid
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/GetCategoryUser/${uid}`);
+        return response.data.message.categories; // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error fetching categories :', error);
+        return null; // Return null or handle the error as needed
+    }
+}
+
+export const createCategory =async (data)=>{
+    const uid=auth.currentUser.uid
+    try{
+        const response = await axios.post(`http://127.0.0.1:8000/CreateCategory/`, {...data,id_User: uid });
+        return response.data
+    }catch(error){
+        console.error('Error adding new category: ', error);
+        return null;
+    }
+}
+
+export const updateCategory=async(data,category_id)=>{
+    try{
+        const response = await axios.put(`http://127.0.0.1:8000/UpdateCategory/${category_id}`,{...data,id_User: auth.currentUser.uid });
+        return response.data
+    }catch(error){
+        console.error('Error updating category by id: ', error);
+        return null;
+    }
+}
+
+export const deleteCategory=async(category_id)=>{
+    try {
+        await axios.delete(`http://127.0.0.1:8000/DeleteCategory/${category_id}`); 
+    } catch (error) {
+        console.error('Error deleting category by ID:', error);
+        return null; 
+    }
+}
