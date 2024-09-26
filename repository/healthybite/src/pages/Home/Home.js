@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood } from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood} from "../../firebaseService";
 
 function Home() {
     const [foodData, setFoodData] = useState([]); // datos de tabla Food
@@ -17,28 +17,41 @@ function Home() {
     const [selection, setSelection] = useState();
     const [addMeal, setAddMeal] = useState(false);
     const [newFood, setNewFood] = useState();
+    const [foodEdition,setFoodEdition]=useState(false)
 
     const fetchFoods = async () => {
         try {
+            // Validate the 'date' before using it
+            if (isNaN(new Date(date).getTime())) {
+                throw new Error('Invalid date value');
+            }
+    
+            // Fetch user foods and all foods
             const userFood = await fetchUserFoods(date);
             const food = await fetchAllFoods();
             setFoodData(food);
-            const userFoodDetails = userFood.map((item) => {
-                const foodDetails = food.find(element => element.id_Food === item.id_Food);
+    
+            // Fetch food details for each user food using Promise.all
+            const userFoodDetails = await Promise.all(userFood.map(async (item) => {
+                const foodDetails = await fetchFoodByID(item.id_Food);
+    
                 return {
                     ...item,
                     name: foodDetails?.name || 'Unknown',
                     measure: foodDetails?.measure || '',
-                    amount: foodDetails?.measure_portion || null,
-                    calories: Math.round(foodDetails?.calories_portion) || 0
-
-                }
-            });
+                    measure_portion: foodDetails?.measure_portion || null,
+                    calories_portion: Math.round(foodDetails?.calories_portion) || 0
+                };
+            }));
+    
+            // Set user food with the resolved details
             setUserFood(userFoodDetails);
+            setFoodEdition(false)
         } catch (err) {
             console.log('Error al obtener los datos: ' + err.message);
         }
     };
+    
 
     useEffect(()=>{
         fetchFoods();
@@ -46,7 +59,7 @@ function Home() {
 
     useEffect(() => {
         fetchFoods();
-    }, [date, selection]);
+    }, [date, selection,foodEdition]);
 
     const handleAddMeal = async () => {
         try {
@@ -78,6 +91,16 @@ function Home() {
         }
     };
 
+    const handleEditFoodConsumed = async  (idDoc_user_food, data) => {
+        try {
+            await editUserFood(idDoc_user_food, data); 
+            setFoodEdition(true)
+            console.log('Comida editada de UserFood > Firestore con éxito');
+        } catch (err) {
+            console.log('Error al editar la comida: ' + err.message);
+        }
+    };
+
     return (
         <div className="h-screen w-full">
             <NavBar />
@@ -88,16 +111,13 @@ function Home() {
                         <Calories userFood={userFood} />
                     </div>
                     <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12">
-                        <div className="flex flex-row justify-between items-start w-full pb-4">
-                            <p className="font-quicksand bg-healthyOrange/80 text-md text-white py-2 px-4 rounded-3xl font-semibold">Food</p>
-                            <p className="font-quicksand bg-healthyOrange/80 text-md text-white py-2 px-4 rounded-3xl font-semibold">Calories</p>
-                        </div>
                         <div className="flex flex-col w-full">
                             {userFood.map((usfood) => (
                                 <FoodConsumed
                                     key={usfood.id}
                                     usfood={usfood}
                                     handleDeleteMeal={handleDeleteMeal} // Pass the delete function here
+                                    handleEditFoodConsumed={handleEditFoodConsumed}
                                 />
                             ))}
                             <div className="flex w-full items-center justify-center bg-white sticky bottom-0">

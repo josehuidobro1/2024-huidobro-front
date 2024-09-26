@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
 import Input from '../../../components/Input';
+import {handleInputChange} from '../../inputValidation';
 
-const NewFood = ({ setAddFood, setNewFood }) => {
+const NewFood = ({ setAddFood, setNewFood}) => {
     const [inValidation, setInValidation] = useState(false);
     const [name, setName] = useState('');
     const [measure, setMeasure] = useState('');
-    const [amount, setAmount] = useState(0);
-    const [calories, setCalories] = useState(0);
+    const [amount, setAmount] = useState('');
+    const [calories, setCalories] = useState('');
+
 
     const validateInputs = () => {
-        // Basic validation for empty fields and negative values
         return (
             name !== '' &&
-            measure !== '' &&
-            amount > 0 &&
-            calories > 0
+            measure !== '' 
         );
     };
+    
+    const handleAmountChange= (e) => {
+        handleInputChange(parseInt(e.target.value), 0, 500, setAmount);
+    }
+
+    const handleCaloriesChange= (e) => {
+        handleInputChange(parseInt(e.target.value), 0, 500, setCalories);
+    }
 
     const save = () => {
         if (validateInputs()) {
@@ -24,8 +31,8 @@ const NewFood = ({ setAddFood, setNewFood }) => {
             setNewFood({ name, measure, amount, calories });
             setName('');
             setMeasure('');
-            setAmount(0);
-            setCalories(0);
+            setAmount('');
+            setCalories('');
             setAddFood(false);
         } else {
             setInValidation(true);
@@ -66,7 +73,7 @@ const NewFood = ({ setAddFood, setNewFood }) => {
                             placeholder='250'
                             value={amount}
                             inputType='number'
-                            onChange={e => setAmount(Number(e.target.value))}
+                            onChange={handleAmountChange}
                         />
                         {inValidation && amount <= 0 && <p className='text-red-500 text-xs'>Amount must be a positive number.</p>}
                     </div>
@@ -77,7 +84,7 @@ const NewFood = ({ setAddFood, setNewFood }) => {
                             placeholder="448"
                             value={calories}
                             inputType='number'
-                            onChange={e => setCalories(Number(e.target.value))}
+                            onChange={handleCaloriesChange}
                         />
                         {inValidation && calories <= 0 && <p className='text-red-500 text-xs'>Calories must be a positive number.</p>}
                     </div>
