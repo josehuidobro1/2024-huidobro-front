@@ -1,6 +1,6 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faIceCream, faTrash, faPen, faSquarePlus, faCircleMinus} from '@fortawesome/free-solid-svg-icons'; 
+import { faCircleMinus} from '@fortawesome/free-solid-svg-icons'; 
 
 
 function FoodItem({food, setCatFoods,catFoods}) {

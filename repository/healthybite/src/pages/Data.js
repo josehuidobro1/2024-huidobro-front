@@ -3,7 +3,7 @@ import {
     faSquarePlus, faAppleAlt, faCarrot, faFish, faPizzaSlice, faIceCream, 
     faBreadSlice, faEgg, faCheese, faDrumstickBite, faHotdog, faHamburger, 
     faPepperHot, faCookie, faBacon, faLeaf, faSeedling, faLemon, 
-    faWineBottle, faMugHot 
+    faWineBottle, faMugHot
 } from '@fortawesome/free-solid-svg-icons';
 
 const Data={
@@ -109,7 +109,9 @@ const Data={
         { icon: faSeedling, name: 'Seedling' },
         { icon: faLemon, name: 'Lemon' },
         { icon: faWineBottle, name: 'Wine Bottle' },
-        { icon: faMugHot, name: 'Mug' }
+        { icon: faMugHot, name: 'Mug' },
+        {icon: faDrumstickBite, name:"Drumstick"},
+        {icon: faDrumstickBite, name:"Seedling"}
     ]
 }
 export default Data
