@@ -7,7 +7,8 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood} from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories} from "../../firebaseService";
+import Filter from "./components/Filter";
 
 function Home() {
     const [foodData, setFoodData] = useState([]); // datos de tabla Food
@@ -17,9 +18,25 @@ function Home() {
     const [selection, setSelection] = useState();
     const [addMeal, setAddMeal] = useState(false);
     const [newFood, setNewFood] = useState();
-    const [foodEdition,setFoodEdition]=useState(false)
+    const [categories, setCategories]=useState([])
+    const [filteredFood, setFilteredFood]=useState([])
+    const [filterSelected, setFilterSelected]=useState(null)
+    const [loading, setLoading] = useState(true);
+
+    useEffect(()=>{
+        if(filterSelected) {
+            console.log("Quiero veer las comidas ---> ", filteredFood)
+            console.log('FILTROOOO --> ', filterSelected)
+            const aplyingFilter=filteredFood.filter((item)=>filterSelected.foods.includes(item.id_Food))
+            setFilteredFood(aplyingFilter)
+            console.log("Aplicando el filtro: ", aplyingFilter)
+        }else{
+            setFilteredFood(userFood)
+        }
+    },[filterSelected])
 
     const fetchFoods = async () => {
+        const loadData = async()=>{
         try {
             // Validate the 'date' before using it
             if (isNaN(new Date(date).getTime())) {
@@ -46,20 +63,31 @@ function Home() {
     
             // Set user food with the resolved details
             setUserFood(userFoodDetails);
-            setFoodEdition(false)
+            setFilteredFood(userFoodDetails)
+            userFood && setLoading(false)
         } catch (err) {
             console.log('Error al obtener los datos: ' + err.message);
+        }}
+        loadData()
+    };
+
+    const fetchCategories = async () => {
+        try {
+            const cats = await getCategories();
+            const defaultCats= await getDefaultCategories();
+            setCategories(defaultCats.concat(cats));
+        } catch (err) {
+            console.log('Error al obtener las categorias: ' + err);
         }
     };
     
 
     useEffect(()=>{
+        setLoading(true)
         fetchFoods();
-    },[])
+        fetchCategories();
+    },[date])
 
-    useEffect(() => {
-        fetchFoods();
-    }, [date, selection,foodEdition]);
 
     const handleAddMeal = async () => {
         try {
@@ -68,17 +96,18 @@ function Home() {
             setSelection(null);
             setAddMeal(false);
             console.log('Comida consumida agregada a UserFood > Firestore con éxito');
+            fetchFoods()
         } catch (error) {
             console.error('Error al agregar la comida consumida en UserFood > Firestore:', error);
         }
     }
 
     useEffect(() => {
-        console.log('cambio la comidaaaaaa')
         newFood && addNewFood(newFood).then(() => {
             setNewFood(null);
+            fetchFoods();
         })
-        fetchFoods();
+        
     }, [newFood]);
 
     const handleDeleteMeal = async (idDoc_user_food) => {
@@ -94,25 +123,38 @@ function Home() {
     const handleEditFoodConsumed = async  (idDoc_user_food, data) => {
         try {
             await editUserFood(idDoc_user_food, data); 
-            setFoodEdition(true)
+            fetchFoods()
             console.log('Comida editada de UserFood > Firestore con éxito');
         } catch (err) {
             console.log('Error al editar la comida: ' + err.message);
         }
     };
 
+    const selectDate=(date)=>{
+        fetchFoods()
+        setDate(new Date(date))
+    }
+
     return (
-        <div className="h-screen w-full">
+        <div className="h-screen w-full ">
             <NavBar />
             <div className="flex flex-col lg:flex-row justify-between items-center w-full lg:h-screen">
                 <div className="w-full sm:w-11/12 lg:w-9/12 sm:h-screen lg:h-full pt-8 sm:pt-24 flex flex-col sm:flex-row justify-start items-start px-8">
                     <div className="sticky top-0 w-full sm:w-1/4 pb-4 sm:pb-12 flex flex-col h-full justify-start sm:justify-between items-center">
-                        <Calendar value={date} onChange={e => setDate(new Date(e))} />
+                        <div className="flex flex-col justify-center items-center md:items-start w-4/5  sm:w-1/3 md:w-full " >
+                            <Calendar value={date} onChange={e => selectDate(e)} />
+                            <Filter categories={categories} filterSelected={filterSelected} setFilterSelected={setFilterSelected} />
+                        </div>
                         <Calories userFood={userFood} />
                     </div>
                     <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12">
                         <div className="flex flex-col w-full">
-                            {userFood.map((usfood) => (
+                            {loading ?
+                                (<div className="w-full flex items-center justify-start my-5 ">
+                                    <h1 className="font-belleza text-healthyGreen text-3xl ">Loading...</h1>
+                                </div>)
+                            :
+                            filteredFood.map((usfood) => (
                                 <FoodConsumed
                                     key={usfood.id}
                                     usfood={usfood}
@@ -129,7 +171,7 @@ function Home() {
                         </div>
                     </div>
                 </div>
-                {window.innerWidth > '1024' && (
+                {(window.innerWidth > '1024') && (
                     <div className="w-full lg:w-4/12 lg:h-screen flex justify-start">
                         <img src={bgImage} alt='Bakground image' className="w-full h-full object-cover" />
                     </div>

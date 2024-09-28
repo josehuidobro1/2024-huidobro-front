@@ -201,6 +201,17 @@ export const getCategories = async()=>{
     }
 }
 
+export const getDefaultCategories = async()=>{
+    const uid=auth.currentUser.uid
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/GetCategoryUser/default`);
+        return response.data.message.categories; // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error fetching default categories :', error);
+        return null; // Return null or handle the error as needed
+    }
+}
+
 export const createCategory =async (data)=>{
     const uid=auth.currentUser.uid
     try{
@@ -230,3 +241,83 @@ export const deleteCategory=async(category_id)=>{
         return null; 
     }
 }
+
+export const createTotCal = async (totCal, date) => {
+    try {
+        const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
+
+        const response = await fetch("http://127.0.0.1:8000/CreateTotCaloriesUser/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                "id_user": auth.currentUser.uid,
+                "day": validDate, // Using the valid date here
+                "totCal": totCal,
+            }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Something went wrong");
+            
+        }
+        
+
+        console.log("Calories entry added successfully:", data);
+        return data;
+    } catch (error) {
+        console.error("Error adding calories entry:", error);
+        return null;
+    }
+};
+
+export const UpdateTotCal=async(totcal_id,newTotCal)=>{
+    try {
+        console.log("HOLA?",totcal_id,newTotCal)
+        await axios.put(`http://127.0.0.1:8000/UpdateTotCaloriesUser/${totcal_id}`,{ calUpdate: newTotCal }); 
+    } catch (error) {
+        console.error('Error fetching food by ID:', error);
+        return null; // Return null or handle the error as needed
+    }
+}
+export const fetchTotCalByDay = async (date) => {
+    const userTotCal = await getTotCalUser(); // Wait for the promise to resolve
+    
+    if (!userTotCal) return []; // Handle if there's no data
+
+    // Filter the food based on the provided date
+    const filteredTotcal = userTotCal.filter(doc => {
+        let ingestedDate;
+        if (doc.day.seconds) {
+            ingestedDate = new Date(doc.day.seconds * 1000); // Convert timestamp to Date
+        } else {
+            ingestedDate = new Date(doc.day); // If it's a string, it will handle conversion
+        }
+
+        return (
+            ingestedDate.getDate() === date.getDate() &&
+            ingestedDate.getMonth() === date.getMonth() &&
+            ingestedDate.getFullYear() === date.getFullYear()
+        );
+    });
+
+    console.log("Filtered User cals by date:", filteredTotcal);
+    return filteredTotcal;
+};
+export const getTotCalUser=async()=>{
+    const uid=auth.currentUser.uid
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/GetTotCalUser/${uid}`);
+        return response.data.message.totCals; // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error fetching categories :', error);
+        return null; // Return null or handle the error as needed
+    }
+
+
+
+}
+
