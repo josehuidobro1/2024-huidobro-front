@@ -6,7 +6,7 @@ const NewFood = ({ setAddFood, setNewFood}) => {
     const [inValidation, setInValidation] = useState(false);
     const [name, setName] = useState('');
     const [measure, setMeasure] = useState('');
-    const [amount, setAmount] = useState('');
+    const [amount, setAmount] = useState(null);
     const [calories, setCalories] = useState('');
 
 
@@ -18,6 +18,10 @@ const NewFood = ({ setAddFood, setNewFood}) => {
     };
     
     const handleAmountChange= (e) => {
+        const value = Number(e.target.value);
+        if (!isNaN(value) && value >= 0 && value<=1000) {
+            setAmount(value);
+        }
         handleInputChange(parseInt(e.target.value), 0, 500, setAmount);
     }
 
@@ -66,15 +70,17 @@ const NewFood = ({ setAddFood, setNewFood}) => {
                         />
                         {inValidation && measure === '' && <p className='text-red-500 text-xs'>Measure is required.</p>}
                     </div>
-                    <div className='flex flex-col w-full mb-2'>
-                        <Input
-                            required={inValidation && amount <= 0}
-                            label="Amount"
-                            placeholder='250'
-                            value={amount}
-                            inputType='number'
-                            onChange={handleAmountChange}
+                    <div className='flex flex-col font-quicksand font-semibold text-darkGray text-sm w-full mb-2'>
+                        <p className='text-sm font-bold text-darkGray'>Amount</p>
+                        {inValidation && <p className="font-quicksand mt-2 md:mt-0 text-xs md:text-sm text-healthyDarkOrange font-semibold">This field is required</p>}
+                        <input 
+                            className={`focus:outline-none focus:ring focus:ring-healthyGreen decoration-none bg-white p-1 md:p-2 rounded-md md:rounded-xl font-quicksand my-1 text-sm md:text-md ${inValidation ? 'ring ring-healthyDarkOrange' : '' }`}  
+                            placeholder="250" 
+                            type="number" 
+                            value={amount} 
+                            onChange={handleAmountChange} 
                         />
+                    
                         {inValidation && amount <= 0 && <p className='text-red-500 text-xs'>Amount must be a positive number.</p>}
                     </div>
                     <div className='flex flex-col w-full mb-2'>

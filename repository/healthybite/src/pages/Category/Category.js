@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import NavBar from '../../components/NavBar'
-import categoryImg from '../../assets/categoryBg.png'
+import categoryImg from '../../assets/categoryBg.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIceCream, faTrash, faPen, faPlus} from '@fortawesome/free-solid-svg-icons'; 
 import CategoryItem from './components/CategoryItem';
