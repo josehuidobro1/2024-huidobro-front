@@ -1,12 +1,12 @@
 
 import { convertFieldResponseIntoMuiTextFieldProps } from "@mui/x-date-pickers/internals";
 import { auth, firestore } from "../src/firebaseConfig";
-import { deleteUser, signOut } from 'firebase/auth';
+import { getAuth, verifyPasswordResetCode, confirmPasswordReset } from 'firebase/auth';
 import axios from "axios";
 
 export const fetchUser=async()=>{
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/User/${auth.currentUser.uid}`);
+        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/User/${auth.currentUser.uid}`);
         
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
@@ -17,7 +17,7 @@ export const fetchUser=async()=>{
 
 export const editUserData=async(data)=>{
     try {
-        const response = await axios.put(`http://127.0.0.1:8000/update_user/${auth.currentUser.uid}`, data);
+        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/update_user/${auth.currentUser.uid}`, data);
         
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
@@ -28,30 +28,12 @@ export const editUserData=async(data)=>{
 
 export const deleteUserAc=async()=>{
     try {
-        await axios.delete(`http://127.0.0.1:8000/delete-user/${auth.currentUser.uid}`); // Adjust this based on your backend response structure
+        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/delete-user/${auth.currentUser.uid}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error deleting user by ID:', error);
         return null; // Return null or handle the error as needed
     }
 }
-
-export const resetPassword=async (data)=>{
-    try{
-        await fetch('http://localhost:8000/reset-password/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                token: data.token,  // Token actual del usuario
-                new_password: data.newPassword
-            })
-        });
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
-
 
 export const fetchUserFoods = async (date) => {
     const userFood = await userFoodMeals(); // Wait for the promise to resolve
@@ -80,7 +62,7 @@ export const fetchUserFoods = async (date) => {
 
 export const fetchFoodByID = async (foodId) => {
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/Foods/${foodId}`);
+        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/Foods/${foodId}`);
         return response.data.message.food; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
@@ -89,7 +71,7 @@ export const fetchFoodByID = async (foodId) => {
 };
 const userFoodMeals = async()=>{
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/mealUserDay/${auth.currentUser.uid}`);
+        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/mealUserDay/${auth.currentUser.uid}`);
         return response.data.message.foods; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
@@ -101,7 +83,7 @@ const userFoodMeals = async()=>{
 
 export const fetchAllFoods = async () => {
     try {
-        const response = await axios.get('http://127.0.0.1:8000/Foods/');
+        const response = await axios.get('https://two024-ranchoaparte-back.onrender.com/Foods/');
         console.log(response.data.message.food)
         return response.data.message.food; // Adjust this based on your backend response structure
     } catch (error) {
@@ -113,7 +95,7 @@ export const fetchAllFoods = async () => {
 
 export const addUserFood = async (selection, date, amount) => {
     try {
-        const response = await fetch("http://127.0.0.1:8000/UserFood_log", {
+        const response = await fetch("https://two024-ranchoaparte-back.onrender.com/UserFood_log", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -141,7 +123,7 @@ export const addUserFood = async (selection, date, amount) => {
 
 export const addNewFood = async (newFood) => {
     try {
-        const response = await fetch("http://127.0.0.1:8000/Food_log", {
+        const response = await fetch("https://two024-ranchoaparte-back.onrender.com/Food_log", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -171,7 +153,7 @@ export const deleteUserFood = async (doc_id) => {
 
     try {
         console.log(doc_id)
-        await axios.delete(`http://127.0.0.1:8000/DeleteMealUser/${doc_id}`); // Adjust this based on your backend response structure
+        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/DeleteMealUser/${doc_id}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
@@ -183,7 +165,7 @@ export const editUserFood = async (doc_id,data) => {
 
     try {
         console.log(doc_id,data)
-        await axios.put(`http://127.0.0.1:8000/UpdateUserFood/${doc_id}`,data); // Adjust this based on your backend response structure
+        await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateUserFood/${doc_id}`,data); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
@@ -193,7 +175,7 @@ export const editUserFood = async (doc_id,data) => {
 export const getCategories = async()=>{
     const uid=auth.currentUser.uid
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/GetCategoryUser/${uid}`);
+        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetCategoryUser/${uid}`);
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
@@ -204,7 +186,7 @@ export const getCategories = async()=>{
 export const getDefaultCategories = async()=>{
     const uid=auth.currentUser.uid
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/GetCategoryUser/default`);
+        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetCategoryUser/default`);
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching default categories :', error);
@@ -215,7 +197,7 @@ export const getDefaultCategories = async()=>{
 export const createCategory =async (data)=>{
     const uid=auth.currentUser.uid
     try{
-        const response = await axios.post(`http://127.0.0.1:8000/CreateCategory/`, {...data,id_User: uid });
+        const response = await axios.post(`https://two024-ranchoaparte-back.onrender.com/CreateCategory/`, {...data,id_User: uid });
         return response.data
     }catch(error){
         console.error('Error adding new category: ', error);
@@ -225,7 +207,7 @@ export const createCategory =async (data)=>{
 
 export const updateCategory=async(data,category_id)=>{
     try{
-        const response = await axios.put(`http://127.0.0.1:8000/UpdateCategory/${category_id}`,{...data,id_User: auth.currentUser.uid });
+        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateCategory/${category_id}`,{...data,id_User: auth.currentUser.uid });
         return response.data
     }catch(error){
         console.error('Error updating category by id: ', error);
@@ -235,7 +217,7 @@ export const updateCategory=async(data,category_id)=>{
 
 export const deleteCategory=async(category_id)=>{
     try {
-        await axios.delete(`http://127.0.0.1:8000/DeleteCategory/${category_id}`); 
+        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/DeleteCategory/${category_id}`); 
     } catch (error) {
         console.error('Error deleting category by ID:', error);
         return null; 
@@ -246,7 +228,7 @@ export const createTotCal = async (totCal, date) => {
     try {
         const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
 
-        const response = await fetch("http://127.0.0.1:8000/CreateTotCaloriesUser/", {
+        const response = await fetch("https://two024-ranchoaparte-back.onrender.com/CreateTotCaloriesUser/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -277,7 +259,7 @@ export const createTotCal = async (totCal, date) => {
 export const UpdateTotCal=async(totcal_id,newTotCal)=>{
     try {
         console.log("HOLA?",totcal_id,newTotCal)
-        await axios.put(`http://127.0.0.1:8000/UpdateTotCaloriesUser/${totcal_id}`,{ calUpdate: newTotCal }); 
+        await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateTotCaloriesUser/${totcal_id}`,{ calUpdate: newTotCal }); 
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
@@ -311,7 +293,7 @@ export const fetchTotCalByDay = async (date) => {
 export const getTotCalUser=async()=>{
     const uid=auth.currentUser.uid
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/GetTotCalUser/${uid}`);
+        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetTotCalUser/${uid}`);
         return response.data.message.totCals; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
@@ -321,4 +303,16 @@ export const getTotCalUser=async()=>{
 
 
 }
+
+export const resetPassword = async (oobCode, newPassword) => {
+    try {
+        await verifyPasswordResetCode(auth, oobCode);
+        await confirmPasswordReset(auth, oobCode, newPassword);
+        return true;
+    } catch (error) {
+        console.error('Error resetting password:', error.message, error.code); // Add error message and code
+        return false;
+    }
+};
+
 
