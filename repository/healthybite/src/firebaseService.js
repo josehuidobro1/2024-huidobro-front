@@ -307,6 +307,7 @@ export const fetchTotCalByDay = async (date) => {
     console.log("Filtered User cals by date:", filteredTotcal);
     return filteredTotcal;
 };
+
 export const getTotCalUser=async()=>{
     const uid=auth.currentUser.uid
     try {

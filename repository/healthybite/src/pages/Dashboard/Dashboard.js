@@ -4,8 +4,25 @@ import Calendar from "../../components/Calendar";
 import { BarChart , LineChart,  PieChart } from "@mui/x-charts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight} from '@fortawesome/free-solid-svg-icons';
+import { fetchTotCalByDay, getTotCalUser } from "../../firebaseService";
+import { getBottomNavigationUtilityClass } from "@mui/material";
 
-const palette = ['#a1bc1f', '#FA9B6A', '#c3c3c3' ];
+const palette = [
+'#a1bc1f', // Original verde oliva
+  '#FA9B6A', // Original naranja suave
+  '#c3c3c3', // Original gris claro
+
+  '#8FAD1D', // Verde más oscuro
+  '#F87D4A', // Naranja coral
+  '#A6A6A6', // Gris neutro
+  '#F4D06F', // Amarillo suave
+  '#7F7F7F', // Gris medio
+  '#E88C60', // Salmón
+  '#D3E4CD', // Verde menta claro
+  '#F7B7A3', // Rosa suave
+  '#616161', // Gris oscuro
+  '#D5C7BC'  // Beige neutro];
+]
 
 const uData = [4000, 3000, 2000, 2780, 1890, 2390, 3490];
 const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
@@ -20,10 +37,33 @@ const xLabels = [
 ];
 
 
+
 export default function Dashboard() {
     const [date, setDate] = useState(new Date());
     const [index, setIndex]=useState(0)
-    const charts=[{label:'Dayly'}, {label:'Weekly'}, {label:'Monthly'}]
+    const [totCal, setTotCal]=useState([])
+    const charts=[{label:'Weekly'}, {label:'Monthly'}]
+    const [chartSelected, setChartSelected]=useState(charts[0])
+
+    const getWeeklyDates = (selectedDate) => {
+        var dayOfStart=new Date(selectedDate)
+        const dayOfWeek = date.getDay(); // Obtiene el día de la semana (0 - domingo, 6 - sábado)
+        
+        // Ajusta la fecha para que sea el lunes de esa semana (lunes = 1)
+        const diff = date.getDate() - dayOfWeek + (dayOfWeek === 0 ? -6 : 1);
+        dayOfStartdiff);
+        
+        const week = [];
+        
+        for (let i = 0; i < 7; i++) {
+            const day = (new Date(date));
+            setDate(day.getDate() + i);
+            week.push(day.getDate());
+        }
+        
+        return week;
+        };
+    
 
     const nextChart=()=>{
         index==(charts.length-1) ? setIndex(0) : setIndex(index+1)
@@ -32,6 +72,21 @@ export default function Dashboard() {
     const previusChart=()=>{
         index==0 ? setIndex(charts.length-1) : setIndex(index-1)
     }
+
+    const fetchData= async ()=>{
+        try{
+            const totCal=await getTotCalUser()
+            const weeklyDates=getWeeklyDates(date)
+            const filterTotCal=totCal.filter((item)=>weeklyDates.includes(item.day.getDate()))
+            console.log("Que me traee tot Cal : ", filterTotCal)
+        }catch(e){
+            console.log("Error fetching Total of calories consumed by user: ", e)
+        }
+    }
+
+    useEffect(()=>{
+        fetchData()
+    },[])
 
 
   return (
