@@ -186,7 +186,7 @@ export const getCategories = async()=>{
 export const getDefaultCategories = async()=>{
     const uid=auth.currentUser.uid
     try {
-        const response = await axios.get(`http://127.0.0.1:8000/GetCategoryUser/default`);
+        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetCategoryUser/default`);
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching default categories :', error);
