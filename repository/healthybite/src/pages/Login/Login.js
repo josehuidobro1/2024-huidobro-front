@@ -182,7 +182,7 @@ function Login() {
                                 <p className="font-quicksand text-md text-center text-darkGray">If you have forgotten your password, please enter your email address below. We will send you a link to a page where you can easily create a new&nbsp;password.</p>
                                 <Input required={inValidation && email===''} label="Email" inputType="email" inputValue={email} placeholder="jane@example.com" onChange={(e)=>setEmail(e.target.value)} />
                                 <div className="flex flex-col items-center justify-center mt-3">
-                                    {resetpasswordMessage && (<p className="font-quicksand text-sm font-semibold p-1 rounded-md text-healthyOrange">{resetpasswordMessage}</p>)}
+                                    {resetpasswordMessage && (<p className="font-quicksand text-sm font-semibold p-1 rounded-md text-healthyDarkGreen">{resetpasswordMessage}</p>)}
                                     <button onClick={handleResetPassword}   className="font-quicksand bg-healthyGreen hover:bg-healthyDarkGreen text-md text-white p-1 font-semibold rounded-md w-full xs:w-1/2 ">Send</button>
                                     <p onClick={()=>setForgot(false)} className="font-quicksand text-healthyOrange hover:text-healthyDarkOrange underline hover:underline-offset-4 hover:cursor-pointer  font-bold text-md mt-3">Go back to Log in</p>
                                 </div>
