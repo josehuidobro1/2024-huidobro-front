@@ -116,8 +116,8 @@ export default function Dashboard() {
                     <PieChart
                         colors={palette}
                         series={[{data: calByCat}]}
-                        height={window.innerWidth*0.60}
-                        width={window.innerWidth*1.30}
+                        height={  window.innerWidth > 680 ? 250: window.innerWidth > 490 ? 240 : 130}
+                        width={window.innerWidth > 680 ? 520 : window.innerWidth > 490 ? 600 : 580 }
                     />
 
                 </div>}
