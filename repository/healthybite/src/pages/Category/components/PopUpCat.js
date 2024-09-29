@@ -52,7 +52,7 @@ export default function PopUpCat({foodData, setAddFood, setSelection, fetchFoods
             <div className='flex flex-col justify-center w-full bg-white rounded-md my-3  '>
                 {searchFood.map((food)=>(
                     <div className='flex  font-quicksand font-semibold flex-row justify-start items-center w-full px-2 my-1'>
-                        <FontAwesomeIcon className='text-healthyDarkGreen text-xl ' icon={selectedFoods.includes(food.id_Food) ? faSquareCheck : faSquare } onClick={()=>handleFoodSelection(food)} value={food.id_Food}/>
+                        <FontAwesomeIcon className='text-healthyDarkGreen text-xl ' icon={selectedFoods.includes(food.id) ? faSquareCheck : faSquare } onClick={()=>handleFoodSelection(food)} value={food.id}/>
                         <p className='ml-2  text-md  text-healthyDarkGreen'>{food.name}</p>
                     </div>
                 ))}

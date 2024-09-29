@@ -14,14 +14,14 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
     const iconOptions = Data.iconOptions
     const [dropIcons,setDropIcons]=useState(false)
     const [iconSelected,setIconSelected]=useState(icon)
-    const [catFoods, setCatFoods] = useState(category.foods.map((item) => food.find((element) => element.id_Food === item)));
+    const [catFoods, setCatFoods] = useState(category.foods.map((item) => food.find((element) => element.id === item)));
     const [name, setName]=useState(category.name)
 
     const handleChanges= async ()=>{
         const data={
             name:name, 
             icon:iconSelected.name,
-            foods: catFoods.map((items)=>items.id_Food).concat(selection.filter((item)=>!catFoods.includes(item)))
+            foods: catFoods.map((items)=>items.id).concat(selection.filter((item)=>!catFoods.includes(item)))
         }
         if(data !== category) {
             try{
@@ -73,7 +73,7 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
                     </div>
                 </div>
                 <div className='flex flex-col bg-white rounded-sm mt-2 sm:mt-0 w-full sm:w-2/3 lg:w-3/4 items-start justify-start p-1 max-h-32 overflow-y-auto'>
-                    {catFoods.map((item)=>(<FoodItem key={food.id_Food} food={item} setCatFoods={setCatFoods} catFoods={catFoods}/>))}
+                    {catFoods.map((item)=>(<FoodItem key={food.id} food={item} setCatFoods={setCatFoods} catFoods={catFoods}/>))}
                 </div>
             </div>
             <div className='flex w-full justify-center items-center pt-4 pb-2'>

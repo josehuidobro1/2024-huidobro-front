@@ -100,7 +100,7 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood}) {
             </div>
             <div className='flex flex-col w-full p-2 bg-white rounded-md mt-1 max-h-44 overflow-y-auto'>
                 {foods.map((food)=>(<div className='flex flex-row items-center w-full justify-start mb-2'>
-                    <input type="checkbox" checked={selectedFoods.includes(food.id_Food)}  className='text-xl text-darkGray ' value={food.id_Food} onChange={() => handleFoodSelection(food.id_Food)} />
+                    <input type="checkbox" checked={selectedFoods.includes(food.id)}  className='text-xl text-darkGray ' value={food.id} onChange={() => handleFoodSelection(food.id)} />
                     <p className='tetx-darkGray ml-2  text-xs lg:text-sm'>{food.name}</p>
                 </div>))}
             </div>
