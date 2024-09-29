@@ -290,14 +290,53 @@ export const fetchTotCalByDay = async (date) => {
     return filteredTotcal;
 };
 
+export const getCaloriesByCategories=async (date)=>{
+    try{
+        const userMeals= (await fetchUserFoods(date))
+        const foods= await  fetchAllFoods()
+        const categories = (await getCategories()).concat(await getDefaultCategories());
+        const result=[]
+        // food consumed with its calories counted
+        userMeals.forEach((item)=>{
+            const fooddetail=(foods.find((food)=>food.id===item.id_Food))
+            const calories={
+                id_Food: item.id_Food,
+                calories: Number((item.amount_eaten*fooddetail.calories_portion)/fooddetail.measure_portion)
+            }
+            result.push(calories)
+        })
+        const totalCal = result.reduce((acc,value)=>acc+value.calories, 0) 
+        // divide calories by categories
+        const getCalories=[]
+        categories.forEach((cat)=>{
+            let cals=0
+            result.filter(food=>cat.foods.includes(food.id_Food)).forEach((item)=>{
+                cals+=Number(item.calories)
+            })
+            getCalories.push({label:cat.name, value:cals})
+        })
+        const caloriesInCat = getCalories.reduce((acc,value)=>acc+value.value, 0) 
+        caloriesInCat<totalCal && getCalories.push({label:'Others',value:totalCal-caloriesInCat})
+        console.log('Categorizado: ', caloriesInCat)
+        console.log('total de calorias: ', totalCal)
+        console.log('RESULT >>>>>>>>>>>>>>> ', getCalories)
+        return getCalories
+    }catch(error){
+        console.log('Error fetching calories by categories: ', error)
+    }
+}
+
 export const getTotCalUser=async()=>{
     const uid=auth.currentUser.uid
-    try {
+    if(uid){try {
+        console.log(uid)
         const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetTotCalUser/${uid}`);
         return response.data.message.totCals; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
         return null; // Return null or handle the error as needed
+    }}else{
+        console.log('no se encuentra el usuario')
     }
 
 

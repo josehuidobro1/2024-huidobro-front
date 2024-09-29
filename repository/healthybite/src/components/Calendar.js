@@ -25,6 +25,7 @@ const Calendar = ({value, onChange}) => {
                 color: '#333333',  // Color del texto en el input
                 borderColor: '#8ba020', 
               },
+              zIndex: 0
             }}
           />
         </DemoContainer>

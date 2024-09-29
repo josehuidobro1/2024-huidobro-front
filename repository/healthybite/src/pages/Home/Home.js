@@ -96,6 +96,7 @@ function Home() {
             setSelection(null);
             setAddMeal(false);
             console.log('Comida consumida agregada a UserFood > Firestore con éxito');
+            setLoading(true)
             fetchFoods()
         } catch (error) {
             console.error('Error al agregar la comida consumida en UserFood > Firestore:', error);
@@ -105,6 +106,7 @@ function Home() {
     useEffect(() => {
         newFood && addNewFood(newFood).then(() => {
             setNewFood(null);
+            setLoading(true)
             fetchFoods();
         })
         
@@ -131,6 +133,7 @@ function Home() {
     };
 
     const selectDate=(date)=>{
+        setLoading(true)
         fetchFoods()
         setDate(new Date(date))
     }
