@@ -317,9 +317,7 @@ export const getCaloriesByCategories=async (date)=>{
         })
         const caloriesInCat = getCalories.reduce((acc,value)=>acc+value.value, 0) 
         caloriesInCat<totalCal && getCalories.push({label:'Others',value:totalCal-caloriesInCat})
-        console.log('Categorizado: ', caloriesInCat)
-        console.log('total de calorias: ', totalCal)
-        console.log('RESULT >>>>>>>>>>>>>>> ', getCalories)
+
         return getCalories
     }catch(error){
         console.log('Error fetching calories by categories: ', error)

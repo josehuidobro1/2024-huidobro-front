@@ -99,28 +99,35 @@ export default function Dashboard() {
         fetchData()
     },[date])
 
+    const emptySeries = {
+        series: [],
+        margin: { top: 10, right: 10, left: 25, bottom: 25 },
+        height: 150,
+      };
 
   return (
-    <div className=' w-full flex flex-col justify-center items-center'>
+    <div className=' w-full flex flex-col justify-center items-center md:overflow-y-hidden'>
         <NavBar  className='z-50'/>
         {loading ?
             <div className="w-full flex justify-center items-center h-screen  ">
                 <h1 className="text-3xl font-belleza  text-healthyDarkGreen">Loading...</h1>
             </div>
-        :<div className='flex flex-col md:flex-row justify-center items-center md:items-start md:pt-8 md:h-screen w-full lg:w-10/12 md:mt-24 px-2 xs:px-6 pb-10 '>
-            <div className="w-full -z-50 md:w-2/5 my-4 xs:mt-8 md:mt-0 bg-white flex flex-col  items-center   font-quicksand justify-center   ">
+        :<div className='flex flex-col md:flex-row justify-center items-center md:items-start md:pt-8  w-full lg:w-10/12 md:mt-24 px-2 xs:px-6 md:overflow-y-hidden'>
+            <div className="w-full z-0 md:w-2/5 my-4 xs:mt-8 md:mt-0 bg-white flex flex-col  items-center   font-quicksand justify-center   ">
                 <Calendar value={date} onChange={e => setDate(new Date(e))}/>
-                {calByCat &&
+                {calByCat.reduce((acc, value)=>acc+=value.value,0)>0 ?
                 <div className="mt-6 flex  w-full h-full items-start justify-start">
                 
                     <PieChart
+                        {...emptySeries}
                         colors={palette}
                         series={[{data: calByCat}]}
                         height={  window.innerWidth > 680 ? 250: window.innerWidth > 490 ? 240 : 130}
                         width={window.innerWidth > 680 ? 520 : window.innerWidth > 490 ? 600 : 580 }
                     />
 
-                </div>}
+                </div>:
+                <p className="font-quicksand text-sm font-semibold text-healthyGray1 text-center mt-4 md:w-3/5" >There are no meals recorded from&nbsp;{formatDate(date)}</p>}
             </div>
             <div className="flex flex-col w-full mt-4 md:mt-0 md:w-3/5 md:ml-12 bg-white font-quicksand ">
                 <div className="flex flex-row justify-between w-full p-3 rounded-xl bg-hbGreen items-center  ">
