@@ -114,13 +114,18 @@ function Home() {
 
     const handleDeleteMeal = async (idDoc_user_food) => {
         try {
-            await deleteUserFood(idDoc_user_food); // This will delete the food from the Firebase backend
-            setUserFood((prevUserFood) => prevUserFood.filter((food) => food.id !== idDoc_user_food)); // Update the local state
+            await deleteUserFood(idDoc_user_food);
+            
+
+            setUserFood((prevUserFood) => prevUserFood.filter((food) => food.id !== idDoc_user_food));
+            setFilteredFood((prevFilteredFood) => prevFilteredFood.filter((food) => food.id !== idDoc_user_food));
+    
             console.log('Comida eliminada de UserFood > Firestore con éxito');
         } catch (err) {
             console.log('Error al eliminar la comida: ' + err.message);
         }
     };
+    
 
     const handleEditFoodConsumed = async  (idDoc_user_food, data) => {
         try {
