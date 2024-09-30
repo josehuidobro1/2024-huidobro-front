@@ -5,10 +5,21 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 const FoodItemMenu = ({ food, setSelection }) => {
     const [amount, setAmount] = useState('');
     console.log('id_food:', food.id ,'name:', food.name, amount, "measure", 'Portion', food.calories)
+    const [errorMessage, setErrorMessage] = useState('');
     const handleAmountChange = (e) => {
         const value = Number(e.target.value);
+        // Only update the state if the value is a non-negative number
         if (!isNaN(value) && value >= 0 && value <= 1000) {
             setAmount(value);
+            setErrorMessage(''); // Clear error message if valid input
+        }
+    };
+
+    const handleAddFood = () => {
+        if (amount > 0) { // Ensure amount is greater than 0
+            setSelection({ id_food: food.id, name: food.name, amount, measure: 'Portion' });
+        } else {
+            setErrorMessage("Please enter a valid amount greater than 0.");
         }
     };
 
@@ -16,7 +27,7 @@ const FoodItemMenu = ({ food, setSelection }) => {
         <div key={food.id_Food} className="flex flex-row items-center justify-between font-quicksand bg-white/60 p-2 rounded-lg mb-2">
             <div className="flex flex-row justify-start items-center">
                 <FontAwesomeIcon 
-                    onClick={() => setSelection({ id_food: food.id, name: food.name, amount, measure: 'Portion' })} 
+                    onClick={handleAddFood} 
                     icon={faCirclePlus} 
                     className="text-xl sm:text-3xl text-darkGray mx-1 hover:text-healthyDarkGray1 hover:cursor-pointer" 
                 />
