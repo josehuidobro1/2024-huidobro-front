@@ -13,7 +13,7 @@ function NavBar() {
     }
     return (
         <>
-        <div className=" top-0 z-50 sticky sm:absolute   bg-healthyGreen shadow-xl py-3 w-full flex flex-col items-center justify-center">
+        <div className=" top-0 z-30 sticky sm:absolute   bg-healthyGreen shadow-xl py-3 w-full flex flex-col items-center justify-center">
             <div className="flex flex-row max-w-[800px] w-11/12 lg:w-full justify-between items-center ">
                 <h1 className="font-belleza text-2xl lg:text-4xl text-white  ">Healthy Bite</h1>
                 {window.innerWidth > '768' ? 

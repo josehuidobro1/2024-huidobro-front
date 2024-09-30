@@ -13,6 +13,7 @@ const FoodItem = ({ food, setSelection }) => {
         }
     };
 
+
     return (
         <div key={food.id_Food} className="flex flex-row items-center justify-between font-quicksand bg-white/60 p-2 rounded-lg mb-2">
             <div className="flex flex-row justify-start items-center">
