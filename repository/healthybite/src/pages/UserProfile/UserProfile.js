@@ -10,6 +10,8 @@ import {editUserData} from '../../firebaseService'
 import { Link } from 'react-router-dom'
 import {auth} from '../../firebaseConfig'
 import PopUp from './components/PopUp'
+import {handleInputChange} from '../inputValidation';
+
 
 function UserProfile() {
     const [user, setUser]=useState(null)
@@ -22,51 +24,62 @@ function UserProfile() {
     const [message, setMessage]=useState(false)
     const [edit, setEdit]=useState(false)
     const [deleteAc, setDeleteAc]=useState(false)
+    const handleWeightChange = (e) => {
+        handleInputChange(e.target.value, 0, 500, setWeight);
+    };
+    const handleHeightChange = (e) => {
+        handleInputChange(e.target.value, 0, 500, setHeight);
+    };
 
-    const handleValidation=()=> {
+    const handleValidation = () => {
         setInValidation(true);
-
         const birthDateObj = new Date(birthDate);
         const today = new Date();
+        
         if (birthDateObj >= today) {
             setMessage("Check the birth date");
             return; 
         }
 
-
+        // If all validations pass
+        setMessage("");
     }
 
-    const getUser = async ()=>{
-        try{
-            const userData=await fetchUser()
-            setUser(userData)
-            setName(userData.name)
-            setSurname(userData.surname)
-            setWeight(userData.weight)
-            setHeight(userData.height)
-            const date=new Date(userData.birthDate)
-            setBirthDate(date.toLocaleDateString())
-        }catch(e){
-            console.log("Eroor obtener datos de usuario UserProfile.js: ", e)
-        }
-    }
 
-    const editUser=async ()=>{
-        const data={
-            ...user,
-            birthDate:birthDate,
-            height:height,
-            name:name,
-            surname:surname,
-            weight:weight
-        }
+    const getUser = async () => {
         try {
-            await editUserData(data); 
-            console.log('Usuerio editado de User > Firestore con éxito');
-        } catch (err) {
-            console.log('Error al editar usuario: ' + err.message);
+            const userData = await fetchUser();
+            setUser(userData);
+            setName(userData.name);
+            setSurname(userData.surname);
+            setWeight(userData.weight);
+            setHeight(userData.height);
+            // Store the date in ISO format
+            const date = new Date(userData.birthDate);
+            setBirthDate(date.toISOString().split('T')[0]); // "YYYY-MM-DD" format
+        } catch (e) {
+            console.log("Error obtaining user data in UserProfile.js: ", e);
         }
     }
+    
+
+    const editUser = async () => {
+        const data = {
+            ...user,
+            birthDate: birthDate, // This is already in the correct format
+            height: height,
+            name: name,
+            surname: surname,
+            weight: weight
+        };
+        try {
+            await editUserData(data);
+            console.log('User edited successfully in Firestore');
+        } catch (err) {
+            console.log('Error editing user: ' + err.message);
+        }
+    }
+    
 
     useEffect(()=>{
         getUser()
@@ -98,9 +111,21 @@ function UserProfile() {
                     (user && <div className="flex flex-col  w-full px-2 md:max-h-[400px] overflow-y-auto">
                         <Input required={inValidation && name===''} label="Name" inputType="text" inputValue={name} placeholder={user.name} onChange={(e)=>setName(e.target.value)} />
                         <Input required={inValidation && surname===''} label="Surname" inputType="text" inputValue={surname} placeholder={user.surname} onChange={(e)=>setSurname(e.target.value)} />
-                        <Input required={inValidation && birthDate===''} label="Date of birth" inputType="date" inputValue={birthDate} placeholder={new Date(user.birthDate)} onChange={(e)=>setBirthDate(e.target.value)} />
-                        <Input required={inValidation && weight===''} label="Weight" inputType="number" inputValue={weight} placeholder={user.weight} onChange={(e) => setWeight(e.target.value)}/>
-                        <Input required={inValidation && height===''} label="Height" inputType="number" inputValue={height} placeholder={user.height} onChange={(e) => setHeight(e.target.value)}/>
+                        <Input
+    required={inValidation && birthDate === ''}
+    label="Date of birth"
+    inputType="date"
+    inputValue={birthDate} // This should now be in "YYYY-MM-DD" format
+    onChange={(e) => setBirthDate(e.target.value)} // This will receive "YYYY-MM-DD"
+ />
+
+                        <Input required={inValidation && weight===''} label="Weight" inputType="number" inputValue={weight} placeholder={user.weight} onChange={handleWeightChange}/>
+                        {inValidation && weight < 0 && <p className='text-red-500 text-xs'>weight must be a positive number.</p>}
+                        {inValidation && weight >= 500 && <p className='text-red-500 text-xs'>weight must be under 600kg.</p>}
+                        <Input required={inValidation && height===''} label="Height" inputType="number" inputValue={height} placeholder={user.height} onChange={handleHeightChange}/>
+
+                        {inValidation && height < 0 && <p className='text-red-500 text-xs'>height must be a positive number.</p>}
+                        {inValidation && height >= 500 && <p className='text-red-500 text-xs'>height must under 600cm.</p>}
                     </div>)
                     :  (user && <div className="flex flex-wrap  w-full px-2  justify-around items-center">
                         <DataUser label="Name" value={name} />
