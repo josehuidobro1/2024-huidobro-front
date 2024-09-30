@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories} from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID} from "../../firebaseService";
 import Filter from "./components/Filter";
 
 function Home() {
@@ -36,40 +36,57 @@ function Home() {
     },[filterSelected])
 
     const fetchFoods = async () => {
-        const loadData = async()=>{
-        try {
-            // Validate the 'date' before using it
-            if (isNaN(new Date(date).getTime())) {
-                throw new Error('Invalid date value');
+        const loadData = async () => {
+            try {
+                // Validate the 'date' before using it
+                if (isNaN(new Date(date).getTime())) {
+                    throw new Error('Invalid date value');
+                }
+    
+                // Fetch user foods and all foods
+                const userFood = await fetchUserFoods(date);
+                const food = await fetchAllFoods();
+                setFoodData(food);
+    
+                // Fetch food details for each user food using Promise.all
+                const userFoodDetails = await Promise.all(userFood.map(async (item) => {
+                    let foodDetails;
+    
+                    // Try fetching from the 'food' table first
+                    foodDetails = await fetchFoodByID(item.id_Food);
+                    
+                    // If no details are found in the 'food' table, try the 'menu' table
+                    if (!foodDetails) {
+                        foodDetails = await getProdByID(item.id_Food);
+                        console.log(foodDetails.calories)
+                    }
+                    const calories = foodDetails?.calories_portion !== undefined 
+                    ? Math.round(foodDetails?.calories_portion) 
+                    : Math.round(foodDetails?.calories || 0);
+    
+                    // Return the item with details or set defaults if not found
+                    return {
+                        ...item,
+                        name: foodDetails?.name || 'Unknown',
+                        measure: foodDetails?.measure || '',
+                        measure_portion: foodDetails?.measure_portion || 1,
+                        calories_portion: calories
+                    };
+                }));
+    
+                // Set user food with the resolved details
+                setUserFood(userFoodDetails);
+                setFilteredFood(userFoodDetails);
+                if (userFood) setLoading(false);
+            } catch (err) {
+                console.log('Error al obtener los datos: ' + err.message);
             }
+        };
     
-            // Fetch user foods and all foods
-            const userFood = await fetchUserFoods(date);
-            const food = await fetchAllFoods();
-            setFoodData(food);
-    
-            // Fetch food details for each user food using Promise.all
-            const userFoodDetails = await Promise.all(userFood.map(async (item) => {
-                const foodDetails = await fetchFoodByID(item.id_Food);
-    
-                return {
-                    ...item,
-                    name: foodDetails?.name || 'Unknown',
-                    measure: foodDetails?.measure || '',
-                    measure_portion: foodDetails?.measure_portion || null,
-                    calories_portion: Math.round(foodDetails?.calories_portion) || 0
-                };
-            }));
-    
-            // Set user food with the resolved details
-            setUserFood(userFoodDetails);
-            setFilteredFood(userFoodDetails)
-            userFood && setLoading(false)
-        } catch (err) {
-            console.log('Error al obtener los datos: ' + err.message);
-        }}
-        loadData()
+        loadData();
     };
+    
+
 
     const fetchCategories = async () => {
         try {

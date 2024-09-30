@@ -3,27 +3,62 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCheck, faXmark, faCircleXmark } from '@fortawesome/free-solid-svg-icons'; 
 import FoodItem from './FoodItem';
 import Search from './Search';
-import Input from '../../../components/Input';
+import messidepaul from '../../../assets/messidepaul.png'
 import NewFood from './NewFood';
+import { getProducts } from '../../../firebaseService';
+import Menu from './Menu';
 
 const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, setSelection }) => {
     const [searchFood, setSearchFood] = useState(foodData);
     const [addFood, setAddFood] = useState(false);
+    const [openMenu, setOpenMenu]=useState(false)
+    const [menu, setMenu]=useState([])
+    const [idFoodMenu, setIdFoodMenu]=useState([])
+    const [loading, setLoading]=useState(true)
+
+    const fetchMenu=async()=>{
+        try{
+            const data= await getProducts()
+            setMenu(data)
+            setIdFoodMenu(data.map((item)=>item.id))
+            console.log("DATAAAA", data)
+            setLoading(false)
+        }catch(error){
+            console.log("Error fetching products from Messi and DePaul APP")
+        }
+    }
+
+    const handleOpenMenu=()=>{
+        if (openMenu){
+            setOpenMenu(false) 
+        } else{
+            setOpenMenu(true)
+            fetchMenu()
+        }
+    }
 
     useEffect(()=>{
         setSearchFood(foodData)
     },[foodData])
 
     return (
-        <div className="w-full h-screen absolute top-0 z-10 flex justify-center items-center bg-black/30">
-            <div className="w-11/12 sm:w-full flex flex-col justify-center shadow-lg items-center max-w-[600px] bg-healthyGray rounded-2xl px-8 pt-4 pb-16 relative">
-                <div className="w-full flex justify-end items-start mb-2">
-                    <FontAwesomeIcon 
+        <div className="w-full h-screen absolute top-0 z-50 flex justify-center items-center bg-black/30">
+            <div className={`w-11/12 sm:w-full flex flex-col justify-center shadow-lg items-center max-w-[600px] ${openMenu ? 'bg-messidepaul': 'bg-healthyGray'} rounded-2xl px-8 pt-4 pb-16 relative`}>
+                <div className="w-full flex justify-between items-start mb-2">
+                    <button onClick={handleOpenMenu} className={ `pl-1 pr-3 py-1 rounded-full  font-quicksand font-bold ${openMenu ? 'bg-white hover:bg-healthyGray text-messidepaul' : 'bg-messidepaul hover:bg-messidepaulDark text-white'} flex justify-start items-center w-2/5`}>
+                        <img src={messidepaul} alt="logo icon" className='w-1/5'/>
+                        <p className='ml-3'>{openMenu ? 'Close' : 'Open' } C&V menu</p>
+                    </button>
+                    <FontAwesomeIcon    
                         onClick={() => setAddMeal(false)} 
                         icon={faCircleXmark} 
-                        className="text-darkGray/20 hover:cursor-pointer hover:text-darkGray/40 text-3xl text-right" 
+                        className={`hover:cursor-pointer ${openMenu ? 'text-white hover:text-healthyGray' : 'text-darkGray/20  hover:text-darkGray/40'} text-3xl text-right`}
                     />
                 </div>
+                
+                {openMenu ? <Menu foodData={foodData} menu={menu} loading={loading} idFoodMenu={idFoodMenu} handleAddMeal={handleAddMeal} setSelection={setSelection} selection={selection} />
+                :
+                <>
                 {!addFood && (
                     <>
                         <div className="flex flex-row w-full">
@@ -38,8 +73,8 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
                         </div>
                         {!addFood && searchFood.length > 0 && (
                             <div className="bg-white/40 p-2 rounded-lg mt-4 w-full max-h-[350px] md:max-h-[500px] lg:max-h-[330px]  overflow-y-auto">
-                                {searchFood.map(food => (
-                                    <FoodItem key={food.id_Food} food={food} setSelection={setSelection} />
+                                {searchFood.map((food, index) => (
+                                    <FoodItem key={index} food={food} setSelection={setSelection} />
                                 ))}
                             </div>
                         )}
@@ -62,6 +97,8 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
                         </div>
                     </div>
                 )}
+
+                </>}
                 {selection && (
                     <button 
                         onClick={handleAddMeal} 

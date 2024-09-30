@@ -95,6 +95,7 @@ export const fetchAllFoods = async () => {
 
 export const addUserFood = async (selection, date, amount) => {
     try {
+        console.log(selection)
         const response = await fetch("https://two024-ranchoaparte-back.onrender.com/UserFood_log", {
             method: "POST",
             headers: {
@@ -336,9 +337,6 @@ export const getTotCalUser=async()=>{
     }}else{
         console.log('no se encuentra el usuario')
     }
-
-
-
 }
 
 export const resetPassword = async (oobCode, newPassword) => {
@@ -352,4 +350,20 @@ export const resetPassword = async (oobCode, newPassword) => {
     }
 };
 
+// APP MESIIDEPAUL
 
+export const getProducts=async()=>{
+    const response = await axios.get('https://two024-messidepaul-back.onrender.com/products');
+    const foods=response.data.products
+    return foods;
+}
+
+export const editCalories=async(id,calories)=>{
+    await axios.put(`https://two024-messidepaul-back.onrender.com/add-calories/${id}/${calories}`); 
+
+}
+export const getProdByID= async(prod_id)=>{
+    const response = await axios.get(`https://two024-messidepaul-back.onrender.com/products/${prod_id}`);
+    const food=response.data.product
+    return food
+}
