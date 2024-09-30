@@ -152,7 +152,7 @@ function Login() {
                         <div classname='  w-full '>
                             <div className="sm:mt-6 flex flex-col bg-healthyGray w-full sm:max-h-[580px] md:max-h-[550px]    lg:max-h-[500px] xl:max-h-[430px] 2xl:max-h-[500px]  sm:overflow-y-auto  lg:max-w-[400px] ">
                                 <div className="flex w-full bg-healthyGray sm:sticky sm:top-0">
-                                    <button onClick={()=>setSignUp(false) } className="font-quicksand  bg-healthyGreen p-2   w-full rounded-xl  text-white font-semibold my-4 hover:bg-healthyDarkGreen">Log in</button>
+                                    <button onClick={()=>{setSignUp(false); setPassword('')} } className="font-quicksand  bg-healthyGreen p-2   w-full rounded-xl  text-white font-semibold my-4 hover:bg-healthyDarkGreen">Go Back to Login</button>
                                 </div>
                                 <div className="flex flex-col w-full px-2">
                                     <Input required={inValidation && name===''} label="Name" inputType="text" inputValue={name} placeholder="Jane" onChange={(e)=>setName(e.target.value)} />
@@ -184,7 +184,7 @@ function Login() {
                                 <div className="flex flex-col items-center justify-center mt-3">
                                     {resetpasswordMessage && (<p className="font-quicksand text-sm font-semibold p-1 rounded-md text-healthyDarkGreen">{resetpasswordMessage}</p>)}
                                     <button onClick={handleResetPassword}   className="font-quicksand bg-healthyGreen hover:bg-healthyDarkGreen text-md text-white p-1 font-semibold rounded-md w-full xs:w-1/2 ">Send</button>
-                                    <p onClick={()=>setForgot(false)} className="font-quicksand text-healthyOrange hover:text-healthyDarkOrange underline hover:underline-offset-4 hover:cursor-pointer  font-bold text-md mt-3">Go back to Log in</p>
+                                    <p onClick={()=>{setForgot(false); setPassword('');setLoginError('');} } className="font-quicksand text-healthyOrange hover:text-healthyDarkOrange underline hover:underline-offset-4 hover:cursor-pointer  font-bold text-md mt-3">Go back to Log in</p>
                                 </div>
                             </div>
                         </div>
@@ -195,12 +195,17 @@ function Login() {
                                 {loginError && (<p className="font-quicksand mt-4 text-sm font-semibold bg-red-200 text-red-600 p-1 rounded-md text-center">{loginError}</p>)}
                                 <Input required={inValidation && email===''} label="Email" inputType="email" inputValue={email} placeholder="jane@example.com" onChange={(e)=>setEmail(e.target.value)} />
                                 <Input required={inValidation && password===''} label="Password" inputType="password" inputValue={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-                                <p onClick={()=>setForgot(true)} className="font-quicksand text-sm font-bold text-healthyDarkGreen mt-1 hover:cursor-pointer">I forgot my password</p>
+                                <p onClick={()=>{setForgot(true);setEmail('');}} className="font-quicksand text-sm font-bold text-healthyDarkGreen mt-1 hover:cursor-pointer">I forgot my password</p>
                             </div>
                             <div className="flex justify-between flex-col xs:flex-row">
-                                <button onClick={handleLogin} className="font-quicksand bg-healthyGreen p-1 md:p-2 w-full md:w-1/2 mr-2 rounded-md md:rounded-xl  text-white font-semibold mt-2 md:my-4 hover:bg-healthyDarkGreen">Log in</button>
-                                <button onClick={()=>setSignUp(true)} className="font-quicksand bg-healthyOrange p-1 md:p-2 w-full md:w-1/2 rounded-md md:rounded-xl  text-white font-semibold mt-2 md:my-4 hover:bg-healthyDarkOrange">Sign up</button>
+                                <button onClick={handleLogin} className="font-quicksand bg-healthyGreen p-1 md:p-2 w-full md:w-1/2 mr-2 rounded-md md:rounded-xl text-white font-semibold mt-2 md:my-4 hover:bg-healthyDarkGreen">Log in</button>
+                                <button onClick={() => {
+                                    setSignUp(true);
+                                    setEmail('');   // Reiniciar el campo de correo electrónico
+                                    setPassword(''); // Reiniciar el campo de contraseña
+                                }} className="font-quicksand bg-healthyOrange p-1 md:p-2 w-full md:w-1/2 rounded-md md:rounded-xl text-white font-semibold mt-2 md:my-4 hover:bg-healthyDarkOrange">Sign up</button>
                             </div>
+
                         </div>)
                     )}
                 </div>
