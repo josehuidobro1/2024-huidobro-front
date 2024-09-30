@@ -55,7 +55,8 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
                         className={`hover:cursor-pointer ${openMenu ? 'text-white hover:text-healthyGray' : 'text-darkGray/20  hover:text-darkGray/40'} text-3xl text-right`}
                     />
                 </div>
-                {openMenu ? <Menu foodData={foodData} menu={menu} loading={loading} idFoodMenu={idFoodMenu} />
+                
+                {openMenu ? <Menu foodData={foodData} menu={menu} loading={loading} idFoodMenu={idFoodMenu} handleAddMeal={handleAddMeal} setSelection={setSelection} selection={selection} />
                 :
                 <>
                 {!addFood && (
