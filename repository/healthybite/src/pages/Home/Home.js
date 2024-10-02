@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID} from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault} from "../../firebaseService";
 import Filter from "./components/Filter";
 
 function Home() {
@@ -34,6 +34,36 @@ function Home() {
             setFilteredFood(userFood)
         }
     },[filterSelected])
+    const handleChangesCat = async () => {
+        try {
+            // Get the foods and bar category
+            const barFoods = await getProducts(); // Assuming this returns a list of foods
+            const BarCat = await getBarCategory(); // Assuming this returns a category object
+            console.log(BarCat)
+            if (!BarCat) {
+                throw new Error('Bar category not found');
+            }
+    
+            // Filter barFoods to include only the items that are not in BarCat.foods
+            const filteredFoods = barFoods.filter(food => !BarCat.foods.includes(food.id)); // Assuming food.id is the unique identifier
+    
+            // Prepare the data for the update
+            const data = {
+                name: BarCat.name,
+                id_User: 'default', 
+                icon: BarCat.icon, // Fixed this to use BarCat.icon (instead of BarCat.name for both)
+                foods: [...BarCat.foods, ...filteredFoods.map(food => food.id)] // Combine existing foods and new filtered foods
+            };
+    
+            // Update the category
+            console.log(BarCat.id); // Debug log to ensure category id is correct
+            await updateCategoryDefault(data, BarCat.id);    
+            console.log("Category updated successfully");
+        } catch (error) {
+            console.error("Error saving category changes by ID:", error);
+        }
+    };
+    
 
     const fetchFoods = async () => {
         const loadData = async () => {
@@ -42,11 +72,10 @@ function Home() {
                 if (isNaN(new Date(date).getTime())) {
                     throw new Error('Invalid date value');
                 }
-    
-                // Fetch user foods and all foods
                 const userFood = await fetchUserFoods(date);
                 const food = await fetchAllFoods();
                 setFoodData(food);
+                
     
                 // Fetch food details for each user food using Promise.all
                 const userFoodDetails = await Promise.all(userFood.map(async (item) => {
@@ -92,6 +121,7 @@ function Home() {
         try {
             const cats = await getCategories();
             const defaultCats= await getDefaultCategories();
+            await handleChangesCat()
             setCategories(defaultCats.concat(cats));
         } catch (err) {
             console.log('Error al obtener las categorias: ' + err);

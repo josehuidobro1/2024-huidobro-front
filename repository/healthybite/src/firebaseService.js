@@ -184,16 +184,35 @@ export const getCategories = async()=>{
     }
 }
 
-export const getDefaultCategories = async()=>{
-    const uid=auth.currentUser.uid
+export const getDefaultCategories = async () => {
+    const uid = auth.currentUser.uid;
     try {
         const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetCategoryUser/default`);
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
-        console.error('Error fetching default categories :', error);
+        console.error('Error fetching default categories:', error);
         return null; // Return null or handle the error as needed
     }
-}
+};
+
+export const getBarCategory = async () => {
+    try {
+        const defaultCategories = await getDefaultCategories();
+        console.log('Default Categories:', defaultCategories); // Log all categories
+
+        if (defaultCategories) {
+            const barCategory = defaultCategories.find(cat => cat.name === "C&V bar");
+            console.log('Found Bar Category:', barCategory); // Log if the category is found
+            return barCategory ? barCategory : null; // Return the category or null if not found
+        }
+        return null;
+    } catch (error) {
+        console.error('Error fetching bar category:', error);
+        return null; // Return null or handle the error as needed
+    }
+};
+
+
 
 export const createCategory =async (data)=>{
     const uid=auth.currentUser.uid
@@ -209,6 +228,15 @@ export const createCategory =async (data)=>{
 export const updateCategory=async(data,category_id)=>{
     try{
         const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateCategory/${category_id}`,{...data,id_User: auth.currentUser.uid });
+        return response.data
+    }catch(error){
+        console.error('Error updating category by id: ', error);
+        return null;
+    }
+}
+export const updateCategoryDefault=async(data,category_id)=>{
+    try{
+        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateCategory/${category_id}`,{...data,id_User: 'default' });
         return response.data
     }catch(error){
         console.error('Error updating category by id: ', error);
