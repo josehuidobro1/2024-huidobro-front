@@ -12,11 +12,11 @@ function MenuItem({item, key, setNewCalories}) {
     }
 
   return (
-    <div className='flex justify-between items-center text-md mt-2'>
-        <p key={key}>{item.name}</p>
+    <div className='flex justify-between items-center text-md mt-1'>
+        <p key={key} className='text-sm'>{item.name}</p>
         <div>
            {calories>0 && <button onClick={handleChange} className='px-3 text-sm rounded-md py-1 bg-healthyGreen mr-3 hover:bg-healthyDarkGreen'><FontAwesomeIcon icon={faCircleDown} className='mr-2'/>Save</button>}
-            <input placeholder='000' type='number' value={calories>0 && calories} onChange={(e)=>e.target.value>0 && setCalories(e.target.value)} className='focus:outline-none focus:ring focus:ring-messidepaul decoration-none text-messidepaulDark bg-white/60 px-2 py-1 rounded-md text-right w-16'/>
+            <input placeholder='000' type='number' value={calories>0 && calories} onChange={(e)=>e.target.value>0 && setCalories(e.target.value)} className='focus:outline-none focus:ring focus:ring-messidepaul decoration-none text-messidepaulDark bg-white/60 px-2 py-1 rounded-md text-sm text-right w-16'/>
         </div>
     </div>
   )

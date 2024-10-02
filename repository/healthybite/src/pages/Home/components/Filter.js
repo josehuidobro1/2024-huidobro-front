@@ -17,7 +17,7 @@ function Filter({categories, filterSelected, setFilterSelected}) {
             <button onClick={()=>setOpenFilter(!openFilter)} className={` bg-healthyDarkGreen w-full  px-6 py-1 font-bold rounded-xl hover:cursor-pointer hover:bg-healthyGreen`}> <FontAwesomeIcon icon={faFilter} /> Filter</button>
             
             {openFilter &&
-                <div className='flex flex-col justify-start items-start w-full text-md max-h-40 overflow-y-auto'>
+                <div className='flex bg-white p-3 rounded-md flex-col justify-start items-start w-full text-md max-h-40 overflow-y-auto'>
                 {!filterSelected && categories.map((item)=>(
                     <FilterItem category={item} key={item.id} setFilterSelected={setFilterSelected}/>
                 ))}

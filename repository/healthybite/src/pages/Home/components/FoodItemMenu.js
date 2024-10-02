@@ -24,17 +24,17 @@ const FoodItemMenu = ({ food, setSelection }) => {
     };
 
     return (
-        <div key={food.id_Food} className="flex flex-row items-center justify-between font-quicksand bg-white/60 p-2 rounded-lg mb-2">
-            <div className="flex flex-row justify-start items-center">
+        <div key={food.id_Food} className="w-full flex flex-row items-center justify-between font-quicksand bg-white/60 py-1 px-1 rounded-lg mb-2">
+            <div className="flex flex-row justify-start items-center w-3/4">
                 <FontAwesomeIcon 
                     onClick={handleAddFood} 
                     icon={faCirclePlus} 
-                    className="text-xl sm:text-3xl text-darkGray mx-1 hover:text-healthyDarkGray1 hover:cursor-pointer" 
+                    className="text-xl sm:text-xl text-darkGray mx-1 hover:text-healthyDarkGray1 hover:cursor-pointer" 
                 />
-                <p className="font-bold text-sm sm:text-lg text-darkGray px-2">{food.name}</p>
+                <p className="font-bold text-sm sm:text-md text-darkGray px-2">{food.name}</p>
             </div>
-            <div className="flex flex-row items-center justify-end">
-                <div className='flex items-center justify-end max-w-[40px]'>
+            <div className="flex flex-row items-center justify-end w-1/4">
+                <div className='flex items-center justify-end w-1/2'>
                 
                     <input 
                         className="font-quicksand text-black text-xs sm:text-md w-16 text-right outline-none border px-1 py-1 rounded-md bg-gray-100 mr-2" 
@@ -44,8 +44,8 @@ const FoodItemMenu = ({ food, setSelection }) => {
                         onChange={handleAmountChange} 
                     />
                 </div>
-                <div className='flex items-center justify-start w-[60px]'>
-                    <p className='text-xs sm:text-md text-black'>{food.calories} kcal</p>
+                <div className='flex items-center justify-start w-1/2'>
+                    <p className='text-xs sm:text-md text-black text-right'>{food.calories} kcal</p>
                 </div>
             </div>
         </div>

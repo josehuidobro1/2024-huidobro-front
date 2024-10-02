@@ -38,19 +38,21 @@ function Menu({ menu, loading, idFoodMenu, setSelection }) {
     }, [menu]);
 
     return (
-        <div className='relative flex flex-col w-full p-3 bg-white/20 rounded-md font-quicksand font-semibold text-white text-md'>
+        <div className='relative flex flex-col w-full p-2 bg-white/20 rounded-md font-quicksand font-semibold text-white text-md'>
             {loading ? (
                 <div className='w-full flex justify-center items-center py-6'>
                     <h1 className='text-white font-belleza text-2xl'>Loading...</h1>
                 </div>
             ) : (
                 <div className='flex flex-col w-full'>
-                    <div className='w-full flex flex-row items-center justify-between my-2'>
-                        <p className='text-left text-sm font-bold w-6/12'>Menu</p>
-                        <p className='text-right text-sm font-bold w-4/12 mr-2'>Portion</p>
-                        <p className='text-right text-sm font-bold w-2/12'>Calories</p>
+                    <div className='w-full flex flex-row items-center justify-between my-1 px-4'>
+                        <p className='text-left text-sm font-bold w-3/4'>Menu</p>
+                        <div className='w-1/4 flex items-center justify-between'>
+                            <p className='text-right text-sm font-bold mr-2 w-1/2'>Portion</p>
+                            <p className='text-left text-sm font-bold w-1/2'>Calories</p>
+                        </div>
                     </div>
-                    <div className="bg-white/40 p-2 rounded-lg mt-4 w-full max-h-[350px] md:max-h-[500px] lg:max-h-[330px] overflow-y-auto">
+                    <div className={`bg-white/40 p-2 rounded-lg mt-1 w-full max-h-[350px] md:max-h-[500px] ${ addCalories ?  'lg:max-h-[100px]' :'lg:max-h-[300px]'} overflow-y-auto`}>
                         {menuCalories.map((item, index) => (
                             <FoodItemMenu key={index} food={item} setSelection={setSelection} />
                         ))}
@@ -63,7 +65,7 @@ function Menu({ menu, loading, idFoodMenu, setSelection }) {
                         </div>
                         {addCalories && (
                             <div className='w-full flex justify-start flex-col mt-4 bg-messidepaul p-2 rounded-md'>
-                                <div className='sticky top-0 flex justify-between items-center font-bold text-sm underline-2 mb-2'>
+                                <div className='sticky top-0 flex justify-between items-center font-bold text-xs underline-2 mb-2'>
                                     <p>Food name</p>
                                     <p>Calories per unit</p>
                                 </div>

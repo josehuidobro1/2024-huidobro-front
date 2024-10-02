@@ -43,7 +43,7 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
 
     return (
         <div className="w-full h-screen absolute top-0 z-50 flex justify-center items-center bg-black/30">
-            <div className={`w-11/12 sm:w-full flex flex-col justify-center shadow-lg items-center max-w-[600px] ${openMenu ? 'bg-messidepaul': 'bg-healthyGray'} rounded-2xl px-8 pt-4 pb-16 relative`}>
+            <div className={`w-11/12 sm:w-full flex flex-col justify-center shadow-lg items-center max-w-[600px] ${openMenu ? 'bg-messidepaul': 'bg-healthyGray'} rounded-2xl px-3 pt-2 pb-12 relative`}>
                 <div className="w-full flex justify-between items-start mb-2">
                     <button onClick={handleOpenMenu} className={ `pl-1 pr-3 py-1 rounded-full  font-quicksand font-bold ${openMenu ? 'bg-white hover:bg-healthyGray text-messidepaul' : 'bg-messidepaul hover:bg-messidepaulDark text-white'} flex justify-start items-center w-2/5`}>
                         <img src={messidepaul} alt="logo icon" className='w-1/5'/>
@@ -81,8 +81,9 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
                     </>
                 )}
                 {addFood && <NewFood setAddFood={setAddFood} setNewFood={setNewFood} />}
+                </>}
                 {selection && (
-                    <div className="flex items-center justify-center w-full mt-4">
+                    <div className="flex items-center justify-center w-full mt-2">
                         <div className="flex flex-row justify-center items-center font-quicksand text-darkGray text-sm bg-white/70 px-5 rounded-3xl py-2">
                             <p className="font-semibold">{selection.name}</p>
                             <div className="flex justify-end items-center ml-4">
@@ -97,12 +98,10 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
                         </div>
                     </div>
                 )}
-
-                </>}
                 {selection && (
                     <button 
                         onClick={handleAddMeal} 
-                        className="absolute bottom-4 right-4 font-quicksand text-sm px-3 py-1 flex items-center rounded-xl bg-healthyOrange text-white font-bold hover:cursor-pointer hover:bg-healthyDarkOrange"
+                        className="absolute bottom-2 right-2 font-quicksand text-sm px-3 py-1 flex items-center rounded-xl bg-healthyOrange text-white font-bold hover:cursor-pointer hover:bg-healthyDarkOrange"
                     >
                         <FontAwesomeIcon icon={faCheck} className="text-white text-lg mr-2" />
                         Save changes
