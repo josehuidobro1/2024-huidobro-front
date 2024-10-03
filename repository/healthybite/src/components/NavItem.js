@@ -6,7 +6,7 @@ const NavItem = ({route, name, icon, setOpenBar}) => {
   return (
     <>
         {window.innerWidth > '768' ? 
-            <Link  to={route} className="text-white font-quicksand  text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " > 
+            <Link  to={route} className="text-white font-quicksand flex items-center text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " > 
                 <FontAwesomeIcon className="text-white text-md pr-2" icon={icon} />
                 <p>{name}</p>
             </Link>
