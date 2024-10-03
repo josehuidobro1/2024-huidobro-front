@@ -21,11 +21,13 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
         const data={
             name:name, 
             icon:iconSelected.name,
-            foods: catFoods.map((items)=>items.id).concat(selection.filter((item)=>!catFoods.includes(item)))
+            foods: catFoods.map((item) => item.id)
+            .concat(Array.isArray(selection.food) ? selection.food.filter((item) => !catFoods.includes(item)) : [])
         }
         if(data !== category) {
             try{
                 await updateCategory(data,category.id)
+                console.log(data)
                 setEditCategory(false)
                 handleUpdate()
                 console.log("Category updated succesfully")
