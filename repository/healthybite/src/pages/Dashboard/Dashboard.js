@@ -5,6 +5,7 @@ import { LineChart,  PieChart } from "@mui/x-charts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight} from '@fortawesome/free-solid-svg-icons';
 import { getCaloriesByCategories, getTotCalUser } from "../../firebaseService";
+import Loading from "../../components/Loading";
 
 
 const palette = [
@@ -109,10 +110,7 @@ export default function Dashboard() {
   return (
     <div className=' w-full flex flex-col justify-center items-center md:overflow-y-hidden'>
         <NavBar  className='z-50'/>
-        {loading ?
-            <div className="w-full flex justify-center items-center h-screen  ">
-                <h1 className="text-3xl font-belleza  text-healthyDarkGreen">Loading...</h1>
-            </div>
+        {loading ? <Loading />
         :<div className='flex flex-col md:flex-row justify-center items-center md:items-start md:pt-8  w-full lg:w-10/12 md:mt-24 px-2 xs:px-6 md:overflow-y-hidden'>
             <div className="w-full z-0 md:w-2/5 my-4 xs:mt-8 md:mt-0 bg-white flex flex-col  items-center   font-quicksand justify-center   ">
                 <Calendar value={date} onChange={e => setDate(new Date(e))}/>

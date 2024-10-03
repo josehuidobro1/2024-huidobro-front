@@ -8,6 +8,7 @@ import NewCategory from './components/NewCategory';
 import { fetchAllFoods, getCategories, getProducts} from "../../firebaseService";
 import PopUpCat from "./components/PopUpCat";
 import { auth } from "../../firebaseConfig";
+import Loading from "../../components/Loading";
 
 function Category() {
     const [foodData, setFoodData] = useState([])
@@ -59,9 +60,7 @@ function Category() {
     <><div className={`h-screen w-full ${ addFood && 'overflow-y-hidden'}`}>
         <NavBar/>
         {loading ?
-            <div className="w-full flex items-center justify-center  h-screen">
-                <h1 className="font-belleza text-healthyGreen text-3xl ">Loading...</h1>
-            </div>
+            <Loading />
         :<div className='w-full flex flex-row items-start justify-between h-screen'>
             {window.innerWidth > 768  && 
             <div className='w-1/4 lg:w-1/3 overflow-hidden  h-screen  flex items-center justify-start'>

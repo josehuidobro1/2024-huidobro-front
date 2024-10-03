@@ -15,15 +15,15 @@ function NavBar() {
     }
     return (
         <>
-        <div className=" top-0 z-30 sticky sm:absolute   bg-healthyGreen shadow-xl py-3 w-full flex flex-col items-center justify-center">
+        <div className=" top-0 z-30 sticky overflow-y-hidden sm:overflow-y-auto sm:absolute   bg-healthyGreen shadow-xl py-3 w-full flex flex-col items-center justify-center">
             <div className="flex flex-row max-w-[800px] w-11/12 lg:w-full justify-between items-center ">
                 <h1 className="font-belleza text-2xl lg:text-4xl text-white  ">Healthy Bite</h1>
                 {window.innerWidth > '768' ? 
                 <>
                     <NavItem route='/' name='Home' icon={faHouse} setOpenBar={setOpenBar} />
-                    <Link  to="/category" className="text-white font-quicksand text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faLayerGroup} />Category </Link>
-                    <Link  to="/dashboard" className="text-white font-quicksand text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faChartLine} />Dashboard </Link>
-                    <Link  to="/user-profile" className="text-white font-quicksand text-sm hover:mt-1 hover:underline-offset-2 hover:border-b-1 hover:border-b-white  " ><FontAwesomeIcon className="text-white text-md pr-2" icon={faUser} />User Profile </Link>
+                    <NavItem route='/dashboard' name='Dashboard' icon={faChartLine}  />
+                    <NavItem route='/category' name='Category' icon={faLayerGroup}  />
+                    <NavItem route='/user-profile' name='User Profile' icon={faUser}  />
                     <Link  to="/"  onClick={()=>auth.signOut()} className="font-quicksand font-semibold text-sm text-healthyGreen hover:mt-1  px-3 py-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>
                 </>
                 :
@@ -34,7 +34,7 @@ function NavBar() {
                 }
             </div>
             { openBar &&
-                    <div className="w-full  xs:absolute z-10 right-0  xs:top-16    flex items-center justify-center">
+                    <div className="w-full  xs:absolute z-10 right-0  xs:top-16    flex items-center justify-center overflow-y-hidden">
                         <div className="bg-healthyGreen xs:shadow-lg w-11/12 h-screen xs:h-full sm:w-10/12 pb-12 xs:pb-2 py-2  px-3 xs:rounded-3xl flex flex-col xs:flex-row  items-center justify-around ">
                             <NavItem route='/' name='Home' icon={faHouse} setOpenBar={setOpenBar} />
                             <NavItem route='/dashboard' name='Dashboard' icon={faChartLine} setOpenBar={setOpenBar} />

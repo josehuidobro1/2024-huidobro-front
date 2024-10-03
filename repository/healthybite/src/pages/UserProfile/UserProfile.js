@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom'
 import {auth} from '../../firebaseConfig'
 import PopUp from './components/PopUp'
 import {handleInputChange} from '../inputValidation';
+import Loading from '../../components/Loading'
 
 
 function UserProfile() {
@@ -24,6 +25,7 @@ function UserProfile() {
     const [message, setMessage]=useState(false)
     const [edit, setEdit]=useState(false)
     const [deleteAc, setDeleteAc]=useState(false)
+    const [loading, setLoading]=useState(true)
     const handleWeightChange = (e) => {
         handleInputChange(e.target.value, 0, 500, setWeight);
     };
@@ -56,6 +58,7 @@ function UserProfile() {
             setHeight(userData.height);
             // Store the date in ISO format
             const date = new Date(userData.birthDate);
+            setLoading(false)
             setBirthDate(date.toISOString().split('T')[0]); // "YYYY-MM-DD" format
         } catch (e) {
             console.log("Error obtaining user data in UserProfile.js: ", e);
@@ -91,8 +94,9 @@ function UserProfile() {
     }
 
   return (
-    <div className='w-full  bg-healthyBrown sm:h-screen overflow-y-auto md:overflow-y-hidden'>
+    <div className={`w-full ${ loading ? 'bg-white' : 'bg-healthyBrown'} sm:h-screen overflow-y-auto md:overflow-y-hidden`}>
         <NavBar/>
+        {loading ? <Loading/> :
         <div className='w-full h-full sm:h-screen flex flex-col md:flex-row justify-between items-strech  '>
             <div className='w-full md:w-1/2 flex flex-col items-center  md:items-end justify-center mt-8 sm:mt-32 self-start'>
                 <div className=' w-10/12 lg:w-2/3 flex items-center justify-between mb-3'>
@@ -112,12 +116,12 @@ function UserProfile() {
                         <Input required={inValidation && name===''} label="Name" inputType="text" inputValue={name} placeholder={user.name} onChange={(e)=>setName(e.target.value)} />
                         <Input required={inValidation && surname===''} label="Surname" inputType="text" inputValue={surname} placeholder={user.surname} onChange={(e)=>setSurname(e.target.value)} />
                         <Input
-    required={inValidation && birthDate === ''}
-    label="Date of birth"
-    inputType="date"
-    inputValue={birthDate} // This should now be in "YYYY-MM-DD" format
-    onChange={(e) => setBirthDate(e.target.value)} // This will receive "YYYY-MM-DD"
- />
+                            required={inValidation && birthDate === ''}
+                            label="Date of birth"
+                            inputType="date"
+                            inputValue={birthDate} // This should now be in "YYYY-MM-DD" format
+                            onChange={(e) => setBirthDate(e.target.value)} // This will receive "YYYY-MM-DD"
+                        />
 
                         <Input required={inValidation && weight===''} label="Weight" inputType="number" inputValue={weight} placeholder={user.weight} onChange={handleWeightChange}/>
                         {inValidation && weight < 0 && <p className='text-red-500 text-xs'>weight must be a positive number.</p>}
@@ -142,7 +146,7 @@ function UserProfile() {
             <div className='w-full h-72 sm:h-screen sm:w-2/3 md:w-1/2 self-end '>
                 <img src={userImg} alt='Background image photo' />
             </div>
-        </div>
+        </div>}
         {deleteAc &&
             <PopUp setDeleteAc={setDeleteAc} />
         }

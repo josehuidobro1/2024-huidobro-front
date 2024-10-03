@@ -9,6 +9,8 @@ import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
 import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault} from "../../firebaseService";
 import Filter from "./components/Filter";
+import Loading from "../../components/Loading";
+
 
 function Home() {
     const [foodData, setFoodData] = useState([]); // datos de tabla Food
@@ -187,6 +189,8 @@ function Home() {
     return (
         <div className="h-screen w-full ">
             <NavBar />
+            {loading ? <Loading />
+            :
             <div className="flex flex-col lg:flex-row justify-between items-center w-full lg:h-screen">
                 <div className="w-full sm:w-11/12 lg:w-9/12 sm:h-screen lg:h-full pt-8 sm:pt-24 flex flex-col sm:flex-row justify-start items-start px-1 sm:px-4 lg:px-8">
                     <div className="w-full sm:w-1/4 pb-4 sm:pb-12 flex flex-col h-full justify-start sm:justify-between items-center">
@@ -198,12 +202,7 @@ function Home() {
                     </div>
                     <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12">
                         <div className="flex flex-col w-full">
-                            {loading ?
-                                (<div className="w-full flex items-center justify-start my-5 ">
-                                    <h1 className="font-belleza text-healthyGreen text-3xl ">Loading...</h1>
-                                </div>)
-                            :
-                            filteredFood.map((usfood) => (
+                            {filteredFood.map((usfood) => (
                                 <FoodConsumed
                                     key={usfood.id}
                                     usfood={usfood}
@@ -225,7 +224,7 @@ function Home() {
                         <img src={bgImage} alt='Bakground image' className="w-full h-full object-cover" />
                     </div>
                 )}
-            </div>
+            </div>}
             {addMeal &&
                 <PopUp setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} />
             }
