@@ -43,7 +43,10 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
     }
 
     useEffect(()=>{
-        selection.length>0 && catFoods.push(selection.filter((item)=> !catFoods.includes(item)))
+        console.log("que me trae seletion ", selection)
+        if(selection.category === category.id){
+            selection.food.length>0 && setCatFoods(selection.food)
+        }
     }, [selection])
 
 
@@ -67,13 +70,13 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
             <div className='flex flex-col sm:flex-row justify-around sm:justify-between w-full items-center sm:items-start mt-3'>
                 <div className='flex flex-row sm:flex-col items-center justify-between sm:justify-around w-full sm:w-1/3 lg:w-1/4'>
                     <p className='font-semibold text-sm text-white  text-left sm:text-center w-full mb-2'>Food</p>
-                    <div onClick={()=>setAddFood(true)} className='hover:cursor-pointer hover:mt-1 w-4/5 flex flex-row items-center justify-between  py-1 px-2 rounded-md border-2 border-white'>
+                    <div onClick={()=>setAddFood(category)} className='hover:cursor-pointer hover:mt-1 w-4/5 flex flex-row items-center justify-between  py-1 px-2 rounded-md border-2 border-white'>
                         <p className='font-semibold text-xs text-white '>Add food</p>
                         <FontAwesomeIcon icon={faSquarePlus} className='text-xl text-white ' />
                     </div>
                 </div>
                 <div className='flex flex-col bg-white rounded-sm mt-2 sm:mt-0 w-full sm:w-2/3 lg:w-3/4 items-start justify-start p-1 max-h-32 overflow-y-auto'>
-                    {catFoods.map((item)=>(<FoodItem key={food.id} food={item} setCatFoods={setCatFoods} catFoods={catFoods}/>))}
+                    {catFoods.map((item, index)=>(<FoodItem key={index} food={item} setCatFoods={setCatFoods} catFoods={catFoods}/>))}
                 </div>
             </div>
             <div className='flex w-full justify-center items-center pt-4 pb-2'>

@@ -5,9 +5,8 @@ import SaveButton from './SaveButton';
 import Data from '../../Data'
 import { createCategory, fetchAllFoods } from '../../../firebaseService';
 
-function NewCategory({handleUpdate, setAddCategory, setAddFood}) {
+function NewCategory({handleUpdate, setAddCategory, setAddFood, foods}) {
     const [name, setName]=useState('')
-    const [foods, setFoods]=useState([])
     const [selectedFoods, setSelectedFoods] = useState([]); 
     const iconOptions = Data.iconOptions
     const [iconSelected,setIconSelected]=useState(null)
@@ -17,14 +16,7 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood}) {
         setIconSelected(icon)
     }
 
-    const fetchFoods = async () => {
-        try {
-            const food = await fetchAllFoods();
-            setFoods(food);
-        } catch (err) {
-            console.log('Error al obtener los datos: ' + err.message);
-        }
-    };
+
 
     const handleFoodSelection = (foodId) => {
         if (selectedFoods.includes(foodId)) {
@@ -70,9 +62,6 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood}) {
     }
     
 
-    useEffect(()=>{
-        fetchFoods();
-    },[])
 
     return (
     <div className='flex p-2 font-quicksand flex-col w-full bg-healthyGreen rounded-b-md justify-center shadow-lg'>
@@ -88,8 +77,8 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood}) {
             <p className={`w-1/5 font-semibold text-white text-xs lg:text-sm mr-2 `}>Icon</p>
             <div className={`${ iconSelected ?  'w-3/5' : 'w-4/5' }  flex justify-end items-start `}>
                 <div className='shadow-lg bg-white p-1 rounded-md mb-1 flex flex-row items-center justify-start overflow-x-auto'>
-                    {iconOptions.map((item)=>
-                        <FontAwesomeIcon onClick={()=>handleIcon(item)} icon={item.icon} className='text-xl text-healthyGray1 mt-2 mx-2 hover:cursor-pointer  hover:text-healthyDarkGray1' />)}
+                    {iconOptions.map((item, index)=>
+                        <FontAwesomeIcon key={index} onClick={()=>handleIcon(item)} icon={item.icon} className='text-xl text-healthyGray1 mt-2 mx-2 hover:cursor-pointer  hover:text-healthyDarkGray1' />)}
                 </div>
             </div>
             {iconSelected && <FontAwesomeIcon icon={iconSelected.icon} className='w-1/5 text-white text-2xl'/>}
@@ -99,9 +88,12 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood}) {
                 <p className='font-semibold text-white text-xs lg:text-sm mr-2 '>Food</p>
             </div>
             <div className='flex flex-col w-full p-2 bg-white rounded-md mt-1 max-h-44 overflow-y-auto'>
-                {foods.map((food)=>(<div className='flex flex-row items-center w-full justify-start mb-2'>
+                {foods.map((food, index)=>(<div key={index} className='flex flex-row items-center w-full justify-start mb-2'>
                     <input type="checkbox" checked={selectedFoods.includes(food.id)}  className='text-xl text-darkGray ' value={food.id} onChange={() => handleFoodSelection(food.id)} />
-                    <p className='tetx-darkGray ml-2  text-xs lg:text-sm'>{food.name}</p>
+                    <div className='flex flex-col items-start ml-2'>
+                        <p className='text-sm lg:text-md font-semibold text-darkGray'>{food.name}</p>
+                        {food.bar && <p className='text-xs text-messidepaul  '>by C&V menu</p>}
+                    </div>
                 </div>))}
             </div>
             <div className='flex flex-row w-full justify-center items-center mt-2'>
