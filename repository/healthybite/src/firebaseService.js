@@ -322,16 +322,27 @@ export const fetchTotCalByDay = async (date) => {
 export const getCaloriesByCategories=async (date)=>{
     try{
         const userMeals= (await fetchUserFoods(date))
+        const barFood= await getProducts();
         const foods= await  fetchAllFoods()
         const categories = (await getCategories()).concat(await getDefaultCategories());
         const result=[]
         // food consumed with its calories counted
         userMeals.forEach((item)=>{
-            const fooddetail=(foods.find((food)=>food.id===item.id_Food))
-            const calories={
-                id_Food: item.id_Food,
-                calories: Number((item.amount_eaten*fooddetail.calories_portion)/fooddetail.measure_portion)
+            let calories
+            let fooddetail=(foods.find((food)=>food.id===item.id_Food))
+            if(fooddetail){
+                calories={
+                    id_Food: item.id_Food,
+                    calories: Number((item.amount_eaten*fooddetail.calories_portion)/fooddetail.measure_portion)
+                }
+            }else{ //that food is i C&V menu
+                fooddetail = barFood.find((food)=>food.id===item.id_Food)
+                calories={
+                    id_Food: item.id_Food,
+                    calories: Number(item.amount_eaten*fooddetail.calories)
+                }
             }
+
             result.push(calories)
         })
         const totalCal = result.reduce((acc,value)=>acc+value.calories, 0) 

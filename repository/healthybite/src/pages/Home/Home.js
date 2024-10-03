@@ -25,11 +25,8 @@ function Home() {
 
     useEffect(()=>{
         if(filterSelected) {
-            console.log("Quiero veer las comidas ---> ", filteredFood)
-            console.log('FILTROOOO --> ', filterSelected)
             const aplyingFilter=filteredFood.filter((item)=>filterSelected.foods.includes(item.id_Food))
             setFilteredFood(aplyingFilter)
-            console.log("Aplicando el filtro: ", aplyingFilter)
         }else{
             setFilteredFood(userFood)
         }
@@ -39,7 +36,7 @@ function Home() {
             // Get the foods and bar category
             const barFoods = await getProducts(); // Assuming this returns a list of foods
             const BarCat = await getBarCategory(); // Assuming this returns a category object
-            console.log(BarCat)
+            
             if (!BarCat) {
                 throw new Error('Bar category not found');
             }
@@ -54,9 +51,7 @@ function Home() {
                 icon: BarCat.icon, // Fixed this to use BarCat.icon (instead of BarCat.name for both)
                 foods: [...BarCat.foods, ...filteredFoods.map(food => food.id)] // Combine existing foods and new filtered foods
             };
-    
-            // Update the category
-            console.log(BarCat.id); // Debug log to ensure category id is correct
+
             await updateCategoryDefault(data, BarCat.id);    
             console.log("Category updated successfully");
         } catch (error) {

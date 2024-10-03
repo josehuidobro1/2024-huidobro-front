@@ -25,7 +25,6 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
         }
         if(data !== category) {
             try{
-                console.log(category.id)
                 await updateCategory(data,category.id)
                 setEditCategory(false)
                 handleUpdate()
@@ -43,7 +42,6 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
     }
 
     useEffect(()=>{
-        console.log("que me trae seletion ", selection)
         if(selection.category === category.id){
             selection.food.length>0 && setCatFoods(selection.food)
         }

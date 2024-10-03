@@ -21,7 +21,6 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
             const data= await getProducts()
             setMenu(data)
             setIdFoodMenu(data.map((item)=>item.id))
-            console.log("DATAAAA", data)
             setLoading(false)
         }catch(error){
             console.log("Error fetching products from Messi and DePaul APP")

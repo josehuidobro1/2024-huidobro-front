@@ -68,6 +68,7 @@ export default function Dashboard() {
         try{
             //categories
             const caloriesByCategories= await getCaloriesByCategories(date)
+            console.log('CALORIAS POR CATEGORIA: ', caloriesByCategories)
             setCalByCat(caloriesByCategories)
             //calories
             const userCalories = (await getTotCalUser()).sort((a,b)=>{
@@ -115,7 +116,7 @@ export default function Dashboard() {
         :<div className='flex flex-col md:flex-row justify-center items-center md:items-start md:pt-8  w-full lg:w-10/12 md:mt-24 px-2 xs:px-6 md:overflow-y-hidden'>
             <div className="w-full z-0 md:w-2/5 my-4 xs:mt-8 md:mt-0 bg-white flex flex-col  items-center   font-quicksand justify-center   ">
                 <Calendar value={date} onChange={e => setDate(new Date(e))}/>
-                {calByCat.reduce((acc, value)=>acc+=value.value,0)>0 ?
+                {calByCat && calByCat.reduce((acc, value)=>acc+=value.value,0)>0 ?
                 <div className="mt-6 flex  w-full h-full items-start justify-start">
                 
                     <PieChart

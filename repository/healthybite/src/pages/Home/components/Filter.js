@@ -7,10 +7,6 @@ import FilterSelected from './FilterSelected';
 function Filter({categories, filterSelected, setFilterSelected}) {
     const [openFilter, setOpenFilter]=useState(false)
 
-    useEffect(()=>{
-        console.log(categories)
-    },[openFilter])
-
     return (
     <div className='w-full flex justify-center'>
         <div className={` font-quicksand mt-3 text-white text-lg  flex flex-col  justify-center w-full `}>
