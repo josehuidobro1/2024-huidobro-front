@@ -21,7 +21,7 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
         const data={
             name:name, 
             icon:iconSelected.name,
-            foods: catFoods.map((items)=>items.id).concat(selection.filter((item)=>!catFoods.includes(item)))
+            foods: catFoods.map((items)=>items.id)
         }
         if(data !== category) {
             try{
