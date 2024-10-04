@@ -1,6 +1,6 @@
 import React,{useEffect, useState} from 'react'
 import NavBar from '../../components/NavBar'
-import userImg from '../../assets/userImg.png'
+import userImg from '../../assets/userImg.jpg'
 import { fetchUser } from '../../firebaseService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenToSquare, faArrowDown, faKey, faTrash } from '@fortawesome/free-solid-svg-icons'; 

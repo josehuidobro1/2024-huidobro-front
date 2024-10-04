@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from "react";
-import loginImg from '../../assets/login.png'
+import loginImg from '../../assets/login.jpg'
 import loginMobile from '../../assets/loginMobile.png'
 import Input from "../../components/Input";
 import { createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordResetEmail ,fetchSignInMethodsForEmail} from 'firebase/auth';
