@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faList, faCircleDown, faCheck } from '@fortawesome/free-solid-svg-icons'; 
+import { faList, faXmark, faCheck } from '@fortawesome/free-solid-svg-icons'; 
 import FoodItemMenu from './FoodItemMenu';
 import MenuItem from './MenuItem';
 import { editCalories } from '../../../firebaseService';
@@ -8,7 +8,7 @@ import { editCalories } from '../../../firebaseService';
 function Menu({ menu, loading, idFoodMenu, setSelection }) {
     const [addCalories, setAddCalories] = useState(false);
     const [calories, setCalories] = useState(0);
-    const [amount, setAmount] = useState(0);
+    const [message, setMessage] = useState(false);
     const [menuCalories, setMenuCalories] = useState([]);
     const [menuWithoutCal, setMenuWithoutCal] = useState([]);
     const [newCalories, setNewCalories] = useState(null);
@@ -22,11 +22,16 @@ function Menu({ menu, loading, idFoodMenu, setSelection }) {
         }
     };
 
+    useEffect(()=>{
+        message && setInterval(()=>setMessage(false), 5000)
+    },[message])
+
     useEffect(() => {
         if (newCalories) {
             setMenuCalories(prev => [newCalories, ...prev]);
             setMenuWithoutCal(prev => prev.filter(item => item.id !== newCalories.id));
             handleNewCalories();
+            setMessage(true)
         }
     }, [newCalories]);
 
@@ -45,14 +50,19 @@ function Menu({ menu, loading, idFoodMenu, setSelection }) {
                 </div>
             ) : (
                 <div className='flex flex-col w-full'>
+                    {message && <div className='w-full flex justify-start items-center mb-2'>
+                        <p className='text-sm text-white py-1 px-3 rounded-xl bg-healthyGreen font-bold flex flex-row items-center '><FontAwesomeIcon className=' text-md mr-2 font-bold' icon={faCheck}/>Calories were successfully added!</p>
+                    </div>}
                     <div className='w-full flex flex-row items-center justify-between my-1 px-4'>
-                        <p className='text-left text-sm font-bold w-3/4'>Menu</p>
-                        <div className='w-1/4 flex items-center justify-between'>
-                            <p className='text-right text-sm font-bold mr-2 w-1/2'>Portion</p>
-                            <p className='text-left text-sm font-bold w-1/2'>Calories</p>
+                        <div className='flex flex-row items-center w-2/3 sm:w-3/4 justify-start '>
+                            <p className='text-left text-sm font-bold mr-3'>Menu</p>
+                        </div>
+                        <div className='w-1/3 sm:w-1/4 flex items-center justify-between'>
+                            <p className='text-right text-xs sm:text-sm font-bold mr-2 w-1/2'>Portion</p>
+                            <p className='text-right text-xs sm:text-sm font-bold w-1/2'>Calories</p>
                         </div>
                     </div>
-                    <div className={`bg-white/40 p-2 rounded-lg mt-1 w-full max-h-[350px] md:max-h-[500px] ${ addCalories ?  'lg:max-h-[100px]' :'lg:max-h-[300px]'} overflow-y-auto`}>
+                    <div className={`bg-white/40 p-2 rounded-lg mt-1 w-full max-h-[250px] sm:max-h-[350px] md:max-h-[500px] ${ addCalories ?  'lg:max-h-[100px]' :'lg:max-h-[300px]'} overflow-y-auto`}>
                         {menuCalories.map((item, index) => (
                             <FoodItemMenu key={index} food={item} setSelection={setSelection} />
                         ))}
@@ -60,7 +70,7 @@ function Menu({ menu, loading, idFoodMenu, setSelection }) {
                     <div className='flex w-full justify-center items-center flex-col mt-2'>
                         <div className='flex items-center justify-center'>
                             <button onClick={() => setAddCalories(!addCalories)} className='px-3 rounded-md py-1 bg-messidepaul hover:border-2 hover:border-white'>
-                                <FontAwesomeIcon icon={faList} /> Set calories to menu food
+                                <FontAwesomeIcon icon={addCalories ? faXmark : faList} /> {addCalories ? 'Close this menu' :'Set calories to menu food'}
                             </button>
                         </div>
                         {addCalories && (
@@ -69,7 +79,7 @@ function Menu({ menu, loading, idFoodMenu, setSelection }) {
                                     <p>Food name</p>
                                     <p>Calories per unit</p>
                                 </div>
-                                <div className='max-h-60 overflow-y-auto'>
+                                <div className='max-h-52 overflow-y-auto'>
                                     {menuWithoutCal.length > 0 ? (
                                         menuWithoutCal.map((item, index) => (
                                             <MenuItem key={index} item={item} setNewCalories={setNewCalories} />

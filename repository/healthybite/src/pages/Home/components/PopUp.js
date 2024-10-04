@@ -15,6 +15,7 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
     const [menu, setMenu]=useState([])
     const [idFoodMenu, setIdFoodMenu]=useState([])
     const [loading, setLoading]=useState(true)
+    const [message, setMessage] = useState(false);
 
     const fetchMenu=async()=>{
         try{
@@ -37,21 +38,29 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
     }
 
     useEffect(()=>{
+        message && setInterval(()=>setMessage(false), 3000)
+    },[message])
+
+    useEffect(()=>{
         setSearchFood(foodData)
+        setMessage(true)
     },[foodData])
 
     return (
         <div className="w-full h-screen absolute top-0 z-50 flex justify-center items-center bg-black/30">
             <div className={`w-11/12 sm:w-full flex flex-col justify-center shadow-lg items-center max-w-[600px] ${openMenu ? 'bg-messidepaul': 'bg-healthyGray'} rounded-2xl px-3 pt-2 pb-12 relative`}>
                 <div className="w-full flex justify-between items-start mb-2">
-                    <button onClick={handleOpenMenu} className={ `pl-1 pr-3 py-1 rounded-full  font-quicksand font-bold ${openMenu ? 'bg-white hover:bg-healthyGray text-messidepaul' : 'bg-messidepaul hover:bg-messidepaulDark text-white'} flex justify-start items-center w-2/5`}>
-                        <img src={messidepaul} alt="logo icon" className='w-1/5'/>
-                        <p className='ml-3'>{openMenu ? 'Close' : 'Open' } C&V menu</p>
-                    </button>
+                    <div className='flex flex-col sm:flex-row items-start sm:items-center justify-start w-10/12 '>
+                        <button onClick={handleOpenMenu} className={ `pl-1 pr-3 py-1 mb-3 sm:mb-0 rounded-full mr-3  font-quicksand font-bold ${openMenu ? 'bg-white hover:bg-healthyGray text-messidepaul' : 'bg-messidepaul hover:bg-messidepaulDark text-white'} flex justify-start items-center w-10/12 sm:w-2/5`}>
+                            <img src={messidepaul} alt="logo icon" className='w-2/12 sm:w-1/5'/>
+                            <p className='ml-3'>{openMenu ? 'Close' : 'Open' } C&V menu</p>
+                        </button>
+                        {message  && <p className='text-sm text-white py-1 px-3 rounded-xl bg-healthyGreen flex flex-row items-center font-bold '><FontAwesomeIcon className='text-md mr-2 font-bold' icon={faCheck}/>Food was added successfully</p>}
+                    </div>
                     <FontAwesomeIcon    
                         onClick={() => setAddMeal(false)} 
                         icon={faCircleXmark} 
-                        className={`hover:cursor-pointer ${openMenu ? 'text-white hover:text-healthyGray' : 'text-darkGray/20  hover:text-darkGray/40'} text-3xl text-right`}
+                        className={`hover:cursor-pointer ${openMenu ? 'text-white hover:text-healthyGray' : 'text-darkGray/20  hover:text-darkGray/40'} text-3xl text-right w-2/12`}
                     />
                 </div>
                 
