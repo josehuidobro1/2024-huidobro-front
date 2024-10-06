@@ -155,6 +155,7 @@ function Home() {
         })
         
     }, [newFood]);
+    
     const handleDeleteMeal = async (idDoc_user_food) => {
         try {
             await deleteUserFood(idDoc_user_food); // Delete from Firebase backend
