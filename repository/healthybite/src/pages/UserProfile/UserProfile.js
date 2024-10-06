@@ -94,11 +94,11 @@ function UserProfile() {
     }
 
   return (
-    <div className={`w-full ${ loading ? 'bg-white' : 'bg-healthyBrown'} sm:h-screen overflow-y-auto md:overflow-y-hidden`}>
+    <div className={`w-full ${ loading ? 'bg-white' : 'bg-healthyBrown'} h-screen overflow-y-hidden`}>
         <NavBar/>
         {loading ? <Loading/> :
-        <div className='w-full h-full sm:h-screen flex flex-col md:flex-row justify-between items-strech  '>
-            <div className='w-full md:w-1/2 flex flex-col items-center  md:items-end justify-center mt-8 sm:mt-32 self-start'>
+        <div className='w-full h-full sm:h-screen flex flex-col lg:flex-row justify-between items-strech overflow-y-auto  '>
+            <div className='w-full md:w-8/12 lg:w-1/2 flex flex-col items-center  md:items-end justify-center mt-8 sm:mt-32 self-start'>
                 <div className=' w-10/12 lg:w-2/3 flex items-center justify-between mb-3'>
                     <h1 className='text-xl xs:text-2xl font-belleza text-darkGray'>User profile</h1>
                 </div>
@@ -143,8 +143,8 @@ function UserProfile() {
                     }
                 </div>
             </div>
-            <div className='w-full h-72 sm:h-screen sm:w-2/3 md:w-1/2 self-end '>
-                <img src={userImg} alt='Background image photo' />
+            <div className='w-full  flex sm:w-2/3 justify-end items-end md:w-full lg:w-1/2  lg:justify-end lg:items-end'>
+                <img src={userImg} alt='Background image photo' className=' md:w-3/4 w-full' />
             </div>
         </div>}
         {deleteAc &&

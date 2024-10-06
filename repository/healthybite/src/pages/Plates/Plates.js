@@ -47,11 +47,11 @@ export const Plates = () => {
     },[])
 
   return (
-    <>
+    <div className='h-screen sm:h-full  overflow-y-hidden'>
         <NavBar/>
         {loading ? 
             <Loading />
-        :<div className='flex flex-col-reverse md:flex-row justify-between items-center bg-healthyGray2  w-full h-screen'>
+        :<div className='flex flex-col-reverse md:flex-row justify-between items-center bg-healthyGray2  w-full h-screen overflow-y-auto md:overflow-y-hidden'>
             <div className='w-full md:w-4/5 lg:w-2/5 flex justify-end items-center md:items-end md:h-full'>
                 <img src={plateBG} alt="Background image" className=' w-full' />
             </div>
@@ -90,6 +90,6 @@ export const Plates = () => {
 
             </div>
         </div>}
-    </>
+    </div>
   )
 }

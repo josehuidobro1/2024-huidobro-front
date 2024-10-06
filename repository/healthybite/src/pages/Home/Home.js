@@ -188,11 +188,11 @@ function Home() {
     }
 
     return (
-        <div className="h-screen w-full ">
+        <div className="h-screen w-full overflow-y-hidden">
             <NavBar />
             {loading ? <Loading />
             :
-            <div className="flex flex-col lg:flex-row justify-between items-center w-full lg:h-screen">
+            <div className="flex flex-col lg:flex-row justify-between items-center w-full lg:h-screen overflow-y-auto md:overflow-y-hidden">
                 <div className="w-full sm:w-11/12 lg:w-9/12 sm:h-screen lg:h-full pt-8 sm:pt-24 flex flex-col sm:flex-row justify-start items-start px-1 sm:px-4 lg:px-8">
                     <div className="w-full sm:w-1/4 pb-4 sm:pb-12 flex flex-col h-full justify-start sm:justify-between items-center">
                         <div className="flex flex-col justify-center items-center md:items-start w-4/5  sm:w-full " >

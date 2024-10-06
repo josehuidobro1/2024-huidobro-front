@@ -57,11 +57,11 @@ function Category() {
 
 
   return (
-    <><div className={`h-screen w-full ${ addFood && 'overflow-y-hidden'}`}>
+    <><div className={`h-screen w-full overflow-y-hidden`}>
         <NavBar/>
         {loading ?
             <Loading />
-        :<div className='w-full flex flex-row items-start justify-between h-screen'>
+        :<div className='w-full flex flex-row items-start justify-between h-screen overflow-y-auto md:overflow-y-hidden'>
             {window.innerWidth > 768  && 
             <div className='w-1/4 lg:w-1/3 overflow-hidden  h-screen  flex items-center justify-start'>
                 <img src={categoryImg} alt="Category image background"  className=' w-full h-full object-cover'/>

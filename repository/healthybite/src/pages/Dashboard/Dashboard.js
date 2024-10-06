@@ -108,10 +108,10 @@ export default function Dashboard() {
       };
 
   return (
-    <div className=' w-full flex flex-col justify-center items-center md:overflow-y-hidden'>
+    <div className=' w-full h-screen sm:h-full overflow-y-hidden'>
         <NavBar  className='z-50'/>
         {loading ? <Loading />
-        :<div className='flex flex-col md:flex-row justify-center items-center md:items-start md:pt-8  w-full lg:w-10/12 md:mt-24 px-2 xs:px-6 md:overflow-y-hidden'>
+        :<div className='flex flex-col md:flex-row justify-center items-center md:items-start md:pt-8  w-full lg:w-10/12 md:mt-24 px-2 xs:px-6 overflow-y-auto md:overflow-y-hidden'>
             <div className="w-full z-0 md:w-2/5 my-4 xs:mt-8 md:mt-0 bg-white flex flex-col  items-center   font-quicksand justify-center   ">
                 <Calendar value={date} onChange={e => setDate(new Date(e))}/>
                 {calByCat && calByCat.reduce((acc, value)=>acc+=value.value,0)>0 ?
