@@ -4,12 +4,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Plates } from '../Plates'
 import Counter from '../../../components/Counter'
 import EditFood from './EditFood'
+import DeletePopUp from '../../../components/DeletePopUp'
 
 export const PlateItem = ({plate, foodData}) => {
     const [options, setOption]=useState(false)
     const [edit, setEdit]=useState(false)
     const [value, setValue]=useState(0)
     const [foodPlate, setFoodPlate]=useState(plate.foods.map((item)=>({...foodData.find((food)=>food.id==item.id), amount: item.amount})))
+    const [deleteItem, setDeleteItem]=useState(false)
 
     useEffect(()=>{
         console.log(foodPlate)
@@ -20,7 +22,15 @@ export const PlateItem = ({plate, foodData}) => {
         setOption(!options)
     }
 
+    const handleDelete=()=>{
+        console.log("Aca se debe eliminar el plato")
+    }
+
     return (
+        <>
+    {deleteItem ?
+    <DeletePopUp handleDelete={handleDelete} setCancel={setDeleteItem}/>
+    :
     <div className='w-full flex flex-col justify-center items-center '>
         <div className='z-5 flex w-full justify-between mt-2 bg-white p-1  items-center rounded-full shadow-md'>
             <div className='flex items-center'>
@@ -34,7 +44,7 @@ export const PlateItem = ({plate, foodData}) => {
                 {options &&
                 <div className='flex items-center border-2 justify-center text-xs text-healthyOrange font-semibold border-healthyOrange px-2 rounded-full mr-3 '>
                     <p onClick={()=>setEdit(!edit)} className='cursor-pointer hover:text-healthyDarkOrange'>Edit</p>
-                    <p className='ml-1 border-l-2 border-l-healthyOrange pl-1 hover:text-healthyDarkOrange cursor-pointer'>Delete</p>
+                    <p onClick={()=>setDeleteItem(true)} className='ml-1 border-l-2 border-l-healthyOrange pl-1 hover:text-healthyDarkOrange cursor-pointer'>Delete</p>
                 </div>}
                 <FontAwesomeIcon onClick={handleOptions} icon={faEllipsisVertical} className='text-healthyDarkOrange cursor-pointer text-2xl mr-4'/>
             </div>
@@ -54,5 +64,5 @@ export const PlateItem = ({plate, foodData}) => {
             </div>
         </div>}
     </div>
-    )
+    }</>)
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import NavBar from '../../components/NavBar'
 import categoryImg from '../../assets/categoryBg.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -57,7 +57,8 @@ function Category() {
 
 
   return (
-    <><div className={`h-screen w-full overflow-y-hidden`}>
+    <>
+    <div className={`h-screen w-full overflow-y-hidden`}>
         <NavBar/>
         {loading ?
             <Loading />
