@@ -35,6 +35,7 @@ function Home() {
             setFilteredFood(userFood)
         }
     },[filterSelected])
+    
     const handleChangesCat = async () => {
         try {
             // Get the foods and bar category

@@ -1,7 +1,7 @@
 import { auth } from "../firebaseConfig";
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHouse, faLayerGroup, faChartLine, faUser, faBars, faXmark , faUtensils} from '@fortawesome/free-solid-svg-icons'; 
+import { faHouse, faLayerGroup, faChartLine, faUser, faBars, faXmark , faUtensils, faMugHot} from '@fortawesome/free-solid-svg-icons'; 
 import React, { useEffect, useState } from "react";
 import NavItem from "./NavItem";
 
@@ -25,6 +25,7 @@ function NavBar() {
                             <div className="flex justify-around items-center w-10/12 lg:w-3/4 ">
                                 <NavItem route='/' name='Home' icon={faHouse}  />
                                 <NavItem route='/plates' name='Plates' icon={faUtensils}/>
+                                <NavItem route='/drinks' name='Drinks' icon={faMugHot}/>
                                 <NavItem route='/dashboard' name='Dashboard' icon={faChartLine}  />
                                 <NavItem route='/category' name='Category' icon={faLayerGroup}  />
                                 <NavItem route='/user-profile' name='User Profile' icon={faUser}  />
@@ -47,6 +48,7 @@ function NavBar() {
                             <div className="flex h-full  flex-col xs:flex-row w-11/12  xs:w-10/12 justify-around  xs:items-center">
                                 <NavItem route='/' name='Home' icon={faHouse} setOpenBar={setOpenBar} />
                                 <NavItem route='/plates' name='Plates' icon={faUtensils} setOpenBar={setOpenBar}/>
+                                <NavItem route='/drinks' name='Drinks' icon={faMugHot}  setOpenBar={setOpenBar}/>
                                 <NavItem route='/dashboard' name='Dashboard' icon={faChartLine} setOpenBar={setOpenBar} />
                                 <NavItem route='/category' name='Category' icon={faLayerGroup} setOpenBar={setOpenBar} />
                                 <NavItem route='/user-profile' name='User Profile' icon={faUser} setOpenBar={setOpenBar} />
