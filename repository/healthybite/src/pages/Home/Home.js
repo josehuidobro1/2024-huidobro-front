@@ -73,7 +73,7 @@ function Home() {
                 }
                 const userFood = await fetchUserFoods(date);
                 const food = await fetchAllFoods();
-                setFoodData(food);
+                setFoodData(food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1));
                 
     
                 // Fetch food details for each user food using Promise.all
@@ -229,7 +229,7 @@ function Home() {
                 )}
             </div>}
             {addMeal &&
-                <PopUp setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
+                <PopUp newFood={newFood} setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
             }
         </div>
     );

@@ -10,7 +10,7 @@ import Menu from './Menu';
 import emptyPlate from '../../../assets/emptyPlate.png'
 import emptyGlass from '../../../assets/emptyGlass.png'
 
-const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, setSelection, platesData, drinksData }) => {
+const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, selection, setSelection, platesData, drinksData }) => {
     const [searchFood, setSearchFood] = useState(foodData);
     const [addFood, setAddFood] = useState(false);
     const [openMenu, setOpenMenu]=useState(false)
@@ -45,9 +45,13 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
     },[message])
 
     useEffect(()=>{
+        newFood && setMessage('The food was added succesfully!')
+    },[newFood])
+
+    useEffect(()=>{
 
         setSearchFood(foodData)
-        setMessage(true)
+        
     },[foodData])
 
     useEffect(()=>{
@@ -102,7 +106,7 @@ const PopUp = ({ setAddMeal, foodData, handleAddMeal, setNewFood, selection, set
                             </div>
                         ) :
                         <div className='w-full h-[350px] md:h-[500px] lg:h-[330px] bg-white/40  overflow-y-auto flex justify-center flex-col items-center'>
-                            <img src={show===3 ? emptyGlass : emptyPlate} className='w-1/5 opacity-30 ' alt={show===3 ? 'Empty glass' :'Empty plate'} />
+                            <img src={show===3 ? emptyGlass : emptyPlate} className='w-1/3 md:w-1/5 opacity-30 ' alt={show===3 ? 'Empty glass' :'Empty plate'} />
                             <p className='font-quicksand font-bold text-sm mt-3 text-healthyGray1 text-center w-3/4'>There are no {show==1 ? 'food' : show===2 ? 'plates' : 'drinks'}&nbsp;created</p>
                         </div>)}
                     </>
