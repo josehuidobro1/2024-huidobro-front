@@ -14,6 +14,8 @@ import Loading from "../../components/Loading";
 
 function Home() {
     const [foodData, setFoodData] = useState([]); // datos de tabla Food
+    const [platesData, setPlatesData] = useState([]); // datos de tabla Plates
+    const [drinksData, setDrinksData] = useState([]); // datos de tabla Drinks
     const [userFood, setUserFood] = useState([]); // datos de tabla UserFood
     const [date, setDate] = useState(new Date());
     const [amount, setAmount] = useState();
@@ -227,7 +229,7 @@ function Home() {
                 )}
             </div>}
             {addMeal &&
-                <PopUp setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} />
+                <PopUp setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
             }
         </div>
     );
