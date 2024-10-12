@@ -406,3 +406,119 @@ export const getProdByID= async(prod_id)=>{
     const food=response.data.product
     return food
 }
+
+// things that need to be deployed
+export const createplate = async (selection) => {
+    try {
+        console.log(selection)
+        const response = await fetch("http://127.0.0.1:8000/CreatePlate/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify( {
+                "id_User": auth.currentUser.uid,
+                "ingredients": selection.ingredients,
+                "name": selection.name,
+                "calories_portion": selection.total_cal,
+            }),
+            
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Something went wrong");
+            
+        }
+        
+
+        console.log("plate entry added successfully:", data);
+        return data;
+    } catch (error) {
+        console.error("Error adding plate entry:", error);
+        return null;
+    }
+};
+
+export const getUserPlates = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+        console.error("User is not authenticated");
+        return null;
+    }
+    const uid = user.uid;
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/GetPlatesUser/${uid}`);
+        return response.data.message.Plates; // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error fetching plates :', error);
+        return null; // Return null or handle the error as needed
+    }
+};
+export const updatePlate=async(data,plate_id)=>{
+    try{
+        const response = await axios.put(`http://127.0.0.1:8000/UpdatePlate/${plate_id}`,{...data,id_User: auth.currentUser.uid });
+        return response.data
+    }catch(error){
+        console.error('Error updating plate by id: ', error);
+        return null;
+    }
+}
+export const deleteplate=async(plate_id)=>{
+    console.log(plate_id)
+    try {
+        await axios.delete(`http://127.0.0.1:8000/DeletePlate/${plate_id}`); 
+    } catch (error) {
+        console.error('Error deleting plate by ID:', error);
+        return null; 
+    }
+}
+export const createplateFood = async (selection) => {
+    try {
+        console.log(selection)
+        const response = await fetch('http://127.0.0.1:8000/CreatePlateFood', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify( {
+                "id_food": selection.food_id,
+                "amount": selection.amount,
+            }),
+            
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Something went wrong");
+            
+        }
+        
+
+        console.log("plate entry added successfully:", data);
+        return data;
+    } catch (error) {
+        console.error("Error adding plate entry:", error);
+        return null;
+    }
+};
+export const updatePlateFood=async(data,plate_id)=>{
+    try{
+        const response = await axios.put(`http://127.0.0.1:8000/UpdatePlateFood/${plate_id}`,{...data,id_User: auth.currentUser.uid });
+        return response.data
+    }catch(error){
+        console.error('Error updating PlateFOod by id: ', error);
+        return null;
+    }
+}
+export const deleteplateFood=async(plate_id)=>{
+    try {
+        await axios.delete(`http://127.0.0.1:8000/DeletePlateFood/${plate_id}`); 
+    } catch (error) {
+        console.error('Error deleting plateFood by ID:', error);
+        return null; 
+    }
+}
+
