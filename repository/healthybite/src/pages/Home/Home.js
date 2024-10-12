@@ -195,8 +195,8 @@ function Home() {
             <NavBar />
             {loading ? <Loading />
             :
-            <div className="flex flex-col lg:flex-row justify-between items-center w-full lg:h-screen overflow-y-auto md:overflow-y-hidden">
-                <div className="w-full sm:w-11/12 lg:w-9/12 sm:h-screen lg:h-full pt-8 sm:pt-24 flex flex-col sm:flex-row justify-start items-start px-1 sm:px-4 lg:px-8">
+            <div className="flex flex-col lg:flex-row justify-between items-center w-full h-full lg:h-screen overflow-y-scroll md:overflow-y-hidden">
+                <div className="w-11/12 lg:w-9/12 sm:h-screen lg:h-full pt-8 sm:pt-24 flex flex-col sm:flex-row justify-start items-start px-1 sm:px-4 lg:px-8 pb-32 xs:pb-0">
                     <div className="w-full sm:w-1/4 pb-4 sm:pb-12 flex flex-col h-full justify-start sm:justify-between items-center">
                         <div className="flex flex-col justify-center items-center md:items-start w-4/5  sm:w-full " >
                             <Calendar value={date} onChange={e => selectDate(e)} />
@@ -204,8 +204,8 @@ function Home() {
                         </div>
                         <Calories userFood={userFood} />
                     </div>
-                    <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12">
-                        <div className="flex flex-col w-full">
+                    <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12 ">
+                        <div className="flex flex-col w-full ">
                             {filteredFood.map((usfood) => (
                                 <FoodConsumed
                                     key={usfood.id}
@@ -214,15 +214,16 @@ function Home() {
                                     handleEditFoodConsumed={handleEditFoodConsumed}
                                 />
                             ))}
-                            <div className="flex w-full items-center justify-center bg-white sticky bottom-0">
-                                <div onClick={() => setAddMeal(true)} className="flex w-full mb-2 flex-row justify-start items-center py-2 px-4 mt-2 sm:mt-4 rounded-2xl font-semibold text-lg text-darkGray bg-healthyGreen/30 font-quicksand hover:cursor-pointer hover:bg-healthyGreen/50">
-                                    <FontAwesomeIcon icon={faPlus} className="text-darkGray text-xl mr-3" />
-                                    <p>Add food</p>
-                                </div>
-                            </div>
+                            
+                        </div>
+                    </div>
+                    <div className="absolute bottom-0  right-0 flex  items-center justify-center ">
+                        <div onClick={() => setAddMeal(true)} className="  hover:cursor-pointer bg-white rounded-tl-full p-3 flex justify-center items-center">
+                            <FontAwesomeIcon icon={faPlus} className="text-white text-xl xs:text-2xl bg-healthyGreen hover:bg-healthyDarkGreen rounded-full p-3 xs:p-5  shadow-lg ml-3 xs:ml-4 mt-4 xs:mt-6 " />
                         </div>
                     </div>
                 </div>
+                
                 {(window.innerWidth > '1024') && (
                     <div className="w-full lg:w-4/12 lg:h-screen flex justify-start">
                         <img src={bgImage} alt='Bakground image' className="w-full h-full object-cover" />
