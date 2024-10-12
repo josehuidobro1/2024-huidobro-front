@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import NavBar from '../../components/NavBar'
 import Calendar from "../../components/Calendar";
-import { LineChart,  PieChart } from "@mui/x-charts";
+import {  PieChart, LineChart } from "@mui/x-charts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight} from '@fortawesome/free-solid-svg-icons';
 import { getCaloriesByCategories, getTotCalUser } from "../../firebaseService";
 import Loading from "../../components/Loading";
+  
 
 
 const palette = [
@@ -33,6 +34,8 @@ export default function Dashboard() {
     const [monthlyCal, setMonthlyCal]=useState([])
     const [loading, setLoading]=useState(true)
     const [calByCat, setCalByCat]=useState([]) // Calories by Category
+    const chartRef = useRef(null);
+    const [chartWidth, setChartWidth] = useState(300);
     
     const formatDate = (date) => {
         const day = String(date.getDate()).padStart(2, '0'); // Asegura que el día tenga 2 dígitos
@@ -99,13 +102,11 @@ export default function Dashboard() {
     useEffect(()=>{
         setLoading(true)
         fetchData()
+        const handleResize=(()=>{chartRef.current && setChartWidth(chartRef.current.offsetWidth)})
+        window.addEventListener('resize', handleResize);
+        
+        return () => window.removeEventListener('resize', handleResize);
     },[date])
-
-    const emptySeries = {
-        series: [],
-        margin: { top: 10, right: 10, left: 25, bottom: 25 },
-        height: 150,
-      };
 
   return (
     <div className=' w-full h-screen sm:h-full overflow-y-hidden'>
@@ -115,14 +116,13 @@ export default function Dashboard() {
             <div className="w-full z-0 md:w-2/5 my-4 xs:mt-8 md:mt-0 bg-white flex flex-col  items-center   font-quicksand justify-center   ">
                 <Calendar value={date} onChange={e => setDate(new Date(e))}/>
                 {calByCat && calByCat.reduce((acc, value)=>acc+=value.value,0)>0 ?
-                <div className="mt-6 flex  w-full h-full items-start justify-start">
+                <div className="mt-6 flex  w-full h-full items-start justify-start ">
                 
                     <PieChart
-                        {...emptySeries}
                         colors={palette}
                         series={[{data: calByCat}]}
-                        height={  window.innerWidth > 680 ? 250: window.innerWidth > 490 ? 240 : 130}
-                        width={window.innerWidth > 680 ? 520 : window.innerWidth > 490 ? 600 : 580 }
+                        width={chartWidth*1.90}
+                        height={chartWidth }
                     />
 
                 </div>:
@@ -141,6 +141,7 @@ export default function Dashboard() {
                     <div className="bg-hbGreen p-2 rounded-b-xl ">
                     <LineChart
                         colors={palette}
+
                         xAxis={[{ scaleType: 'point',dataKey: 'date', data: index == 0 ? weeklyCal.dates : monthlyCal.dates, labelStyle: { fontFamily: 'Quicksand' }}]}
                         series={[
                             {
