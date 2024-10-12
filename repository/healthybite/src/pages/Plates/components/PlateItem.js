@@ -10,6 +10,8 @@ export const PlateItem = ({ plate, foodData }) => {
     const [options, setOption] = useState(false)
     const [edit, setEdit] = useState(false)
     const [deleteItem, setDeleteItem] = useState(false)
+    const [clickable, setClickable] = useState(true);
+
 
     // Map the ingredients to corresponding food data
     const foodPlate = plate.ingredients.map((item) => {
@@ -35,12 +37,21 @@ export const PlateItem = ({ plate, foodData }) => {
             console.log("Error deleting category: ", error)
         }
     }
+    const handleSingleClick = () => {
+        if (clickable) {
+            setClickable(false); 
+            handleDelete()
+            setTimeout(() => {
+                setClickable(true); 
+            }, 1000); 
+        }
+    };
     
 
     return (
         <>
             {deleteItem ? 
-                <DeletePopUp handleDelete={handleDelete} setCancel={setDeleteItem} />
+                <DeletePopUp handleDelete={handleSingleClick} setCancel={setDeleteItem} />
                 : 
                 <div className='w-full flex flex-col justify-center items-center'>
                     <div className='z-5 flex w-full justify-between mt-2 bg-white p-1 items-center rounded-full shadow-md'>
