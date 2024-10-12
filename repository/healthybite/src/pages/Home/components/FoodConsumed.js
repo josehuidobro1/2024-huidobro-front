@@ -10,6 +10,8 @@ const FoodConsumed = ({ usfood, handleDeleteMeal , handleEditFoodConsumed}) => {
     const [time, setTime]=useState(new Date(usfood.date_ingested))
     const [amount, setAmount]=useState(usfood.amount_eaten)
     const [deleteItem, setDeleteItem]=useState(false)
+    const [clickable, setClickable] = useState(true);
+
 
     const handleChange=()=>{
         if(amount >0 )
@@ -25,11 +27,20 @@ const FoodConsumed = ({ usfood, handleDeleteMeal , handleEditFoodConsumed}) => {
     const handleDelete=()=>{
         handleDeleteMeal(usfood.id)
     }
+    const handleSingleClick = () => {
+        if (clickable) {
+            setClickable(false); 
+            handleDelete()
+            setTimeout(() => {
+                setClickable(true); 
+            }, 1000); 
+        }
+    };
 
     return (
         <>
     {deleteItem ?
-    <DeletePopUp handleDelete={handleDelete} setCancel={setDeleteItem}/>
+    <DeletePopUp handleDelete={handleSingleClick} setCancel={setDeleteItem}/>
     :
     <div className={`flex ${edit ? 'flex-col xs:flex-row ' : 'flex-row'} justify-between items-center w-full py-2 px-4 rounded-2xl bg-hbGreen font-quicksand my-1`}>
             <div className={`flex ${edit ?   'flex-row items-center w-1/2 xs:w-1/3 lg:w-1/2 justify-around xs:justify-center mb-2 xs:mb-0 ': 'flex-col items-start justify-center' }   `}>

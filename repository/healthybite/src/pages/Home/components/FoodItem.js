@@ -5,7 +5,6 @@ import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
 const FoodItem = ({ food, setSelection }) => {
     const [amount, setAmount] = useState('');
     const [errorMessage, setErrorMessage] = useState(''); // State to track error message
-    console.log("HELLLLOOSS??",food.id)
     const handleAmountChange = (e) => {
         const value = Number(e.target.value);
         // Only update the state if the value is a non-negative number

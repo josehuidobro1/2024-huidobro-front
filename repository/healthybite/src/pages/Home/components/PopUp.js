@@ -18,7 +18,8 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
     const [idFoodMenu, setIdFoodMenu]=useState([])
     const [loading, setLoading]=useState(true)
     const [message, setMessage] = useState(false);
-    const [show, setShow] =useState(1)
+    const [show, setShow] =useState(1);
+    const [clickable, setClickable] = useState(true);
 
     const fetchMenu=async()=>{
         try{
@@ -39,6 +40,15 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
             fetchMenu()
         }
     }
+    const handleSingleClickAddMeal = () => {
+        if (clickable) {
+            setClickable(false); // Disable further clicks
+            handleAddMeal(); // Call your existing handleAddMeal logic
+            setTimeout(() => {
+                setClickable(true); // Re-enable after a delay (or based on a condition)
+            }, 1000); // Optional delay to prevent excessive clicks
+        }
+    };
 
     useEffect(()=>{
         message && setInterval(()=>setMessage(false), 3000)
@@ -131,12 +141,13 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
                 )}
                 {selection && (
                     <button 
-                        onClick={handleAddMeal} 
-                        className="absolute bottom-2 right-2 font-quicksand text-sm px-3 py-1 flex items-center rounded-xl bg-healthyOrange text-white font-bold hover:cursor-pointer hover:bg-healthyDarkOrange"
-                    >
-                        <FontAwesomeIcon icon={faCheck} className="text-white text-lg mr-2" />
-                        Save changes
-                    </button>
+                    onClick={handleSingleClickAddMeal} 
+                    className="absolute bottom-2 right-2 font-quicksand text-sm px-3 py-1 flex items-center rounded-xl bg-healthyOrange text-white font-bold hover:cursor-pointer hover:bg-healthyDarkOrange"
+                >
+                    <FontAwesomeIcon icon={faCheck} className="text-white text-lg mr-2" />
+                    Save changes
+                </button>
+                
                 )}
             </div>
         </div>

@@ -13,11 +13,21 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods}) {
     const [iconSelected,setIconSelected]=useState(null)
     const [message, setMessage]=useState('')
     const [addIcon, setAddIcon]=useState(false)
+    const [clickable, setClickable] = useState(true);
 
     const handleIcon=(icon)=>{
         setIconSelected(icon)
+        
     }
-
+    const handleSingleClick = () => {
+        if (clickable) {
+            setClickable(false); 
+            handleCategory()
+            setTimeout(() => {
+                setClickable(true); 
+            }, 1000); 
+        }
+    };
 
 
     const handleFoodSelection = (foodId) => {
@@ -101,7 +111,7 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods}) {
                 </div>))}
             </div>
             <div className='flex flex-row w-full justify-center items-center mt-2'>
-                <SaveButton label="Save new category" handleChanges={handleCategory}/>
+                <SaveButton label="Save new category" handleChanges={handleSingleClick}/>
             </div> 
         </div>
     </div>

@@ -13,6 +13,7 @@ function CategoryItem({setAddFood, category, food, handleUpdate, selection}) {
 
     const [editCategory, setEditCategory]=useState(false)
     const [deleteItem, setDeleteItem]=useState(false)
+    const [clickable, setClickable] = useState(true);
 
     const handleDelete=async()=>{
         try{
@@ -22,11 +23,20 @@ function CategoryItem({setAddFood, category, food, handleUpdate, selection}) {
             console.log("Error deleting category: ", error)
         }
     }
+    const handleSingleClick = () => {
+        if (clickable) {
+            setClickable(false); 
+            handleDelete()
+            setTimeout(() => {
+                setClickable(true); 
+            }, 1000); 
+        }
+    };
 
   return (
     <>
     {deleteItem ?
-    <DeletePopUp handleDelete={handleDelete} setCancel={setDeleteItem}/>
+    <DeletePopUp handleDelete={handleSingleClick} setCancel={setDeleteItem}/>
     :<div className='flex flex-col w-full my-2'>
         <div className='w-full bg-healthyDarkOrange shadow-md py-1 px-2 sm:py-2 rounded-md flex flex-row justify-between items-center font-quicksand'>
             <div className='flex flex-row items-center justify-start'>
