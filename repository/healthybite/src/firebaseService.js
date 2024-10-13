@@ -521,4 +521,126 @@ export const deleteplateFood=async(plate_id)=>{
         return null; 
     }
 }
+export const fechDrinkTypes = async () =>{
+    const user = auth.currentUser;
+    if (!user) {
+        console.error("User is not authenticated");
+        return null;
+    }
+    const uid = user.uid;
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/getUserDrinkType/${uid}`);
+        return response.data.message.drinkType; // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error fetching typedrinks :', error);
+        return null; // Return null or handle the error as needed
+    }
+}
+export const createDrinkType = async (selection) => {
+    try {
+        console.log(selection)
+        const response = await fetch('http://127.0.0.1:8000/drinkType_log', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify( {
+                "name": selection.name,
+                "id_user": auth.currentUser.uid,
+            }),
+            
+        });
 
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Something went wrong");
+            
+        }
+        
+
+        console.log("drink entry added successfully:", data);
+        return data.drinkType_id;
+    } catch (error) {
+        console.error("Error adding drink entry:", error);
+        return null;
+    }
+};
+export const getUserDrinks = async () =>{
+    const user = auth.currentUser;
+    if (!user) {
+        console.error("User is not authenticated");
+        return null;
+    }
+    const uid = user.uid;
+    try {
+        const response = await axios.get(`http://127.0.0.1:8000/GetDrinks/${uid}`);
+        return response.data.message.Drinks; // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error fetching typedrinks :', error);
+        return null; // Return null or handle the error as needed
+    }
+}
+export const createDrink = async (selection) => {
+    try {
+        console.log(selection)
+        const response = await fetch('http://127.0.0.1:8000/drink_log', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify( {
+                "name": selection.name,
+                "amount_sugar": selection.amount_sugar,
+                "amount_cafeine": selection.amount_caffeine,
+                "calories_portion": selection.calories_portion,
+                "measure": selection.measure,
+                "measure_portion": selection.measure_portion,
+                "typeOfDrink": selection.typeOfDrink,
+                "id_User": auth.currentUser.uid,
+            }),
+            
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Something went wrong");
+            
+        }
+        
+
+        console.log("drink entry added successfully:", data);
+        return response.data.message.drinkType_id;
+    } catch (error) {
+        console.error("Error adding drink entry:", error);
+        return null;
+    }
+};
+export const deleteDrink=async(drink_id)=>{
+    try {
+        console.log(drink_id)
+        await axios.delete(`http://127.0.0.1:8000/DeleteDrink/${drink_id}`); 
+    } catch (error) {
+        console.error('Error deleting plateFood by ID:', error);
+        return null; 
+    }
+}
+export const updateDrink = async (doc_id,data) => {
+
+    try {
+        console.log(doc_id,data)
+        await axios.put(`http://127.0.0.1:8000/UpdateDrink/${doc_id}`,{...data,id_User: auth.currentUser.uid }); // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error updating drink by ID:', error);
+        return null; // Return null or handle the error as needed
+    }
+};
+export const deleteDrinkType = async (doc_id) => {
+    try {
+        await axios.delete(`http://127.0.0.1:8000/DeleteDrinkType/${doc_id}`); // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error deleting drinktype by ID:', error);
+        return null; // Return null or handle the error as needed
+    }
+};
