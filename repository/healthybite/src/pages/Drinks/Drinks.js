@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { NewDrink } from './components/NewDrink'
 import DrinkItem from './components/DrinkItem'
+import {fechDrinkTypes, getUserDrinks} from '../../firebaseService'
 
 const drinks=[
     {
@@ -18,14 +19,35 @@ const drinks=[
     }
 ]
 
+
+
 export const Drinks = () => {
     const [loading, setLoading] = useState(true);
-    const [drinksData, setDrinksData]=useState(drinks)
+    const [drinksData, setDrinksData]=useState([])
     const [newDrink,setNewDrink]=useState(false)
+    const [drinktypes, setDrinktypes] = useState([]);
+
+    const fetchUserDrinks= async () => {
+        const drinks = await getUserDrinks();
+        setDrinksData(drinks);
+    }
 
     useEffect(()=>{
+        fetchUserDrinkTypes();
+        fetchUserDrinks();
         setLoading(false)
     },[])
+    const fetchUserDrinkTypes = async () => {
+        const types = await fechDrinkTypes();
+        setDrinktypes(types);
+    };
+    const handleUpdate=()=>{
+        fetchUserDrinks()
+    }
+    const handleDrinkTypeUpdate =()=>{
+        fetchUserDrinkTypes()
+    }
+
 
 
     return (
@@ -44,7 +66,7 @@ export const Drinks = () => {
                     {drinksData.length >0 ?
                     <div className='w-full  lg:w-2/3 flex flex-col items-start'>
                         {drinksData.map((item)=>
-                            <DrinkItem drink={item}/>
+                                <DrinkItem drink={item} typeOfDrinks={drinktypes} handleUpdate={handleUpdate}/>
                         )}
                     </div>
                     :<div className='flex justify-center items-center flex-col w-2/3 h-2/3'>
@@ -53,7 +75,7 @@ export const Drinks = () => {
                     </div>}
                     <div className='w-full md:w-4/5 lg:w-1/3 flex flex-col justify-center'>
                         <button onClick={()=>setNewDrink(!newDrink)} className={`text-white text-md font-bold px-4 py-1 ${ newDrink ? 'rounded-t-lg' :'rounded-lg'} bg-healthyGray1 hover:bg-healthyDarkGray1 w-full `}><FontAwesomeIcon icon={faPlus} className='mr-2 '/>New drink</button>
-                        {newDrink && <NewDrink setNewDrink={setNewDrink} />}
+                        {newDrink && <NewDrink setNewDrink={setNewDrink} handleUpdate={handleUpdate} drinktypes={drinktypes} handleDrinkTypeUpdate={handleDrinkTypeUpdate} />}
                     </div>
                 </div>
             </div>
