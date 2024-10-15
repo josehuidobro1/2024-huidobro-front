@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import FoodItem from './FoodItem';
 import {createplate} from '../../../firebaseService'
 import { uploadImageToStorage } from "../../../firebaseConfig";
-import { FileUpload } from 'primereact/fileupload';
+import { faImage } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const NewPlate = ({ foodData, setPlates }) => {
   const [plateName, setPlateName] = useState('');
@@ -11,6 +12,7 @@ const NewPlate = ({ foodData, setPlates }) => {
   const [reset, setReset] = useState(false); // State to trigger reset in FoodItem
   const [plateFoodIds, setPlateFoodIds] = useState([]); // State for storing plate food IDs
   const [image, setImage] = useState(null);
+  const fileInputRef = useRef(null);
   // Function to handle adding/removing food items
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -101,25 +103,35 @@ const savePlate = async () => {
     setReset(false);
   };
 
+  const handleIconClick = () => {
+    fileInputRef.current.click(); // Abre el selector de archivos
+  };
+
   return (
     <div className="bg-white border-2 flex flex-col justify-start items-center rounded-b-xl border-healthyGreen border-t-none w-full max-h-[300px] md:max-h-[550px] lg:max-h-[400px] overflow-y-auto">
       <div className="flex md:sticky md:top-0 py-2 w-full justify-center items-center text-healthyDarkGreen bg-white">
-        <input
-          className="text-sm font-semibold bg-healthyGray p-1 text-healthyDarkGreen focus:outline-none rounded-lg text-center w-10/12 focus:ring-healthyGreen"
-          type="text"
-          placeholder="Plate name"
-          value={plateName}
-          onChange={(e) => setPlateName(e.target.value)}
-        />
-      </div>
+        <div className='flex w-full items-center justify-around'>
+          <input
+            className="text-sm font-semibold bg-healthyGray p-1 text-healthyDarkGreen focus:outline-none rounded-lg text-center w-10/12 focus:ring-healthyGreen"
+            type="text"
+            placeholder="Plate name"
+            value={plateName}
+            onChange={(e) => setPlateName(e.target.value)}
+          />
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            onChange={handleImageChange}
+            className='hidden'
+          />
+          <button onClick={handleIconClick} className='text-healthyGreen hover:text-healthyDarkGreen p-2 shadow-sm'>
+            <FontAwesomeIcon icon={faImage} className='text-2xl' /> {/* Cambia el tamaño según tus necesidades */}
+          </button>
+        </div>
 
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageChange}
-        className='text-sm font-semibold  p-1 text-healthyDarkGreen focus:outline-none rounded-lg text-center w-10/12 focus:ring-healthyGreen'
-      />
-
+          
+        </div>
       {message && (
         <p className="text-green-600 font-semibold mt-2">{message}</p>
       )}
