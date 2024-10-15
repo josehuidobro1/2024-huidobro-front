@@ -392,17 +392,17 @@ export const resetPassword = async (oobCode, newPassword) => {
 // APP MESIIDEPAUL
 
 export const getProducts=async()=>{
-    const response = await axios.get('https://two024-messidepaul-back.onrender.com/products');
+    const response = await axios.get('https://candvbar-back.onrender.com/products');
     const foods=response.data.products
     return foods;
 }
 
 export const editCalories=async(id,calories)=>{
-    await axios.put(`https://two024-messidepaul-back.onrender.com/add-calories/${id}/${calories}`); 
+    await axios.put(`https://candvbar-back.onrender.com/add-calories/${id}/${calories}`); 
 
 }
 export const getProdByID= async(prod_id)=>{
-    const response = await axios.get(`https://two024-messidepaul-back.onrender.com/products/${prod_id}`);
+    const response = await axios.get(`https://candvbar-back.onrender.com/products/${prod_id}`);
     const food=response.data.product
     return food
 }
@@ -597,3 +597,15 @@ export const deleteDrinkType = async (doc_id) => {
         return null; // Return null or handle the error as needed
     }
 };
+export const getDrinkByID = async (drink_id) => {
+    const response = await axios.get(`http://127.0.0.1:8000/DrinkById/${drink_id}`);
+    const drink=response.data.message.drink
+    return drink
+
+}
+export const getPlateByID = async (plate_id) => {
+    const response = await axios.get(`http://127.0.0.1:8000/GetPlateByID/${plate_id}`);
+    const drink=response.data.message.plate
+    return drink
+
+}
