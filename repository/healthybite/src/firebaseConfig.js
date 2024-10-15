@@ -2,6 +2,8 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 
 // Firebase configuration
 const firebaseConfig = {
@@ -17,10 +19,33 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const storage = getStorage(app);
 
 // Firebase services
 const auth = getAuth(app);
 const firestore = getFirestore(app);
+export const uploadImageToStorage = async (file) => {
+  const storageRef = ref(storage, `plates/${file.name}`);
+  const uploadTask = uploadBytesResumable(storageRef, file);
+
+  return new Promise((resolve, reject) => {
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Optional: You can track upload progress here if needed.
+      },
+      (error) => {
+        console.error("Image upload error:", error);
+        reject(error);
+      },
+      async () => {
+        // On successful upload, get the download URL.
+        const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+        resolve(downloadURL);
+      }
+    );
+  });
+};
 
 // Export the services for use in other parts of the app
 export { auth, firestore };

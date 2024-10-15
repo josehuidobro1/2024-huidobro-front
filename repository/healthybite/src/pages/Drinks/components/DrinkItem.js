@@ -89,6 +89,7 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
         try {
             await deleteDrink(drink.id);
             handleUpdate();
+            setDeleteItem(false);
         } catch (error) {
             console.log("Error deleting category: ", error);
         }
