@@ -1,6 +1,6 @@
 import React, { useEffect, useState }  from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons'; 
+import { faBowlFood, faPlus, faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons'; 
 import SaveButton from './SaveButton';
 import Data from '../../Data';
 import noodle from '../../../assets/icon.png'
@@ -82,7 +82,7 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods}) {
             <p className='py-1 px-4 rounded-2xl bg-healthyDarkOrange text-white font-quicksand font-bold text-sm text-center'>{message}</p>
         </div>}
         <div className='flex flex-row w-full items-center justify-between'>
-            <div className={`flex flex-col justify-center ${ addIcon  ? 'w-3/4' : 'w-2/3'} `}>
+            <div className={`flex flex-col justify-center ${ addIcon  ? 'w-3/4' : 'w-10/12'} `}>
                 <input value={name} onChange={(e)=>setName(e.target.value)} placeholder='Category name' className='bg-white rounded-md text-center text-darkGray text-sm p-1 focus:outline-none  focus:ring-2 focus:ring-healthyGreen' />
                 {addIcon && <div className='shadow-lg mt-1 bg-white p-1 rounded-md mb-1 flex flex-row items-center justify-start overflow-x-auto'>
                     {iconOptions.map((item, index)=>
@@ -92,10 +92,10 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods}) {
             
             {iconSelected ? <FontAwesomeIcon icon={iconSelected.icon} className='w-full text-white text-3xl py-2 mx-2 px-1 rounded-full border-2 border-white'/>
             : 
-            <button onClick={()=>setAddIcon(true)} className={`${ addIcon ?'w-1/4' :'w-1/3'} mx-2 flex justify-center items-center py-2 px-1 rounded-full border-2 border-white hover:bg-white`}>
-                <img src={noodle} alt="icon" className='w-10/12'  />
-                <span className="absolute text-5xl font-semibold text-healthyDarkGreen p-4 opacity-0 hover:opacity-100">+</span>
-            </button>}
+            <div className="flex relative ">
+                <FontAwesomeIcon icon={faBowlFood} className="text-healthyGreen  text-xl p-3   shadow-sm m-2 bg-white rounded-full " />
+                <FontAwesomeIcon onClick={()=>setAddIcon(true)}  icon={faPlus} className="absolute right-0 bottom-0 p-1 text-sm border-2 border-healthyGreen text-healthyGreen bg-white hover:bg-healthyGray1 cursor-pointer rounded-full "/>
+            </div>}
         </div>
         <div className='flex flex-col w-full mt-3 '>
             <div className='w-full flex flex-row items-center justify-between mb-2'>

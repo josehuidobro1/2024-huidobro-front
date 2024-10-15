@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import Counter from '../../../components/Counter';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const FoodItem = ({ food, onFoodAdd, reset, onResetComplete }) => {
   const [value, setValue] = useState(0);
@@ -33,12 +34,12 @@ const FoodItem = ({ food, onFoodAdd, reset, onResetComplete }) => {
         <p className='text-sm font-semibold w-2/3'>{food.name}</p>
         <div className='flex justify-end items-center'>
           <p className='text-xs'>{food.measure}</p>
-          <Counter value={value} setValue={setValue} colour='bg-healthyGreen' />
+          <input type='number' placeholder='000' value={value} onChange={(e)=>e.target.value>=0 && setValue(e.target.value)} className='bg-healthyGray2 text-healthyDarkGray1 text-md text-right pl-1 py-1  rounded-md w-12 ml-1'/>
           <button
-            className={`ml-2 px-2 py-1 text-xs ${isAdded ? 'bg-healthyGreen bg-opacity-10' : 'bg-gray-200'} rounded`}
+            className={`ml-2 px-2 py-1 text-xs border-2 border-healthyGreen ${isAdded ? 'bg-healthyGreen  text-white' : 'bg-white text-healthyGreen'} rounded`}
             onClick={handleAddClick}
           >
-            {isAdded ? 'Added' : 'Add'}
+            <FontAwesomeIcon icon={faPlus} className='text-md cursor-pointer'/>
           </button>
         </div>
       </div>
