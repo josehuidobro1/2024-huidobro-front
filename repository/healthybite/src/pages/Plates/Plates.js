@@ -17,6 +17,7 @@ export const Plates = () => {
     const [foodData, setFoodData]=useState([])
     const [loading, setLoading]=useState(true)
     const [newPlate, setNewPlate]=useState(false)
+    const [successMessage, setSuccessMessage] = useState('');
 
     const fetchPlates = async () => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -30,7 +31,7 @@ export const Plates = () => {
             }else{
                 console.log('No user is signed in');
             }
-            setLoading(false);
+            
         })
         return () => unsubscribe();
     };
@@ -39,16 +40,19 @@ export const Plates = () => {
         try {
             const food=await fetchAllFoods()
             setFoodData(food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1))
-            setLoading(false)
             
         }catch (e){
             console.log("Error fetching food data on Plate page ", e)
         }
     }
+    const handleupdatePlates = ()=>{
+        fetchPlates()
+    }
 
     useEffect(()=>{
         fetchPlates()
         fetchFood()
+        setLoading(false)
     },[])
 
   return (
@@ -67,13 +71,20 @@ export const Plates = () => {
                         <div className='flex md:h-full flex-col lg:mr-10 w-10/12 md:w-3/5 lg:w-2/4  ' >
                             <div className='flex flex-row justify-start md:justify-start items-center w-full '>
                                 <p className='text-healthyDarkGray1 font-belleza text-3xl  '>My plates</p>
+
                             </div>
                             <div className='flex flex-col  font-quicksand text-darkGray items-start w-full lg:ml-12 '>
+
                                 
                             {plates && plates.length > 0 ?
                             <div className='flex flex-col w-full md:w-11/12 justify-start items-start mt-8 md:max-h-[400px] md:overflow-y-auto'>
+                                        {successMessage && (
+                                        <div className='text-healthyGreen mt-2  font-quicksand'>
+                                            {successMessage}
+                                        </div>
+                                    )}
                                 {plates.map((plate, index) => (
-                                    <PlateItem plate={plate} key={index} foodData={foodData} />
+                                    <PlateItem plate={plate} key={index} foodData={foodData} handleupdatePlates={handleupdatePlates} setSuccessMessage= {setSuccessMessage} />
                                 ))}
                             </div>
                             :
