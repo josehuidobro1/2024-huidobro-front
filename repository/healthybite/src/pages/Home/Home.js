@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault} from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID} from "../../firebaseService";
 import Filter from "./components/Filter";
 import Loading from "../../components/Loading";
 
@@ -35,6 +35,10 @@ function Home() {
             setFilteredFood(userFood)
         }
     },[filterSelected])
+    const getUserData = async()=> {
+        setPlatesData(await  getUserPlates())
+        setDrinksData (await getUserDrinks())
+    }
     
     const handleChangesCat = async () => {
         try {
@@ -76,22 +80,30 @@ function Home() {
                 const food = await fetchAllFoods();
                 setFoodData(food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1));
                 
-    
-                // Fetch food details for each user food using Promise.all
                 const userFoodDetails = await Promise.all(userFood.map(async (item) => {
                     let foodDetails;
     
                     // Try fetching from the 'food' table first
                     foodDetails = await fetchFoodByID(item.id_Food);
+
                     
                     // If no details are found in the 'food' table, try the 'menu' table
                     if (!foodDetails) {
-                        foodDetails = await getProdByID(item.id_Food);
-                        console.log(foodDetails.calories)
+                        foodDetails = await getPlateByID(item.id_Food);
+                        console.log(foodDetails)
+                        if(!foodDetails){
+                            foodDetails = await getDrinkByID(item.id_Food);
+                            if(!foodDetails){
+                                foodDetails = await getProdByID(item.id_Food)
+                            }
+                        }
+
+
                     }
                     const calories = foodDetails?.calories_portion !== undefined 
                     ? Math.round(foodDetails?.calories_portion) 
                     : Math.round(foodDetails?.calories || 0);
+
     
                     // Return the item with details or set defaults if not found
                     return {
@@ -134,6 +146,10 @@ function Home() {
         fetchFoods();
         fetchCategories();
     },[date])
+    useEffect(()=>{
+        getUserData()
+        console.log(drinksData, platesData)
+    },[])
 
 
     const handleAddMeal = async () => {

@@ -651,3 +651,15 @@ export const deleteDrinkType = async (doc_id) => {
         return null; // Return null or handle the error as needed
     }
 };
+export const getDrinkByID = async (drink_id) => {
+    const response = await axios.get(`http://127.0.0.1:8000/DrinkById/${drink_id}`);
+    const drink=response.data.message.drink
+    return drink
+
+}
+export const getPlateByID = async (plate_id) => {
+    const response = await axios.get(`http://127.0.0.1:8000/GetPlateByID/${plate_id}`);
+    const drink=response.data.message.plate
+    return drink
+
+}
