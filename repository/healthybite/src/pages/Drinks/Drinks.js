@@ -8,6 +8,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { NewDrink } from './components/NewDrink'
 import DrinkItem from './components/DrinkItem'
 import {fechDrinkTypes, getUserDrinks} from '../../firebaseService'
+import PopUpDrink from './components/PopUpDrink'
 
 const drinks=[
     {
@@ -80,6 +81,7 @@ export const Drinks = () => {
                 </div>
             </div>
         </div>}
+        <PopUpDrink />
     </div>
     )
 }

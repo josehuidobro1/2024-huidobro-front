@@ -9,9 +9,12 @@ import Loading from '../../components/Loading'
 import NewPlate from './components/NewPlate'
 import {getUserPlates} from '../../firebaseService'
 import { auth } from "../../firebaseConfig";
+import emptyPlate from '../../assets/emptyPlate.png'
+import PopUpPlate from './components/PopUpPlates'
 
 export const Plates = () => {
-
+    const [addFood, setAddFood]=useState(false)
+    const [plate, setPlate]=useState(null)
     const [plates, setPlates] = useState([]);
     const [options, setOption]=useState(false)
     const [foodData, setFoodData]=useState([])
@@ -84,20 +87,19 @@ export const Plates = () => {
                                         </div>
                                     )}
                                 {plates.map((plate, index) => (
-                                    <PlateItem plate={plate} key={index} foodData={foodData} handleupdatePlates={handleupdatePlates} setSuccessMessage= {setSuccessMessage} />
+                                    <PlateItem plate={plate} key={index} foodData={foodData} handleupdatePlates={handleupdatePlates} setSuccessMessage={setSuccessMessage} setAddFood={setAddFood} setPlate={setPlate} />
                                 ))}
                             </div>
                             :
-                            <div className='w-full flex justify-center items-center h-2/3'>
-                                <p className='text-xl font-quicksand text-left text-healthyDarkGray1'>There are not plates created yet</p>
-                            </div>
-}
-
+                            <div className='flex justify-center items-center flex-col w-full my-5  md:mt-20 lg:w-2/3 h-full lg:mt-10'>
+                                <img className='w-1/3 opacity-30' src={emptyPlate} alt='Empty plate'/>
+                                <p className='font-quicksand font-bold text-sm mt-3 text-healthyGray1 text-center w-3/4'>There are no plates&nbsp;created</p>
+                            </div>}
                             </div>
                         </div>
                         <div className='flex flex-col items-start justify-start w-10/12 my-4  md:my-0 md:w-2/5 md:mr-2'>
                             <button onClick={()=>setNewPlate(!newPlate)} className={`text-white text-md font-bold px-4 py-1 ${ newPlate ? 'rounded-t-lg' :'rounded-lg'} bg-healthyGray1 hover:bg-healthyDarkGray1 w-full `}><FontAwesomeIcon icon={faPlus} className='mr-2 '/>New plate</button>
-                            {newPlate && <NewPlate foodData={foodData} setPlates={setPlates}/>}
+                            {newPlate && <NewPlate foodData={foodData} setPlates={setPlates} plates={plates}/>}
                         </div>
                     </div>
                 </div>
@@ -105,6 +107,7 @@ export const Plates = () => {
 
             </div>
         </div>}
+        {addFood && <PopUpPlate plate={plate} foodData={foodData} setAddFood={setAddFood}  />}
     </div>
   )
 }

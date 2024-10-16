@@ -5,7 +5,7 @@ import { uploadImageToStorage } from "../../../firebaseConfig";
 import { faImage } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const NewPlate = ({ foodData, setPlates }) => {
+const NewPlate = ({ foodData, setPlates, plates }) => {
   const [plateName, setPlateName] = useState('');
   const [selectedFoods, setSelectedFoods] = useState([]);
   const [message, setMessage] = useState(''); // State for success message
@@ -70,10 +70,9 @@ const createPlate = async () => {
     };
 
     // Update the UI without refreshing the page
-    setPlates((prev) => [
-      ...prev,
-      { name: plateName, ingredients: ingredientsArray, calories_portion: totalCalories, image: imageUrl },
-    ]);
+    const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totalCalories, image: imageUrl })
+    console.log('ASI QUEDARIA LOS NUEVOS PLATOS ', newPlates)
+    setPlates(newPlates);
 
     await createplate(data);
 
@@ -133,7 +132,7 @@ const savePlate = async () => {
           
         </div>
       {message && (
-        <p className="text-green-600 font-semibold mt-2">{message}</p>
+        <p className="text-white bg-healthyGreen px-2 py-1 rounded-full text-sm text-center font-semibold mt-2">{message}</p>
       )}
 
       <div className="font-quicksand text-sm text-healthyGreen px-2 w-full">

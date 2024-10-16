@@ -6,7 +6,7 @@ import EditFood from './EditFood'
 import DeletePopUp from '../../../components/DeletePopUp'
 import {deleteplate,updatePlate} from '../../../firebaseService'
 
-export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessage }) => {
+export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessage , setAddFood, setPlate}) => {
     const [options, setOption] = useState(false)
     const [edit, setEdit] = useState(false)
     const [deleteItem, setDeleteItem] = useState(false)
@@ -79,6 +79,11 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
         }
     };
     
+    const handleAddFood=()=>{
+        console.log('EL PLATO SELECCIONADO ',plate)
+        setPlate(plate)
+        setAddFood(true)
+    }
 
     return (
         <>
@@ -133,7 +138,7 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
                                     />
                                 ))}
                             </div>
-                            <FontAwesomeIcon icon={faCirclePlus} className='text-2xl w-1/12 text-white hover:text-healthyDarkOrange2 cursor-pointer' />
+                            <FontAwesomeIcon onClick={handleAddFood} icon={faCirclePlus} className='text-2xl w-1/12 text-white hover:text-healthyDarkOrange2 cursor-pointer' />
                         </div>
                         <div className='w-full flex justify-center items-center'>
                             <div onClick={updateData} className='hover:cursor-pointer bg-white shadow-md rounded-2xl px-2 lg:px-4 py-1 flex flex-row items-center justify-center mt-2 w-full lg:w-1/2'>

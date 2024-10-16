@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
-const FoodItem = ({ food, onFoodAdd, reset, onResetComplete }) => {
-  const [value, setValue] = useState(0);
-  const [isAdded, setIsAdded] = useState(false);
+const FoodItem = ({ food, onFoodAdd, reset, onResetComplete, selectedFood }) => {
+  const foodSeledted=selectedFood ? selectedFood.find((item)=>item.ingredientId === food.id) : null
+  const [value, setValue] = useState(foodSeledted && foodSeledted.quantity );
+  const [isAdded, setIsAdded] = useState(foodSeledted ? true : false );
   const [errorMessage, setErrorMessage] = useState(''); // State for error message
 
   // Trigger reset of the component when reset prop changes to true
@@ -16,6 +17,7 @@ const FoodItem = ({ food, onFoodAdd, reset, onResetComplete }) => {
       onResetComplete(); // Notify parent component that reset is complete
     }
   }, [reset, onResetComplete]);
+
 
   const handleAddClick = () => {
     if (value === 0) {
