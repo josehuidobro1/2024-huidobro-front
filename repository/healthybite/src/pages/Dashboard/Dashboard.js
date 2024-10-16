@@ -7,6 +7,7 @@ import { faAngleLeft, faAngleRight, faFilter, faXmark} from '@fortawesome/free-s
 import { fetchAllFoods, formatDate, getCaloriesByCategories,getCategoriesAndDefaults,getFilterData,getTotCalUser } from "../../firebaseService";
 import Loading from "../../components/Loading";
 import Data from "../Data";
+import { EmptyChart } from "./components/EmptyChart";
   
 
 
@@ -232,18 +233,21 @@ export default function Dashboard() {
                 </div>:
                 <p className="font-quicksand text-sm font-semibold text-healthyGray1 text-center mt-4 md:w-3/5 md:my-10 lg:mt-4" >There are no meals recorded from&nbsp;{formatDate(currentDate)}</p>}
             </div>
-            <div className="flex flex-col xs:flex-row  items-center lg:items-start lg:ml-2 justify-center w-full md:mt-4 lg:mt-0 ">
+            <div className="flex flex-col xs:flex-row  items-center lg:items-start lg:ml-2 justify-center w-full md:mt-4 lg:mt-0 pb-32 xs:pb-0 ">
                 <div className="flex flex-col w-11/12 lg:mt-0 md:w-10/12   font-quicksand  ">
                     <div className="flex flex-row justify-between w-full p-3 rounded-xl bg-hbGreen items-center  ">
                         <FontAwesomeIcon onClick={()=>previusChart()} icon={faAngleLeft} className="text-darkGray hover:cursor-pointer text-xl px-2 hover:text-healthyDarkGray1"/>
                         <h1 className="text-darkGray  font-belleza text-xl">{charts[index].label} charts</h1>
                         <FontAwesomeIcon onClick={()=>nextChart()} icon={faAngleRight} className="text-darkGray hover:cursor-pointer text-xl px-2 hover:text-healthyDarkGray1"/>
                     </div>
-                    <div className="flex flex-col w-full rounded-xl pt-2">
+                    <div className="flex flex-col w-full rounded-xl pt-2 ">
                         <div className=" w-full p-2 bg-healthyGreen rounded-t-xl">
                             <p className="font-belleza text-lg text-darkGray pl-3">Category chart</p>
                         </div>
                         <div className="bg-hbGreen p-2 rounded-b-xl w-full flex  ">
+                        {(index===0 && weeklyCal.general.length===0) || (index===1 && monthlyCal.general.length===0) || (index===2 && annualCal.general.length===0) ?
+                        <EmptyChart />
+                        :
                         <LineChart
                             colors={palette}
 
@@ -259,7 +263,7 @@ export default function Dashboard() {
                                 },
                             ]}
                             height={300}
-                        />
+                        />}
                         </div>
                     </div>
                 </div>
