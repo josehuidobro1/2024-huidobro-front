@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const FoodItem = ({ food, onFoodAdd, reset, onResetComplete, selectedFood }) => {
-  const foodSeledted=selectedFood ? selectedFood.find((item)=>item.ingredientId === food.id) : null
-  const [value, setValue] = useState(foodSeledted && foodSeledted.quantity );
+  const foodSeledted=selectedFood.find((item)=>item.ingredientId === food.id && item.quantity>0)
+  const [value, setValue] = useState(foodSeledted && foodSeledted.quantity);
   const [isAdded, setIsAdded] = useState(foodSeledted ? true : false );
   const [errorMessage, setErrorMessage] = useState(''); // State for error message
 
@@ -24,7 +24,6 @@ const FoodItem = ({ food, onFoodAdd, reset, onResetComplete, selectedFood }) => 
       setErrorMessage('Please select a value greater than 0 before adding.');
       return;
     }
-
     setIsAdded(!isAdded);
     onFoodAdd(food, isAdded ? 0 : value);
     setErrorMessage(''); // Clear error message on successful add

@@ -14,20 +14,25 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
     const [ingredientsUpdate, setIngredientsUpdate] = useState(
         plate.ingredients.map((item) => ({ ...item })) // Clone ingredients
     );
-    const handleRemoveIngredient = (index) => {
-    setIngredientsUpdate((prev) => {
-        const updated = [...prev];
-        updated.splice(index, 1); // Remove the item at the specified index
-        return updated;
-    });
-};
-
-
-    // Map the ingredients to corresponding food data
-    const foodPlate = ingredientsUpdate.map((item) => {
+    const [foodPlate, setFoodPlate]=useState(ingredientsUpdate.map((item) => {
         const foodItem = foodData.find((food) => food.id === item.ingredientId);
         return foodItem ? { ...foodItem, amount: item.quantity } : null;
-    }).filter(Boolean); // Remove null values if no match found
+    }).filter(Boolean))
+    
+    const handleRemoveIngredient = (index) => {
+    setIngredientsUpdate((prev) => {
+            const updated = [...prev];
+            updated.splice(index, 1); // Remove the item at the specified index
+            return updated;
+        });
+    };
+
+    useEffect(()=>{
+        setFoodPlate(plate.ingredients.map((item)=>{
+            const foodItem = foodData.find((food) => food.id === item.ingredientId);
+            return foodItem && { ...foodItem, amount: item.quantity } ;
+        }))
+    },[plate])
 
     const handleUpdateIngredient = (index, newQuantity) => {
         setIngredientsUpdate((prev) => {

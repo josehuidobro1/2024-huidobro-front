@@ -4,12 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faSquareCheck, faSquare} from '@fortawesome/free-solid-svg-icons'; 
 import NewFood from '../../Home/components/NewFood';
 import FoodItem from './FoodItem';
+import { indexedDBLocalPersistence } from 'firebase/auth';
 
-export default function PopUpPlate({plate,foodData, setAddFood, setSelection, fetchFoods}) {
+export default function PopUpPlate({plate,foodData, setAddFood, setSelection}) {
     const [reset, setReset] = useState(false);
-    const [searchFood, setSearchFood] = useState(foodData.map((item)=> {
-        const thatFood =  plate.ingredients.find(e => e.ingredientId === item.id);
-        return  thatFood ? thatFood : {ingridientId: item.id, quantity:0}}));
+    const [searchFood, setSearchFood] = useState(foodData);
     const [selectedFoods, setSelectedFoods] = useState(foodData.map((item)=> {
         const thatFood =  plate.ingredients.find(e => e.ingredientId === item.id);
         return  thatFood ? thatFood : {ingridientId: item.id, quantity:0}}));
@@ -29,11 +28,9 @@ export default function PopUpPlate({plate,foodData, setAddFood, setSelection, fe
     const handleAddFood= ()=>{
         const foodSelected=selectedFoods.filter((item)=>item.quantity>0)
         if(foodSelected.length>0){
-            console.log('food selected add food', foodSelected)
-            /*
             setSelection({ingridients:foodSelected, plate:plate.id})
             setAddFood(false)
-            setMessage('')*/
+            setMessage('')
         }else{
             setMessage('Please select at least one item')
         }
@@ -47,7 +44,6 @@ export default function PopUpPlate({plate,foodData, setAddFood, setSelection, fe
 
     const handleFoodChange = (food, quantity ) => {
         setSelectedFoods([...selectedFoods.filter((item)=>item.ingredientId !== food.id), {ingridientId: food.id, quantity: Number(quantity)} ]);
-        console.log('Como se agrega la comida ', selectedFoods)
     };
     
     const handleResetComplete = () => {
@@ -77,12 +73,12 @@ export default function PopUpPlate({plate,foodData, setAddFood, setSelection, fe
             <div className='flex flex-col justify-center w-full bg-white rounded-md my-3 px-1  xs:px-2 lg:px-3 pb-2 pt-1 '>
                 {searchFood && searchFood.map((food, index)=>(
                     <FoodItem
-                        key={food.id}
+                        key={index}
                         food={food}
                         onFoodAdd={handleFoodChange}
                         reset={reset}
                         onResetComplete={handleResetComplete}
-                        selectedFood={plate.ingredients}
+                        selectedFood={selectedFoods}
                     />
                 ))}
             </div>}

@@ -11,6 +11,7 @@ import {getUserPlates} from '../../firebaseService'
 import { auth } from "../../firebaseConfig";
 import emptyPlate from '../../assets/emptyPlate.png'
 import PopUpPlate from './components/PopUpPlates'
+import { PickersSectionListSectionContent } from '@mui/x-date-pickers/PickersSectionList/PickersSectionList'
 
 export const Plates = () => {
     const [addFood, setAddFood]=useState(false)
@@ -21,6 +22,7 @@ export const Plates = () => {
     const [loading, setLoading]=useState(true)
     const [newPlate, setNewPlate]=useState(false)
     const [successMessage, setSuccessMessage] = useState('');
+    const [selection , setSelection]=useState(null)
 
     const fetchPlates = async () => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
@@ -51,6 +53,13 @@ export const Plates = () => {
     const handleupdatePlates = ()=>{
         fetchPlates()
     }
+
+    useEffect(()=>{
+        if(plates.length>0 && selection){
+        const platesEdited=plates.map(plateItem => plateItem.id===selection.plate ? {...plates.find((item)=>item.id===selection.plate), ingredients: selection.ingridients} : plateItem)
+        setPlates(platesEdited);
+        setSelection(null)
+    }},[selection])
 
     useEffect(()=>{
         fetchPlates()
@@ -107,7 +116,7 @@ export const Plates = () => {
 
             </div>
         </div>}
-        {addFood && <PopUpPlate plate={plate} foodData={foodData} setAddFood={setAddFood}  />}
+        {addFood && <PopUpPlate plate={plate} foodData={foodData} setAddFood={setAddFood} setSelection={setSelection} />}
     </div>
   )
 }
