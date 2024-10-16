@@ -81,7 +81,7 @@ export const Drinks = () => {
                 </div>
             </div>
         </div>}
-        <PopUpDrink />
+        
     </div>
     )
 }
