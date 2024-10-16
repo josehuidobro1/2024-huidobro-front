@@ -63,14 +63,6 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
             setMessage("The calories per portion are required");
             return;
         }
-        if (!sugar){
-            setMessage("sugar is missing, in case the drink does not have sugar fill with 0");
-            return;
-        }
-        if (!caffeine){
-            setMessage("caffeine is missing, in case the drink does not have caffeine fill with 0");
-            return;
-        }
 
         if (name && typeSelected && measure && amount && calories) {
             try {
@@ -139,6 +131,7 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
                                         drinkType={drinkType}
                                         setTypeSelected={setTypeSelected}
                                         setTypeId = {setTypeId}
+                                        setTypeOptions = {setTypeOptions}
                                         handleDrinkTypeUpdate = {handleDrinkTypeUpdate}
                                     />
                                 ))}
@@ -172,10 +165,11 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
                         <div className='flex w-1/3 items-baseline justify-end'>
                             <input
                                 type='text'
+
                                 value={measure}
                                 onChange={(e) => setMeasure(e.target.value)}
-                                placeholder='Enter measure'
-                                className='bg-healthyGray p-1 w-2/3 text-right rounded-md focus:outline-none focus:ring focus:ring-healthyGreen'
+                                placeholder='cup'
+                                className='bg-healthyGray p-1 w-2/3 text-center rounded-md focus:outline-none focus:ring focus:ring-healthyGreen'
                             />
                             <p className='text-xs ml-1 w-1/3'>{''}</p>
                         </div>
