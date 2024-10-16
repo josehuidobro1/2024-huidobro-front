@@ -7,6 +7,8 @@ import { deleteDrink, updateDrink } from '../../../firebaseService';
 const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
     const [deleteItem, setDeleteItem] = useState(false);
     const [edit, setEdit] = useState(false);
+    const [caretClicked, setCaretClicked] = useState(false);
+
     const [options, setOption] = useState(false);
     const [message, setMessage] = useState('');
     const [typeSelected, setTypeSelected] = useState(drink.type);
@@ -169,6 +171,7 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
                                     <p className='text-white font-bold text-sm'>Caffeine</p>
                                     <input 
                                         type="number" 
+                                        placeholder='0'
                                         value={caffeine} 
                                         onChange={(e) => handleChange(e, setCaffeine)} 
                                         className='bg-white focus:outline-none px-2 py-1 w-full text-sm text-darkGray rounded-full' 
@@ -179,6 +182,7 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
                                     <p className='text-white font-bold text-sm'>Sugar</p>
                                     <input 
                                         type="number" 
+                                        placeholder='0'
                                         value={sugar} 
                                         onChange={(e) => handleChange(e, setSugar)} 
                                         className='bg-white focus:outline-none px-2 py-1 w-full text-sm text-darkGray rounded-full' 
@@ -209,6 +213,7 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
                                     <p className='text-white font-bold text-sm'>Measure</p>
                                     <input 
                                         type="text" 
+                                        placeholder='cup'
                                         value={measure} 
                                         onChange={(e) => setMeasure(e.target.value)} 
                                         className='bg-white focus:outline-none px-2 py-1 w-full text-sm text-darkGray rounded-full' 
@@ -218,19 +223,23 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
                                 <div className='flex flex-col w-full my-2'>
                                     <p className='text-white font-bold text-sm'>Type of Drink</p>
                                     <div className='flex items-center justify-between'>
-                                        <p className='bg-white px-2 py-1 w-32 text-right rounded-l-full text-sm text-healthyDarkGray1'>
-                                            {typeOfDrinks.find(type => type.id === typeSelected)?.name}  {/* Display the name of the current type */}
+                                        <p className='flex flex-col w-full my-2 bg-white px-2 py-1 w-32 text-left rounded-l-full text-sm text-darkGray'>
+                                            {caretClicked 
+                                                ? typeOfDrinks.find(type => type.id === typeSelected)?.name 
+                                                : typeOfDrinks.find(type => type.id === drink.typeOfDrink)?.name || "Unknown Type"}
                                         </p>
                                         <FontAwesomeIcon 
                                             onClick={() => {
                                                 const nextIndex = (typeOfDrinks.findIndex(type => type.id === typeSelected) + 1) % typeOfDrinks.length;
-                                                setTypeSelected(typeOfDrinks[nextIndex]?.id);  // Update the selected type with its ID
+                                                setTypeSelected(typeOfDrinks[nextIndex]?.id);
+                                                setCaretClicked(true);  // Set caretClicked to true once the user clicks the caret
                                             }} 
                                             icon={faCaretRight} 
                                             className='text-white cursor-pointer bg-healthyOrange p-1 px-2 text-xl hover:bg-healthyOrange/70 rounded-r-full' 
                                         />
                                     </div>
                                 </div>
+
 
                                 <div onClick={handleEditDrink} className='hover:cursor-pointer bg-healthyOrange shadow-md py-1 rounded-full mx-3 my-1 flex flex-row items-center justify-center w-36'>
                                     <FontAwesomeIcon icon={faBookmark} className='text-white text-sm' />

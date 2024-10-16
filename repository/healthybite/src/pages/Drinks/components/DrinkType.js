@@ -4,10 +4,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import {deleteDrinkType} from '../../../firebaseService'
 
-const DrinkType = ({ drinkType, setTypeSelected, setTypeId, handleDrinkTypeUpdate }) => {
+const DrinkType = ({ drinkType, setTypeSelected, setTypeId,setTypeOptions, handleDrinkTypeUpdate }) => {
     const typeselected = async () => {
         setTypeSelected(drinkType.name);
         setTypeId(drinkType.id);
+        setTypeOptions(false)
     };
     const handleDelete=async()=>{
         try{
@@ -22,16 +23,15 @@ const DrinkType = ({ drinkType, setTypeSelected, setTypeId, handleDrinkTypeUpdat
     }
 
     return (
-        <div className='flex justify-between items-center mt-1 bg-hbGreen rounded-sm'>
+        <div className='flex justify-between items-center mt-1 bg-hbGreen rounded-sm hover:border-healthyGreen border-2 border-hbGreen'>
             <button
                 onClick={typeselected}
-                className='text-sm text-right bg-hbGreen hover:border-healthyGreen border-2 border-hbGreen text-healthyDarkGreen px-2 rounded-sm'
+                className='w-11/12 text-sm text-left bg-hbGreen  text-healthyDarkGreen px-2 rounded-sm'
             >
                 {drinkType.name}
             </button>
-            {/* Conditionally render the delete button based on id_user */}
             {drinkType.id_user !== 'default' && (
-                <button onClick={() => handleDelete(drinkType.id)} className='ml-2 border-2'>
+                <button onClick={() => handleDelete(drinkType.id)} className='ml-2 border-hbGreen border-2'>
                     <FontAwesomeIcon icon={faTimes} className='text-red-500' />
                 </button>
             )}
