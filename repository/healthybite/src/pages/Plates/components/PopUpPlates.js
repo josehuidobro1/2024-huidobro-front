@@ -11,7 +11,7 @@ export default function PopUpPlate({plate,foodData, setAddFood, setSelection}) {
     const [searchFood, setSearchFood] = useState(foodData);
     const [selectedFoods, setSelectedFoods] = useState(foodData.map((item)=> {
         const thatFood =  plate.ingredients.find(e => e.ingredientId === item.id);
-        return  thatFood ? thatFood : {ingridientId: item.id, quantity:0}}));
+        return  thatFood ? thatFood : {ingredientId: item.id, quantity:0}}));
     const [message, setMessage]=useState('')
     const [newFood, setNewFood]=useState(null)
     const [createFood, setCreateFood]=useState(false)
@@ -43,7 +43,7 @@ export default function PopUpPlate({plate,foodData, setAddFood, setSelection}) {
     },[createFood])
 
     const handleFoodChange = (food, quantity ) => {
-        setSelectedFoods([...selectedFoods.filter((item)=>item.ingredientId !== food.id), {ingridientId: food.id, quantity: Number(quantity)} ]);
+        setSelectedFoods([...selectedFoods.filter((item)=>item.ingredientId !== food.id), {ingredientId: food.id, quantity: Number(quantity)} ]);
     };
     
     const handleResetComplete = () => {

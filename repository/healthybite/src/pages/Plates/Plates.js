@@ -96,7 +96,7 @@ export const Plates = () => {
                                         </div>
                                     )}
                                 {plates.map((plate, index) => (
-                                    <PlateItem plate={plate} key={index} foodData={foodData} handleupdatePlates={handleupdatePlates} setSuccessMessage={setSuccessMessage} setAddFood={setAddFood} setPlate={setPlate} />
+                                    <PlateItem plate={plate} key={index} foodData={foodData} handleupdatePlates={handleupdatePlates} setSuccessMessage={setSuccessMessage} setAddFood={setAddFood} setPlate={setPlate} selection={selection} />
                                 ))}
                             </div>
                             :

@@ -6,7 +6,7 @@ import EditFood from './EditFood'
 import DeletePopUp from '../../../components/DeletePopUp'
 import {deleteplate,updatePlate} from '../../../firebaseService'
 
-export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessage , setAddFood, setPlate}) => {
+export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessage , setAddFood,selection, setPlate}) => {
     const [options, setOption] = useState(false)
     const [edit, setEdit] = useState(false)
     const [deleteItem, setDeleteItem] = useState(false)
@@ -28,11 +28,12 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
     };
 
     useEffect(()=>{
-        setFoodPlate(plate.ingredients.map((item)=>{
+        const newFoodData=plate.ingredients.map((item)=>{
             const foodItem = foodData.find((food) => food.id === item.ingredientId);
             return foodItem && { ...foodItem, amount: item.quantity } ;
-        }))
-    },[plate])
+        })
+        setFoodPlate(newFoodData)
+    },[selection])
 
     const handleUpdateIngredient = (index, newQuantity) => {
         setIngredientsUpdate((prev) => {
