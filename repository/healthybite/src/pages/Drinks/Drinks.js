@@ -47,7 +47,7 @@ export const Drinks = () => {
     const handleDrinkTypeUpdate =()=>{
         setLoading(true)
         const types=fetchUserDrinkTypes()
-        types.length>0 && setLoading(false)
+        types && setLoading(false)
     }
 
 
