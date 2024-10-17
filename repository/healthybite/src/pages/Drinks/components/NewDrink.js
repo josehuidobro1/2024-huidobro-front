@@ -5,7 +5,7 @@ import { faCaretDown, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { createDrink,createDrinkType } from '../../../firebaseService';
 import DrinkType from './DrinkType';
 
-export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes,handleDrinkTypeUpdate }) => {
+export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes,handleDrinkTypeUpdate, setDrinksData }) => {
     const [name, setName] = useState('');
     const [sugar, setSugar] = useState('');
     const [caffeine, setCaffeine] = useState('');
@@ -87,6 +87,7 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
                 setMeasure('');
                 setNewDrink(false);
                 handleUpdate();
+                setDrinksData(prev=>[...prev,data ])
                 console.log('Drink added successfully');
             } catch (error) {
                 console.log('Error adding new drink: ', error);
@@ -99,7 +100,7 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
         <div className='bg-white border-2 flex flex-col justify-start items-center rounded-b-xl border-healthyGreen border-t-none w-full max-h-[300px] md:max-h-[550px] lg:max-h-[400px] overflow-y-auto'>
             <div className='flex flex-col md:sticky md:top-0 py-2 w-full justify-center items-center text-healthyDarkGreen bg-white'>
                 {/* Display validation messages */}
-                {message && <p className='text-red-500 font-semibold mb-2'>{message}</p>}
+                {message && <p className='bg-red-600 text-white text-xs px-3 py-1 rounded-full text-center font-bold mb-2'>{message}</p>}
                 
                 <input
                     value={name}
