@@ -460,20 +460,30 @@ export const resetPassword = async (oobCode, newPassword) => {
 
 // APP MESIIDEPAUL
 
+// export const getProducts=async()=>{
+//     const response = await axios.get('https://candvbar-back.onrender.com/products');
+//     return response.data.products ? response.data.products : [];
+// }
+
+// export const editCalories=async(id,calories)=>{
+//     await axios.put(`https://candvbar-back.onrender.com/add-calories/${id}/${calories}`); 
+
+// }
+// export const getProdByID= async(prod_id)=>{
+//     const response = await axios.get(`https://candvbar-back.onrender.com/products/${prod_id}`);
+//     const food=response.data.product
+//     return food
+// }
 export const getProducts=async()=>{
-    const response = await axios.get('https://candvbar-back.onrender.com/products');
-    return response.data.products ? response.data.products : [];
+    return ""
 }
-
 export const editCalories=async(id,calories)=>{
-    await axios.put(`https://candvbar-back.onrender.com/add-calories/${id}/${calories}`); 
-
+    return ""
 }
 export const getProdByID= async(prod_id)=>{
-    const response = await axios.get(`https://candvbar-back.onrender.com/products/${prod_id}`);
-    const food=response.data.product
-    return food
+    return ""
 }
+
 
 // things that need to be deployed
 export const createplate = async (selection) => {

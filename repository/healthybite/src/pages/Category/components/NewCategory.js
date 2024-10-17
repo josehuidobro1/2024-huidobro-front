@@ -107,6 +107,8 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods}) {
                     <div className='flex flex-col items-start ml-2'>
                         <p className='text-sm lg:text-md font-semibold text-darkGray'>{food.name}</p>
                         {food.bar && <p className='text-xs text-messidepaul  '>by C&V menu</p>}
+                        {food.drink && <p className='text-xs text-messidepaul  '>Drink</p>}
+                        {food.plate && <p className='text-xs text-messidepaul  '>Plate</p>}
                     </div>
                 </div>))}
             </div>

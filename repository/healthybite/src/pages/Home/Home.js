@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID} from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes} from "../../firebaseService";
 import Filter from "./components/Filter";
 import Loading from "../../components/Loading";
 
@@ -24,8 +24,10 @@ function Home() {
     const [newFood, setNewFood] = useState();
     const [categories, setCategories]=useState([])
     const [filteredFood, setFilteredFood]=useState([])
+    const [filteredDrinks, setFilteredDrinks] = useState([]); // state for filtered drinks
     const [filterSelected, setFilterSelected]=useState(null)
     const [loading, setLoading] = useState(true);
+    const [groupedDrinks, setGroupedDrinks] = useState([])
 
     useEffect(()=>{
         if(filterSelected) {
@@ -133,8 +135,15 @@ function Home() {
         try {
             const cats = await getCategories();
             const defaultCats= await getDefaultCategories();
+            const drinkCats = await getGroupedDrinkTypes();
+            console.log(cats,defaultCats,drinkCats)
             await handleChangesCat()
-            setCategories(defaultCats.concat(cats));
+            const combinedCats = [
+                ...cats, 
+                ...defaultCats,
+                ...drinkCats
+            ];
+            setCategories(combinedCats);
         } catch (err) {
             console.log('Error al obtener las categorias: ' + err);
         }
