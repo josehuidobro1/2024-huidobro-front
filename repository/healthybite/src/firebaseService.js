@@ -448,20 +448,30 @@ export const resetPassword = async (oobCode, newPassword) => {
 
 // APP MESIIDEPAUL
 
+// export const getProducts=async()=>{
+//     const response = await axios.get('https://candvbar-back.onrender.com/products');
+//     return response.data.products ? response.data.products : [];
+// }
+
+// export const editCalories=async(id,calories)=>{
+//     await axios.put(`https://candvbar-back.onrender.com/add-calories/${id}/${calories}`); 
+
+// }
+// export const getProdByID= async(prod_id)=>{
+//     const response = await axios.get(`https://candvbar-back.onrender.com/products/${prod_id}`);
+//     const food=response.data.product
+//     return food
+// }
 export const getProducts=async()=>{
-    const response = await axios.get('https://candvbar-back.onrender.com/products');
-    return response.data.products ? response.data.products : [];
+    return ""
 }
-
 export const editCalories=async(id,calories)=>{
-    await axios.put(`https://candvbar-back.onrender.com/add-calories/${id}/${calories}`); 
-
+    return ""
 }
 export const getProdByID= async(prod_id)=>{
-    const response = await axios.get(`https://candvbar-back.onrender.com/products/${prod_id}`);
-    const food=response.data.product
-    return food
+    return ""
 }
+
 
 // things that need to be deployed
 export const createplate = async (selection) => {
@@ -660,6 +670,12 @@ export const getDrinkByID = async (drink_id) => {
 export const getPlateByID = async (plate_id) => {
     const response = await axios.get(`http://127.0.0.1:8000/GetPlateByID/${plate_id}`);
     const drink=response.data.message.plate
+    return drink
+
+}
+export const getGroupedDrinkTypes = async () => {
+    const response = await axios.get(`http://127.0.0.1:8000/getUserGroupDrinkType/${auth.currentUser.uid}`);
+    const drink=response.data.Drinks
     return drink
 
 }
