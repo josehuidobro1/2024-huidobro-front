@@ -256,12 +256,14 @@ export default function Dashboard() {
                 </div>
                 {userCalories && userCalories.find(item=>item.day===formatDate(currentDate)) ?
                 <div className="xs:mt-6 mt-0 flex flex-col   w-full  items-center justify-start ">
-                    <PieChart
-                        colors={palette}
-                        series={[{data: userCalories.find(item=> item.day===formatDate(currentDate)).categories}]}
-                        width={window.innerWidth<'400' ? chartWidth*1.68 : chartWidth*1.9}
-                        height={window.innerWidth<'400' ? chartWidth*0.9 : chartWidth }
-                    />
+                    <div className="flex w-full justify-center items-center ">
+                        <PieChart
+                            colors={palette}
+                            series={[{data: userCalories.find(item=> item.day===formatDate(currentDate)).categories}]}
+                            width={window.innerWidth<'400' ? chartWidth*1.68 : chartWidth*1.9}
+                            height={window.innerWidth<'400' ? chartWidth*0.9 : chartWidth }
+                        />   
+                    </div>
                     {(drinksDay && drinksDay.length > 0 && userCalories.find(item=>item.day===formatDate(currentDate))) ? 
                     <table className="w-full  mx-2 xs:mx-0 font-quicksand text-sm xs:text-md  my-6 lg:my-12 border-spacing-2  table-fixed border-collapse font-normal text-healthyDarkOrange rounded-lg border border-healthyDarkOrange ">
                         <thead>
