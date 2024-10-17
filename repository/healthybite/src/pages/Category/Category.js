@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIceCream, faTrash, faPen, faPlus} from '@fortawesome/free-solid-svg-icons'; 
 import CategoryItem from './components/CategoryItem';
 import NewCategory from './components/NewCategory';
-import { fetchAllFoods, getCategories, getProducts} from "../../firebaseService";
+import { fetchAllFoods, getCategories, getProducts, getUserDrinks,getUserPlates} from "../../firebaseService";
 import PopUpCat from "./components/PopUpCat";
 import { auth } from "../../firebaseConfig";
 import Loading from "../../components/Loading";
@@ -40,7 +40,16 @@ function Category() {
         try{
             const food = await fetchAllFoods()
             const barFood=await getProducts()
-            setFoodData(food.concat(barFood.map((item)=>({...item, bar:true}))))
+            const drinks = await getUserDrinks()
+            const plates = await getUserPlates()
+            const combinedFoodData = [
+                ...food, 
+                ...barFood.map((item) => ({ ...item, bar: true })),
+                ...drinks.map((item) => ({ ...item, drink: true })),
+                ...plates.map((item) => ({ ...item, plate: true }))
+            ];
+    
+            setFoodData(combinedFoodData)
         }catch(error){
             console.log("Error fetching foods in Category page: ", error)
         }
