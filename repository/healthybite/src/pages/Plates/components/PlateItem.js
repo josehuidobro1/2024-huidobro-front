@@ -20,11 +20,8 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
     }).filter(Boolean))
     
     const handleRemoveIngredient = (index) => {
-    setIngredientsUpdate((prev) => {
-            const updated = [...prev];
-            updated.splice(index, 1); // Remove the item at the specified index
-            return updated;
-        });
+        const updatedIngredients = ingredientsUpdate.filter((_, idx) => idx !== index);
+        setIngredientsUpdate(updatedIngredients);
     };
 
     useEffect(()=>{
@@ -37,19 +34,38 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
             setFoodPlate(newFoodData)}
         
     },[selection])
+    useEffect(() => {
+        if (plate && plate.ingredients && foodData.length > 0) {
+            const newFoodData = plate.ingredients.map((item) => {
+                const foodItem = foodData.find((food) => food.id === item.ingredientId);
+                return foodItem && { ...foodItem, amount: item.quantity };
+            }).filter(Boolean);
+            
+            setFoodPlate(newFoodData);
+        }
+    }, [plate, foodData, selection]);
+    
+    useEffect(() => {
+        const updatedFoodPlate = ingredientsUpdate.map((item) => {
+            const foodItem = foodData.find((food) => food.id === item.ingredientId);
+            return foodItem ? { ...foodItem, amount: item.quantity } : null;
+        }).filter(Boolean);
+        
+        setFoodPlate(updatedFoodPlate);
+    }, [ingredientsUpdate, foodData]);
+    
 
     const handleUpdateIngredient = (index, newQuantity) => {
-        setIngredientsUpdate((prev) => {
-            const updated = [...prev];
-            updated[index].quantity = newQuantity; // Update the quantity
-            return updated;
-        });
+        const updatedIngredients = ingredientsUpdate.map((ingredient, idx) => 
+            idx === index ? { ...ingredient, quantity: newQuantity } : ingredient
+        );
+        setIngredientsUpdate(updatedIngredients);
     };
 
     const updateData=async()=>{
         const updatedPlate = {
             ...plate,
-            image: '',
+            image: plate.image,
             ingredients: ingredientsUpdate,
             calories_portion: foodPlate.reduce((acc, item) => acc + (item.calories_portion * item.amount), 0), // Updated ingredients with new quantities
         };
