@@ -3,9 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const FoodItem = ({ food, onFoodAdd, reset, onResetComplete, selectedFood }) => {
-  const foodSeledted=selectedFood.find((item)=>item.ingredientId === food.id && item.quantity>0)
-  const [value, setValue] = useState(foodSeledted && foodSeledted.quantity);
-  const [isAdded, setIsAdded] = useState(foodSeledted ? true : false );
+  // Ensure selectedFood is defined and is an array
+  const foodSeledted = Array.isArray(selectedFood)
+    ? selectedFood.find((item) => item.ingredientId === food.id && item.quantity > 0)
+    : null;
+
+  const [value, setValue] = useState(foodSeledted ? foodSeledted.quantity : 0);
+  const [isAdded, setIsAdded] = useState(!!foodSeledted);
   const [errorMessage, setErrorMessage] = useState(''); // State for error message
 
   // Trigger reset of the component when reset prop changes to true
@@ -17,7 +21,6 @@ const FoodItem = ({ food, onFoodAdd, reset, onResetComplete, selectedFood }) => 
       onResetComplete(); // Notify parent component that reset is complete
     }
   }, [reset, onResetComplete]);
-
 
   const handleAddClick = () => {
     if (value === 0) {
@@ -35,7 +38,13 @@ const FoodItem = ({ food, onFoodAdd, reset, onResetComplete, selectedFood }) => 
         <p className='text-sm font-semibold w-2/3'>{food.name}</p>
         <div className='flex justify-end items-center'>
           <p className='text-xs'>{food.measure}</p>
-          <input type='number' placeholder='000' value={value} onChange={(e)=>e.target.value>=0 && setValue(e.target.value)} className='bg-healthyGray2 text-healthyDarkGray1 text-md text-right pl-1 py-1  rounded-md w-12 ml-1'/>
+          <input
+            type='number'
+            placeholder='000'
+            value={value}
+            onChange={(e) => e.target.value >= 0 && setValue(e.target.value)}
+            className='bg-healthyGray2 text-healthyDarkGray1 text-md text-right pl-1 py-1 rounded-md w-12 ml-1'
+          />
           <button
             className={`ml-2 px-2 py-1 text-xs border-2 border-healthyGreen ${isAdded ? 'bg-healthyGreen  text-white' : 'bg-white text-healthyGreen'} rounded`}
             onClick={handleAddClick}
@@ -52,6 +61,7 @@ const FoodItem = ({ food, onFoodAdd, reset, onResetComplete, selectedFood }) => 
 };
 
 export default FoodItem;
+
 
 
 

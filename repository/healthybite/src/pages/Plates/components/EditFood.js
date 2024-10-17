@@ -1,17 +1,22 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
-import Counter from '../../../components/Counter'
 import { faSquareMinus } from '@fortawesome/free-solid-svg-icons'
+import {handleInputChange} from '../../inputValidation'
+
 const EditFood = ({ item, onQuantityChange, onRemove }) => {
   const [value, setValue] = useState(item.amount); 
-  const handleChange = (newValue) => {
-      setValue(newValue); 
-      onQuantityChange(newValue); 
+
+  const handleChange = (e) => {
+      const newValue = e.target.value;
+      handleInputChange(newValue, 0, 1000, (validatedValue) => {
+        setValue(validatedValue);
+        onQuantityChange(validatedValue); // Use validated value
+    });
   };
 
-  useEffect(()=>{
-    setValue(item.amount)
-  },[item])
+  useEffect(() => {
+    setValue(item.amount);
+  }, [item]);
 
   return (
       <div className='flex justify-between mt-1'>
@@ -23,7 +28,15 @@ const EditFood = ({ item, onQuantityChange, onRemove }) => {
               />
               <p className='text-white text-xs font-bold'>{item.name}</p>
           </div>
-          <Counter value={value} setValue={handleChange} colour='bg-healthyOrange' /> 
+          
+          <input 
+            type="number"
+            value={value}
+            onChange={handleChange}
+            className='w-1/3 bg-healthyOrange text-center text-white p-1 rounded rounded-md w-12 ml-1'
+            min="0"
+          /> 
+          <p className='text-white text-xs font-bold ml-2'>{item.measure}</p>
       </div>
   );
 };
