@@ -8,7 +8,6 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { NewDrink } from './components/NewDrink'
 import DrinkItem from './components/DrinkItem'
 import {fechDrinkTypes, getUserDrinks} from '../../firebaseService'
-import PopUpDrink from './components/PopUpDrink'
 
 const drinks=[
     {
@@ -31,25 +30,34 @@ export const Drinks = () => {
     const fetchUserDrinks= async () => {
         const drinks = await getUserDrinks();
         setDrinksData(drinks);
+        return drinks
     }
 
-    useEffect(()=>{
-        fetchUserDrinkTypes();
-        fetchUserDrinks();
-        setLoading(false)
-    },[])
     const fetchUserDrinkTypes = async () => {
         const types = await fechDrinkTypes();
         setDrinktypes(types);
+        return types
     };
     const handleUpdate=()=>{
-        fetchUserDrinks()
+        setLoading(true)
+        const drink=fetchUserDrinks()
+        drink && setLoading(false)
+
     }
     const handleDrinkTypeUpdate =()=>{
-        fetchUserDrinkTypes()
+        setLoading(true)
+        const types=fetchUserDrinkTypes()
+        types && setLoading(false)
     }
 
 
+
+    useEffect(()=>{
+        setLoading(true)
+        const types=fetchUserDrinkTypes();
+        const drinks=fetchUserDrinks();
+        types && drinks && setLoading(false)
+    },[])
 
     return (
     <div className="h-screen w-full overflow-y-hidden">
@@ -64,19 +72,19 @@ export const Drinks = () => {
             <div className='w-11/12 sm:w-2/3 lg:w-4/6 flex flex-col  sm:h-full pt-8 px-5 lg:p-8  '>
                 <h1 className='text-3xl text-healthyDarkGreen font-belleza '>My own drinks</h1>
                 <div className='w-full flex flex-col-reverse lg:flex-row justify-between items-center  lg:items-start mt-5 lg:h-full'>
-                    {drinksData.length >0 ?
-                    <div className='w-full  lg:w-2/3 flex flex-col items-start'>
+                    {drinksData && drinksData.length >0 ?
+                    <div className='w-full  lg:w-2/3 lg:mr-5 lg:pr-3  flex flex-col items-start lg:h-[420px]  lg:overflow-y-auto '>
                         {drinksData.map((item)=>
                                 <DrinkItem drink={item} typeOfDrinks={drinktypes} handleUpdate={handleUpdate}/>
                         )}
                     </div>
-                    :<div className='flex justify-center items-center flex-col w-2/3 h-2/3'>
+                    :<div className='flex justify-center items-center flex-col w-2/3 h-2/3 mt-8 lg:mt-0'>
                         <img className='w-2/12 opacity-30' src={emptyDrink} alt='Empty glass'/>
                         <p className='font-quicksand font-bold text-sm mt-3 text-healthyGray1 text-center w-3/4'>There are no drinks&nbsp;created</p>
                     </div>}
                     <div className='w-full md:w-4/5 lg:w-1/3 flex flex-col justify-center'>
                         <button onClick={()=>setNewDrink(!newDrink)} className={`text-white text-md font-bold px-4 py-1 ${ newDrink ? 'rounded-t-lg' :'rounded-lg'} bg-healthyGray1 hover:bg-healthyDarkGray1 w-full `}><FontAwesomeIcon icon={faPlus} className='mr-2 '/>New drink</button>
-                        {newDrink && <NewDrink setNewDrink={setNewDrink} handleUpdate={handleUpdate} drinktypes={drinktypes} handleDrinkTypeUpdate={handleDrinkTypeUpdate} />}
+                        {newDrink && <NewDrink setNewDrink={setNewDrink} handleUpdate={handleUpdate} drinktypes={drinktypes} handleDrinkTypeUpdate={handleDrinkTypeUpdate} setDrinksData={setDrinksData}/>}
                     </div>
                 </div>
             </div>
