@@ -175,6 +175,7 @@ export default function Dashboard() {
             data.calories && setUserCalories(data.calories)
             data.calories && fetchDailyData(data.calories)
             data.drinks && setDrinksData(data.drinks)
+            data.drinks && setDrinksDay(data.drinks.filter((item)=>new Date(item.date_ingested).getDate()===new Date(currentDate).getDate() && new Date(item.date_ingested).getMonth()===new Date(currentDate).getMonth() && new Date(item.date_ingested).getFullYear()===new Date(currentDate).getFullYear()))
             data && setLoading(false) && setDataReady(true)
         }catch(e){
             console.log("Error fetching Total of calories consumed by user: ", e)
