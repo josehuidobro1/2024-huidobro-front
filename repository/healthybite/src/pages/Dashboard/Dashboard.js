@@ -45,6 +45,7 @@ export default function Dashboard() {
     const [drinksData, setDrinksData]=useState([])
     const [drinksDay, setDrinksDay]=useState([])
     const icons=Data.iconOptions
+    const [dataReady, setDataReady]=useState(false)
     
 
     const getWeeklyDates = (selectedDate) => {
@@ -68,33 +69,35 @@ export default function Dashboard() {
             general: [],
             categories: [] 
         };
-        if (!userCalories || userCalories.length === 0) return graphic;
-        const months = Array.from({ length: 12 }, () => ({ total: 0, categories: {} }));
-        userCalories.forEach(item => {
-            const [day, month, year] = item.day.split('/').map(Number);  
-            const itemDate = new Date(year, month - 1, day); 
-            if (itemDate.getFullYear() === new Date(currentDate).getFullYear() ) {
-                months[month - 1].total += Number(item.total);
-                item.categories.forEach(category => {
-                    if (!months[month - 1].categories[category.label]) {
-                        months[month - 1].categories[category.label] = 0;
-                    }
-                    months[month - 1].categories[category.label] += Number(category.value);
-                });
-            }
-        });
-    
-        const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        monthLabels.forEach((month, index) => {
-            graphic.dates.push(month);  
-            graphic.general.push(months[index].total);  
-            
-            const categoriesArray = categories.map(item => ({
-                label: item.name,
-                value: months[index].categories[item.name] || 0  // Si no existe en ese mes, asigna 0
-            }));
-            graphic.categories.push(categoriesArray);  
-        });
+        if (!userCalories || userCalories.length === 0) { return graphic
+        }else{
+            const months = Array.from({ length: 12 }, () => ({ total: 0, categories: {} }));
+            userCalories.forEach(item => {
+                const [day, month, year] = item.day.split('/').map(Number);  
+                const itemDate = new Date(year, month - 1, day); 
+                if (itemDate.getFullYear() === new Date(currentDate).getFullYear() ) {
+                    months[month - 1].total += Number(item.total);
+                    item.categories.forEach(category => {
+                        if (!months[month - 1].categories[category.label]) {
+                            months[month - 1].categories[category.label] = 0;
+                        }
+                        months[month - 1].categories[category.label] += Number(category.value);
+                    });
+                }
+            });
+        
+            const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            monthLabels.forEach((month, index) => {
+                graphic.dates.push(month);  
+                graphic.general.push(months[index].total);  
+                
+                const categoriesArray = categories.map(item => ({
+                    label: item.name,
+                    value: months[index].categories[item.name] || 0  // Si no existe en ese mes, asigna 0
+                }));
+                graphic.categories.push(categoriesArray);  
+            });
+        }
         return graphic;
     };
     
@@ -172,7 +175,7 @@ export default function Dashboard() {
             data.calories && setUserCalories(data.calories)
             data.calories && fetchDailyData(data.calories)
             data.drinks && setDrinksData(data.drinks)
-            data && setLoading(false)
+            data && setLoading(false) && setDataReady(true)
         }catch(e){
             console.log("Error fetching Total of calories consumed by user: ", e)
         }
@@ -232,7 +235,7 @@ export default function Dashboard() {
 
     
     useEffect(()=>{
-        fetchDailyData() 
+        dataReady ? fetchDailyData()  : fetchData()
         const handleResize=(()=>{chartRef.current && setChartWidth(chartRef.current.offsetWidth)})
         window.addEventListener('resize', handleResize);
         userCalories && setDrinksDay(drinksData.filter((item)=>new Date(item.date_ingested).getDate()===new Date(currentDate).getDate() && new Date(item.date_ingested).getMonth()===new Date(currentDate).getMonth() && new Date(item.date_ingested).getFullYear()===new Date(currentDate).getFullYear()))

@@ -333,11 +333,11 @@ export const getCategoriesAndDefaults = async () => {
     }
 };
 
-export const getCaloriesByCategories= ( userCalories, categories, foods, barFood)=>{
+export const getCaloriesByCategories= ( userCalories, categories, foods, barFood, drinks, plates)=>{
     try{
         
         const result = userCalories.map(item => {
-            let foodDetail = foods.find(food => food.id === item.id_Food) || barFood.find(food => food.id === item.id_Food);
+            let foodDetail = foods.find(food => food.id === item.id_Food) || barFood.find(food => food.id === item.id_Food) || drinks.find(e=>item.id_Food===e.id) || plates.find(plate=> plate.id === item.id_Food) ;
             if (foodDetail) {
                 return {
                     id_Food: item.id_Food,
@@ -396,7 +396,7 @@ export const formatDate = (date) => {
 
 export const getFilterData = async () => {
     try{
-        const [userCalories,foods, barFoods, categories, drinksType,drinks ] = await Promise.all([ userFoodMeals(), fetchAllFoods(), getProducts(), getCategoriesAndDefaults(), await fechDrinkTypes(), getUserDrinks()])
+        const [userCalories,foods, barFoods, categories, drinksType,drinks, plates ] = await Promise.all([ userFoodMeals(), fetchAllFoods(), getProducts(), getCategoriesAndDefaults(), await fechDrinkTypes(), getUserDrinks(), getUserPlates()])
         userCalories.sort((a, b) => new Date(a.date_ingested) - new Date(b.date_ingested));
         const groupedByDate = userCalories.reduce((acc, current) => {
             const date = formatDate(new Date(current.date_ingested)); // Solo tomar la fecha sin la hora
@@ -415,13 +415,12 @@ export const getFilterData = async () => {
             date,
             foods: groupedByDate[date]
         }));
-            
         let caloriesByCat 
         const calPerCat = resultArray.map((item) => {
             if (item.foods.length === 0) {
                 return null; 
             }
-            caloriesByCat = getCaloriesByCategories(item.foods, categories, foods, barFoods);
+            caloriesByCat = getCaloriesByCategories(item.foods, categories, foods, barFoods, drinks, plates.map(item=> {return {...item, measure_portion: 1}}));
             if (caloriesByCat) {
                 return { ...caloriesByCat, day: item.date };
             } else {
@@ -460,28 +459,19 @@ export const resetPassword = async (oobCode, newPassword) => {
 
 // APP MESIIDEPAUL
 
-// export const getProducts=async()=>{
-//     const response = await axios.get('https://candvbar-back.onrender.com/products');
-//     return response.data.products ? response.data.products : [];
-// }
-
-// export const editCalories=async(id,calories)=>{
-//     await axios.put(`https://candvbar-back.onrender.com/add-calories/${id}/${calories}`); 
-
-// }
-// export const getProdByID= async(prod_id)=>{
-//     const response = await axios.get(`https://candvbar-back.onrender.com/products/${prod_id}`);
-//     const food=response.data.product
-//     return food
-// }
 export const getProducts=async()=>{
-    return ""
+    const response = await axios.get('https://candvbar-back.onrender.com/products');
+    return response.data.products ? response.data.products : [];
 }
+
 export const editCalories=async(id,calories)=>{
-    return ""
+    await axios.put(`https://candvbar-back.onrender.com/add-calories/${id}/${calories}`); 
+
 }
 export const getProdByID= async(prod_id)=>{
-    return ""
+    const response = await axios.get(`https://candvbar-back.onrender.com/products/${prod_id}`);
+    const food=response.data.product
+    return food
 }
 
 

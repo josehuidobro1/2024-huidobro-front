@@ -28,11 +28,14 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
     };
 
     useEffect(()=>{
-        const newFoodData=plate.ingredients.map((item)=>{
-            const foodItem = foodData.find((food) => food.id === item.ingredientId);
-            return foodItem && { ...foodItem, amount: item.quantity } ;
-        })
-        setFoodPlate(newFoodData)
+        if(plate && foodData.length>0 && plate.ingredients.length>0){
+            const newFoodData=plate.ingredients.map((item)=>{
+                const foodItem = foodData.find((food) => food.id === item.ingredientId);
+                return foodItem && { ...foodItem, amount: item.quantity } ;
+            })
+            
+            setFoodPlate(newFoodData)}
+        
     },[selection])
 
     const handleUpdateIngredient = (index, newQuantity) => {

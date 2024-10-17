@@ -45,13 +45,15 @@ export const Plates = () => {
         try {
             const food=await fetchAllFoods()
             setFoodData(food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1))
-            
+            setLoading(false)
         }catch (e){
             console.log("Error fetching food data on Plate page ", e)
         }
     }
     const handleupdatePlates = ()=>{
-        fetchPlates()
+        setLoading(true)
+        const platesRecorded=fetchPlates()
+        foodData.length>0 && platesRecorded && setLoading(false)
     }
 
     useEffect(()=>{
@@ -62,9 +64,9 @@ export const Plates = () => {
     }},[selection])
 
     useEffect(()=>{
-        fetchPlates()
-        fetchFood()
-        setLoading(false)
+        setLoading(true)
+        const platesRecorded=fetchPlates()
+        const foodRecorded=fetchFood()
     },[])
 
   return (
