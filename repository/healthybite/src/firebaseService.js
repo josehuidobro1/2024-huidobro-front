@@ -396,7 +396,7 @@ export const formatDate = (date) => {
 
 export const getFilterData = async () => {
     try{
-        const [userCalories,foods, barFoods, categories] = await Promise.all([ userFoodMeals(), fetchAllFoods(), getProducts(), getCategoriesAndDefaults()])
+        const [userCalories,foods, barFoods, categories, drinksType,drinks ] = await Promise.all([ userFoodMeals(), fetchAllFoods(), getProducts(), getCategoriesAndDefaults(), await fechDrinkTypes(), getUserDrinks()])
         userCalories.sort((a, b) => new Date(a.date_ingested) - new Date(b.date_ingested));
         const groupedByDate = userCalories.reduce((acc, current) => {
             const date = formatDate(new Date(current.date_ingested)); // Solo tomar la fecha sin la hora
@@ -428,7 +428,19 @@ export const getFilterData = async () => {
                 return null;
             }
         });
-        return calPerCat;
+        const drinksData=[]
+        userCalories.forEach((item)=>{
+            const drinkConsumed=drinks.find(e=>item.id_Food===e.id) 
+            drinkConsumed && drinksData.push({
+                date_ingested:item.date_ingested,
+                name:drinkConsumed.name,
+                sugar:(item.amount_eaten * drinkConsumed.amount_sugar)/ drinkConsumed.measure_portion ,
+                caffeine: (item.amount_eaten * drinkConsumed.amount_cafeine )/ drinkConsumed.measure_portion ,
+                calories:(item.amount_eaten * drinkConsumed.calories_portion )/ drinkConsumed.measure_portion,
+                type: drinksType.find(drinkType=> drinkType.id===drinkConsumed.typeOfDrink).name
+            })
+        })
+        return {calories: calPerCat, drinks: drinksData};
     }catch(e){
         console.log("Error fetching data for fitell in dashboard", e)
         return []
@@ -673,9 +685,11 @@ export const getPlateByID = async (plate_id) => {
     return drink
 
 }
+
 export const getGroupedDrinkTypes = async () => {
     const response = await axios.get(`http://127.0.0.1:8000/getUserGroupDrinkType/${auth.currentUser.uid}`);
     const drink=response.data.Drinks
     return drink
 
 }
+

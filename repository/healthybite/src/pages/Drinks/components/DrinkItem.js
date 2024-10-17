@@ -136,7 +136,7 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
             {deleteItem ? (
                 <DeletePopUp handleDelete={handleSingleClick} setCancel={setDeleteItem} />
             ) : (
-                <div className='w-full lg:w-11/12 flex flex-col justify-center items-center'>
+                <div className='w-full lg:w-full flex flex-col justify-center items-center'>
                     {message && (
                         <div className={`w-full text-center p-2 mb-2 rounded-lg ${message.includes('successfully') ? 'text-healthyGreen' : 'bg-red-100 text-red-800'}`}>
                             {message}
