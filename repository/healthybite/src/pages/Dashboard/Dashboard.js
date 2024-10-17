@@ -238,7 +238,7 @@ export default function Dashboard() {
         dataReady ? fetchDailyData()  : fetchData()
         const handleResize=(()=>{chartRef.current && setChartWidth(chartRef.current.offsetWidth)})
         window.addEventListener('resize', handleResize);
-        userCalories && setDrinksDay(drinksData.filter((item)=>new Date(item.date_ingested).getDate()===new Date(currentDate).getDate() && new Date(item.date_ingested).getMonth()===new Date(currentDate).getMonth() && new Date(item.date_ingested).getFullYear()===new Date(currentDate).getFullYear()))
+        setDrinksDay(drinksData.filter((item)=>new Date(item.date_ingested).getDate()===new Date(currentDate).getDate() && new Date(item.date_ingested).getMonth()===new Date(currentDate).getMonth() && new Date(item.date_ingested).getFullYear()===new Date(currentDate).getFullYear()))
         
         return () => window.removeEventListener('resize', handleResize);
     },[currentDate])
@@ -292,8 +292,8 @@ export default function Dashboard() {
                 <p className="font-quicksand text-sm font-semibold text-healthyGray1 text-center mt-4 md:w-3/5 md:my-10 lg:mt-4" >There are no meals recorded from&nbsp;{formatDate(currentDate)}</p>}
                 
             </div>
-            <div className="flex flex-col overflow-y-auto lg:w-3/5 w-full md:mt-4 lg:mt-0 pb-32 xs:pb-0 lg:ml-2 ">
-                <div className="flex flex-col xs:flex-row  items-center lg:items-start justify-center ">
+            <div className="flex flex-col overflow-y-auto lg:w-3/5 w-full md:mt-4 lg:mt-0 pb-32 xs:pb-0 lg:ml-2 lg:overflow-x-hidden ">
+                <div className="flex flex-col xs:flex-row lg:ml-8 items-center lg:items-start justify-center  lg:justify-start ">
                     <div className="flex flex-col w-11/12 lg:mt-0 md:w-10/12   font-quicksand  ">
                         <div className="flex flex-row justify-between w-full p-3 rounded-xl bg-hbGreen items-center  ">
                             <FontAwesomeIcon onClick={()=>previusChart()} icon={faAngleLeft} className="text-darkGray hover:cursor-pointer text-xl px-2 hover:text-healthyDarkGray1"/>
@@ -327,7 +327,7 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row xs:flex-col  justify-center m-1 items-center w-10/12 xs:w-1/12 ">
+                    <div className="flex flex-row xs:flex-col  justify-center  m-1 items-center w-10/12 xs:w-1/12 ">
                         <FontAwesomeIcon onClick={()=>setOpenFilter(!openFilter)} icon={faFilter} className={` hover:bg-healthyDarkOrange cursor-pointer text-white text-xl p-3   shadow-sm ${openFilter ?  'bg-healthyDarkOrange rounded-tl-full rounded-bl-full xs:rounded-bl-none  xs:rounded-tr-full' : 'bg-healthyOrange rounded-full'} `}/>
                         {openFilter &&
                             <div className="flex flex-row xs:flex-col w-full max-w-44 overflow-x-auto justify-start xs:justify-center items-center shadow-sm  rounded-r-full xs:rounded-b-full">
@@ -348,7 +348,7 @@ export default function Dashboard() {
                         }
                     </div>
                 </div>
-                <div className="w-full flex justify-center lg:justify-center items-center mt-12 mb-12 ">
+                <div className="w-full flex justify-center lg:justify-start items-center lg:ml-8 mt-12 mb-12 ">
                     <div className="flex flex-col  rounded-xl pt-2 w-11/12 md:w-10/12">
                         <div className=" w-full p-2 bg-healthyGreen rounded-t-xl">
                             <p className="font-belleza text-lg text-darkGray pl-3">Drink chart</p>
