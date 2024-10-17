@@ -238,7 +238,7 @@ export default function Dashboard() {
         dataReady ? fetchDailyData()  : fetchData()
         const handleResize=(()=>{chartRef.current && setChartWidth(chartRef.current.offsetWidth)})
         window.addEventListener('resize', handleResize);
-        setDrinksDay(drinksData.filter((item)=>new Date(item.date_ingested).getDate()===new Date(currentDate).getDate() && new Date(item.date_ingested).getMonth()===new Date(currentDate).getMonth() && new Date(item.date_ingested).getFullYear()===new Date(currentDate).getFullYear()))
+        drinksData && setDrinksDay(drinksData.filter((item)=>new Date(item.date_ingested).getDate()===new Date(currentDate).getDate() && new Date(item.date_ingested).getMonth()===new Date(currentDate).getMonth() && new Date(item.date_ingested).getFullYear()===new Date(currentDate).getFullYear()))
         
         return () => window.removeEventListener('resize', handleResize);
     },[currentDate])
@@ -258,8 +258,8 @@ export default function Dashboard() {
                     <PieChart
                         colors={palette}
                         series={[{data: userCalories.find(item=> item.day===formatDate(currentDate)).categories}]}
-                        width={window.innerWidth<'400' ? chartWidth*0.9 : chartWidth*1.9}
-                        height={ chartWidth }
+                        width={window.innerWidth<'400' ? chartWidth*1.68 : chartWidth*1.9}
+                        height={window.innerWidth<'400' ? chartWidth*0.9 : chartWidth }
                     />
                     {(drinksDay && drinksDay.length > 0 && userCalories.find(item=>item.day===formatDate(currentDate))) ? 
                     <table className="w-full  mx-2 xs:mx-0 font-quicksand text-sm xs:text-md  my-6 lg:my-12 border-spacing-2  table-fixed border-collapse font-normal text-healthyDarkOrange rounded-lg border border-healthyDarkOrange ">
@@ -348,7 +348,7 @@ export default function Dashboard() {
                         }
                     </div>
                 </div>
-                <div className="w-full flex justify-center lg:justify-start items-center lg:ml-8 mt-12 mb-12 ">
+                <div className="w-full flex justify-start items-center ml-8 mt-12 mb-12 ">
                     <div className="flex flex-col  rounded-xl pt-2 w-11/12 md:w-10/12">
                         <div className=" w-full p-2 bg-healthyGreen rounded-t-xl">
                             <p className="font-belleza text-lg text-darkGray pl-3">Drink chart</p>
