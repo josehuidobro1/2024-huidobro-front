@@ -8,151 +8,193 @@ import Card from './components/Card'
 const data = [
     {
         plate: 'Spaghetti Carbonara',
+        image: '',
         ingredients: [
             { name: 'Spaghetti', amount: 200, measure_portion: 'gr' },
             { name: 'Eggs', amount: 2, measure_portion: 'units' },
             { name: 'Bacon', amount: 100, measure_portion: 'gr' },
             { name: 'Parmesan', amount: 50, measure_portion: 'gr' }
         ],
-        scores: [5, 4, 4, 5, 3],
-        comments: ['Delicious and creamy', 'Could use more bacon', 'Perfect balance of flavors']
+        values: [
+            { idUser: 1, score: 3, comments: ['Delicious and creamy'] },
+            { idUser: 2, score: 4, comments: ['Perfect balance of flavors'] },
+            { idUser: 3, score: 2, comments: ['Could use more bacon'] }
+        ]
     },
     {
         plate: 'Chicken Caesar Salad',
+        image: '',
         ingredients: [
             { name: 'Chicken Breast', amount: 150, measure_portion: 'gr' },
-            { name: 'Lettuce', amount: 1, measure_portion: 'head' },
-            { name: 'Caesar Dressing', amount: 3, measure_portion: 'tbsp' },
-            { name: 'Parmesan', amount: 20, measure_portion: 'gr' },
-            { name: 'Croutons', amount: 50, measure_portion: 'gr' }
+            { name: 'Romaine Lettuce', amount: 1, measure_portion: 'head' },
+            { name: 'Caesar Dressing', amount: 50, measure_portion: 'ml' },
+            { name: 'Croutons', amount: 30, measure_portion: 'gr' }
         ],
-        scores: [4, 3, 5, 4, 2],
-        comments: ['Fresh and crunchy', 'Too much dressing', 'Loved the chicken']
+        values: [
+            { idUser: 4, score: 5, comments: ['Fresh and flavorful!'] },
+            { idUser: 5, score: 3, comments: ['Too much dressing for my taste'] },
+            { idUser: 6, score: 4, comments: ['Great for a light meal'] }
+        ]
     },
     {
         plate: 'Beef Tacos',
+        image: '',
         ingredients: [
             { name: 'Ground Beef', amount: 200, measure_portion: 'gr' },
-            { name: 'Taco Shells', amount: 3, measure_portion: 'units' },
-            { name: 'Cheese', amount: 50, measure_portion: 'gr' },
-            { name: 'Lettuce', amount: 30, measure_portion: 'gr' },
-            { name: 'Tomato', amount: 1, measure_portion: 'unit' }
+            { name: 'Tortillas', amount: 3, measure_portion: 'units' },
+            { name: 'Cheddar Cheese', amount: 50, measure_portion: 'gr' },
+            { name: 'Lettuce', amount: 30, measure_portion: 'gr' }
         ],
-        scores: [5, 5, 4, 4, 4],
-        comments: ['So tasty and filling', 'Could use more spices', 'Loved the texture']
+        values: [
+            { idUser: 7, score: 4, comments: ['Loved the flavors!'] },
+            { idUser: 8, score: 2, comments: ['Not enough seasoning'] },
+            { idUser: 9, score: 5, comments: ['Perfect for taco night'] }
+        ]
     },
     {
         plate: 'Margherita Pizza',
+        image: '',
         ingredients: [
             { name: 'Pizza Dough', amount: 1, measure_portion: 'unit' },
             { name: 'Tomato Sauce', amount: 100, measure_portion: 'ml' },
-            { name: 'Mozzarella', amount: 150, measure_portion: 'gr' },
-            { name: 'Basil', amount: 10, measure_portion: 'leaves' }
+            { name: 'Mozzarella', amount: 100, measure_portion: 'gr' },
+            { name: 'Basil Leaves', amount: 10, measure_portion: 'gr' }
         ],
-        scores: [4, 5, 4, 5, 5],
-        comments: ['Classic and simple', 'Love the fresh basil', 'Cheesy goodness']
+        values: [
+            { idUser: 10, score: 4, comments: ['Classic and delicious'] },
+            { idUser: 11, score: 5, comments: ['Loved the fresh basil'] },
+            { idUser: 12, score: 3, comments: ['Could use more cheese'] }
+        ]
     },
     {
-        plate: 'Beef Stew',
+        plate: 'Salmon Teriyaki',
+        image: '',
         ingredients: [
-            { name: 'Beef', amount: 300, measure_portion: 'gr' },
-            { name: 'Potatoes', amount: 2, measure_portion: 'units' },
-            { name: 'Carrots', amount: 2, measure_portion: 'units' },
-            { name: 'Onion', amount: 1, measure_portion: 'unit' },
-            { name: 'Beef Broth', amount: 500, measure_portion: 'ml' }
+            { name: 'Salmon Fillet', amount: 200, measure_portion: 'gr' },
+            { name: 'Teriyaki Sauce', amount: 50, measure_portion: 'ml' },
+            { name: 'Sesame Seeds', amount: 10, measure_portion: 'gr' },
+            { name: 'Green Onions', amount: 20, measure_portion: 'gr' }
         ],
-        scores: [3, 4, 3, 5, 5],
-        comments: ['Warm and hearty', 'Great for winter', 'Very flavorful']
+        values: [
+            { idUser: 13, score: 5, comments: ['Perfectly cooked!'] },
+            { idUser: 14, score: 4, comments: ['Could use more sauce'] },
+            { idUser: 15, score: 5, comments: ['Excellent flavors'] }
+        ]
     },
     {
-        plate: 'Greek Salad',
+        plate: 'Vegetable Stir Fry',
+        image: '',
         ingredients: [
-            { name: 'Cucumber', amount: 1, measure_portion: 'unit' },
-            { name: 'Tomato', amount: 1, measure_portion: 'unit' },
-            { name: 'Feta Cheese', amount: 50, measure_portion: 'gr' },
-            { name: 'Olives', amount: 10, measure_portion: 'units' },
-            { name: 'Olive Oil', amount: 1, measure_portion: 'tbsp' }
+            { name: 'Bell Peppers', amount: 100, measure_portion: 'gr' },
+            { name: 'Carrot', amount: 1, measure_portion: 'unit' },
+            { name: 'Broccoli', amount: 100, measure_portion: 'gr' },
+            { name: 'Soy Sauce', amount: 30, measure_portion: 'ml' }
         ],
-        scores: [5, 5, 4, 4, 3],
-        comments: ['Super fresh', 'Perfect for summer', 'Loved the feta']
+        values: [
+            { idUser: 16, score: 4, comments: ['Very healthy and tasty'] },
+            { idUser: 17, score: 3, comments: ['Needed more sauce'] },
+            { idUser: 18, score: 5, comments: ['Fresh and vibrant'] }
+        ]
     },
     {
-        plate: 'Pancakes with Syrup',
-        ingredients: [
-            { name: 'Pancake Mix', amount: 1, measure_portion: 'cup' },
-            { name: 'Milk', amount: 1, measure_portion: 'cup' },
-            { name: 'Egg', amount: 1, measure_portion: 'unit' },
-            { name: 'Maple Syrup', amount: 2, measure_portion: 'tbsp' }
-        ],
-        scores: [5, 4, 5, 3, 4],
-        comments: ['Fluffy and sweet', 'Could use more syrup', 'Perfect breakfast']
-    },
-    {
-        plate: 'Tom Yum Soup',
-        ingredients: [
-            { name: 'Shrimp', amount: 100, measure_portion: 'gr' },
-            { name: 'Mushrooms', amount: 50, measure_portion: 'gr' },
-            { name: 'Tom Yum Paste', amount: 2, measure_portion: 'tbsp' },
-            { name: 'Coconut Milk', amount: 200, measure_portion: 'ml' }
-        ],
-        scores: [4, 5, 4, 3, 5],
-        comments: ['Spicy and exotic', 'Perfectly balanced flavors', 'Could be a bit creamier']
-    },
-    {
-        plate: 'Fried Rice',
-        ingredients: [
-            { name: 'Rice', amount: 1, measure_portion: 'cup' },
-            { name: 'Egg', amount: 1, measure_portion: 'unit' },
-            { name: 'Peas', amount: 50, measure_portion: 'gr' },
-            { name: 'Carrots', amount: 50, measure_portion: 'gr' },
-            { name: 'Soy Sauce', amount: 1, measure_portion: 'tbsp' }
-        ],
-        scores: [4, 4, 3, 5, 5],
-        comments: ['Simple yet tasty', 'Could use more vegetables', 'Love the texture']
-    },
-    {
-        plate: 'Shrimp Scampi',
+        plate: 'Shrimp Paella',
+        image: '',
         ingredients: [
             { name: 'Shrimp', amount: 200, measure_portion: 'gr' },
-            { name: 'Garlic', amount: 2, measure_portion: 'cloves' },
-            { name: 'Butter', amount: 30, measure_portion: 'gr' },
-            { name: 'Parsley', amount: 10, measure_portion: 'gr' },
-            { name: 'Lemon Juice', amount: 1, measure_portion: 'tbsp' }
+            { name: 'Rice', amount: 1, measure_portion: 'cup' },
+            { name: 'Peas', amount: 50, measure_portion: 'gr' },
+            { name: 'Bell Pepper', amount: 1, measure_portion: 'unit' }
         ],
-        scores: [5, 5, 4, 4, 5],
-        comments: ['Garlicky and delicious', 'Perfect with pasta', 'Loved the lemon touch']
+        values: [
+            { idUser: 19, score: 5, comments: ['Authentic and flavorful'] },
+            { idUser: 20, score: 4, comments: ['Loved the seafood taste'] },
+            { idUser: 21, score: 3, comments: ['Rice was a bit dry'] }
+        ]
     },
     {
-        plate: 'Avocado Toast',
+        plate: 'French Toast',
+        image: '',
         ingredients: [
             { name: 'Bread', amount: 2, measure_portion: 'slices' },
-            { name: 'Avocado', amount: 1, measure_portion: 'unit' },
-            { name: 'Salt', amount: 1, measure_portion: 'pinch' },
-            { name: 'Olive Oil', amount: 1, measure_portion: 'tsp' }
+            { name: 'Egg', amount: 1, measure_portion: 'unit' },
+            { name: 'Milk', amount: 50, measure_portion: 'ml' },
+            { name: 'Cinnamon', amount: 5, measure_portion: 'gr' }
         ],
-        scores: [4, 5, 5, 4, 4],
-        comments: ['Creamy and satisfying', 'A bit too simple', 'Perfect breakfast']
+        values: [
+            { idUser: 22, score: 4, comments: ['Perfectly sweet'] },
+            { idUser: 23, score: 5, comments: ['Great for breakfast'] },
+            { idUser: 24, score: 3, comments: ['Could be a bit fluffier'] }
+        ]
     },
     {
-        plate: 'Grilled Salmon',
+        plate: 'Grilled Cheese Sandwich',
+        image: '',
         ingredients: [
-            { name: 'Salmon', amount: 200, measure_portion: 'gr' },
-            { name: 'Lemon', amount: 1, measure_portion: 'unit' },
-            { name: 'Salt', amount: 1, measure_portion: 'pinch' },
-            { name: 'Black Pepper', amount: 1, measure_portion: 'pinch' }
+            { name: 'Bread', amount: 2, measure_portion: 'slices' },
+            { name: 'Cheddar Cheese', amount: 50, measure_portion: 'gr' },
+            { name: 'Butter', amount: 10, measure_portion: 'gr' }
         ],
-        scores: [5, 4, 5, 5, 5],
-        comments: ['Healthy and tasty', 'Perfectly grilled', 'Loved the lemon flavor']
+        values: [
+            { idUser: 25, score: 4, comments: ['Cheesy and crispy'] },
+            { idUser: 26, score: 3, comments: ['Good but a bit greasy'] },
+            { idUser: 27, score: 5, comments: ['Classic comfort food'] }
+        ]
+    },
+    {
+        plate: 'Beef Stroganoff',
+        image: '',
+        ingredients: [
+            { name: 'Beef', amount: 200, measure_portion: 'gr' },
+            { name: 'Mushrooms', amount: 50, measure_portion: 'gr' },
+            { name: 'Onion', amount: 1, measure_portion: 'unit' },
+            { name: 'Sour Cream', amount: 50, measure_portion: 'ml' }
+        ],
+        values: [
+            { idUser: 28, score: 4, comments: ['Rich and creamy'] },
+            { idUser: 29, score: 5, comments: ['Perfectly balanced flavors'] },
+            { idUser: 30, score: 3, comments: ['Too heavy for my taste'] }
+        ]
+    },
+    {
+        plate: 'Pancakes',
+        image: '',
+        ingredients: [
+            { name: 'Flour', amount: 100, measure_portion: 'gr' },
+            { name: 'Egg', amount: 1, measure_portion: 'unit' },
+            { name: 'Milk', amount: 100, measure_portion: 'ml' },
+            { name: 'Sugar', amount: 20, measure_portion: 'gr' }
+        ],
+        values: [
+            { idUser: 31, score: 5, comments: ['Soft and fluffy'] },
+            { idUser: 32, score: 4, comments: ['Perfect with syrup'] },
+            { idUser: 33, score: 3, comments: ['A bit too sweet'] }
+        ]
+    },
+    {
+        plate: 'Vegetable Soup',
+        image: '',
+        ingredients: [
+            { name: 'Carrot', amount: 1, measure_portion: 'unit' },
+            { name: 'Celery', amount: 1, measure_portion: 'stalk' },
+            { name: 'Potato', amount: 1, measure_portion: 'unit' },
+            { name: 'Vegetable Broth', amount: 500, measure_portion: 'ml' }
+        ],
+        values: [
+            { idUser: 34, score: 4, comments: ['Very comforting'] },
+            { idUser: 35, score: 5, comments: ['Loved the freshness'] },
+            { idUser: 36, score: 3, comments: ['Could use more seasoning'] }
+        ]
     }
 ];
+
 
 
 export const Community = () => {
   return (
     <div className="h-screen w-full overflow-y-hidden">
         <NavBar />
-        <div className='w-full h-full flex justify-center items-start overflow-y-scroll font-quicksand mt-16 lg:mt-24 pb-32'>
-            <div className=' w-10/12 flex flex-wrap justify-center'>
+        <div className='w-full h-full flex justify-center items-start overflow-y-scroll font-quicksand mt-4 sm:mt-16 md:mt-16 lg:mt-24 pb-32'>
+            <div className=' w-full  flex flex-wrap justify-center'>
                 {
                     data && data.map((item,index)=>(<Card key={index} plate={item} />))
                 }
