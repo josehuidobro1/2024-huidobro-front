@@ -10,6 +10,7 @@ import Category from './pages/Category/Category';
 import Dashboard from './pages/Dashboard/Dashboard';
 import { Plates } from './pages/Plates/Plates';
 import { Drinks } from './pages/Drinks/Drinks';
+import { Community } from './pages/Community/Community';
 
 function App() {
   const [user]= useAuthState(auth)
@@ -23,7 +24,7 @@ function App() {
           <Route path="/resetPassword" element={<ResetPassword />} />
           <Route path="/category" element={<Category/>} />
           <Route path="/dashboard" element={<Dashboard />} />
-          
+          <Route path="/community" element={<Community />} />
         </Routes>
       </Router>
 
