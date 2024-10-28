@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'; 
+import { faAngleLeft, faAngleRight, faPlus } from '@fortawesome/free-solid-svg-icons'; 
 import bgImage from '../../assets/imgHome.jpg'
 import Calendar from "../../components/Calendar";
 import NavBar from "../../components/NavBar";
@@ -10,6 +10,28 @@ import PopUp from "./components/PopUp";
 import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes} from "../../firebaseService";
 import Filter from "./components/Filter";
 import Loading from "../../components/Loading";
+import Data from "../Data";
+import { CircularProgressbar } from 'react-circular-progressbar';
+import { PieChart } from "@mui/x-charts";
+
+const goals=[
+    {
+        idGoal:1,
+        goal:200
+    },
+    {
+        idGoal:2,
+        goal:200
+    },
+    {
+        idGoal:3,
+        goal:50
+    },
+    {
+        idGoal:4,
+        goal:100
+    }
+]
 
 
 function Home() {
@@ -24,10 +46,30 @@ function Home() {
     const [newFood, setNewFood] = useState();
     const [categories, setCategories]=useState([])
     const [filteredFood, setFilteredFood]=useState([])
-    const [filteredDrinks, setFilteredDrinks] = useState([]); // state for filtered drinks
     const [filterSelected, setFilterSelected]=useState(null)
     const [loading, setLoading] = useState(true);
-    const [groupedDrinks, setGroupedDrinks] = useState([])
+    const goalName=Data.goals
+    const [index,setIndex]=useState(1)
+    const [goalConsumed, setGoalConsumed]=useState(0)
+
+    useEffect(()=>{
+        let value=0
+        switch (index){
+            case 1:
+                value=userFood.reduce((acc,food)=>acc+((food.calories_portion * food.amount_eaten) / food.measure_portion),0)
+            /*
+            case 2:
+                const value=userFood.reduce((acc,food)=>acc+((food.sodium_portion * food.amount_eaten) / food.measure_portion),0)
+            case 3:
+                const value=userFood.reduce((acc,food)=>acc+((food.fats_portion * food.amount_eaten) / food.measure_portion),0)
+            case 4:
+                const value=userFood.reduce((acc,food)=>acc+((food.carbohidrates_portion * food.amount_eaten) / food.measure_portion),0)
+            */
+        }
+        setGoalConsumed(value)
+        console.log('VALUE CALCULATED FOR INDEX ', index)
+        console.log('Esto es lo consumido ', userFood.reduce((acc,food)=>acc+((food.calories_portion * food.amount_eaten) / food.measure_portion),0))
+    },[index, userFood])
 
     useEffect(()=>{
         if(filterSelected) {
@@ -226,6 +268,38 @@ function Home() {
                         <div className="flex flex-col justify-center items-center md:items-start w-4/5  sm:w-full " >
                             <Calendar value={date} onChange={e => selectDate(e)} />
                             <Filter categories={categories} filterSelected={filterSelected} setFilterSelected={setFilterSelected} />
+                        </div>
+                        <div className="flex  flex-col w-full justify-center items-center sm:items-between py-3">
+                            <div className="w-full max-w-48 py-1 px-3 flex items-center justify-between rounded-full text-white bg-healthyOrange  ">
+                                <FontAwesomeIcon className="cursor-pointer px-1" icon={faAngleLeft} onClick={()=>index===1 ? setIndex(goalName.length) : setIndex(index-1) } />
+                                <p className="text-white font-semibold px-2">{goalName.find((item)=>item.id===index).name}</p>
+                                <FontAwesomeIcon className="cursor-pointer px-1" icon={faAngleRight} onClick={()=>index===goalName.length ? setIndex(1) : setIndex(index+1) }/>
+                            </div>
+                            <div className="flex relative w-full justify-center items-center my-2">
+                            <PieChart
+                                series={[
+                                    {
+                                        data:[
+                                            {value:goalConsumed},
+                                            {value:(goals.find((e)=>e.idGoal===index)).goal-goalConsumed}
+                                        ],
+                                        innerRadius: 50,
+                                        outerRadius: 70,
+                                    }
+                                    
+                                ]}
+                                colors={['#FA9B6A','#c3c3c3']}
+                                width={5}
+                                height={150}
+                                slotProps={{
+                                    legend: { hidden: true },
+                                }}
+                            />
+                            <div className="font-quicksand text center flex flex-col absolute   text center justify-center items-center w-full h-full  ">
+                                <p className="font-bold text-3xl text-healthyOrange">{(goalConsumed*(goals.find((e)=>e.idGoal===index)).goal)/100}%</p>
+                                <p className="text-center text-xs font-bold text-healthyOrange">completed</p>
+                            </div>
+                            </div>
                         </div>
                         <Calories userFood={userFood} />
                     </div>

@@ -28,6 +28,24 @@ const Data={
         { icon: faWineBottle, name: 'Wine Bottle' },
         { icon: faMugHot, name: 'Mug' },
         {icon: faDrumstickBite, name:"Seedling"}
+    ],
+    goals:[
+        {
+            id:1,
+            name:'Calories'
+        },
+        {
+            id:2,
+            name:'Sodium'
+        },
+        {
+            id:3,
+            name:'Fats'
+        },
+        {
+            id:4,
+            name:'Carbohidrates'
+        }
     ]
 }
 export default Data
