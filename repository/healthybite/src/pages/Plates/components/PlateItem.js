@@ -171,7 +171,7 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
                             </div>
                             <div className='flex flex-col justify-center items-center w-2/12'>
                                 <FontAwesomeIcon onClick={handleAddFood} icon={faCirclePlus} className='text-2xl w-full mb-2 text-white hover:text-healthyDarkOrange2 cursor-pointer' />
-                                <Visibility publicPlate={publicPlate} setPublicPlate={setPublicPlate} vertical={true}/>
+                                {!plate.public && <Visibility publicPlate={publicPlate} setPublicPlate={setPublicPlate} vertical={true}/>}
                             </div>
                         </div>
                         <div className='w-full flex justify-center items-center'>
