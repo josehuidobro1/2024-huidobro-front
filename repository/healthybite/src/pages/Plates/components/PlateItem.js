@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { faBookmark, faCirclePlus, faEllipsisVertical, faUtensils } from '@fortawesome/free-solid-svg-icons'
+import { faBookmark, faCirclePlus, faEllipsisVertical, faEye, faEyeSlash, faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Counter from '../../../components/Counter'
 import EditFood from './EditFood'
 import DeletePopUp from '../../../components/DeletePopUp'
 import {deleteplate,updatePlate} from '../../../firebaseService'
+import { Visibility } from './Visibility'
 
 export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessage , setAddFood,selection, setPlate}) => {
     const [options, setOption] = useState(false)
     const [edit, setEdit] = useState(false)
     const [deleteItem, setDeleteItem] = useState(false)
     const [clickable, setClickable] = useState(true);
+    const [publicPlate, setPublicPlate]=useState(plate.public)
     const [ingredientsUpdate, setIngredientsUpdate] = useState(
         plate.ingredients.map((item) => ({ ...item })) // Clone ingredients
     );
@@ -66,6 +68,7 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
         const updatedPlate = {
             ...plate,
             image: plate.image,
+            public:publicPlate,
             ingredients: ingredientsUpdate,
             calories_portion: foodPlate.reduce((acc, item) => acc + (item.calories_portion * item.amount), 0), // Updated ingredients with new quantities
         };
@@ -140,6 +143,9 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
 
                         </div>
                         <div className='flex items-center'>
+                            <div className=' flex justify-end items-center mx-2'>
+                                <FontAwesomeIcon className='p-1 rounded-full bg-healthyOrange text-white shadow-sm text-sm ' icon={plate.public ? faEye : faEyeSlash}/>
+                            </div>
                             {options &&
                                 <div className='flex items-center border-2 justify-center text-xs text-healthyOrange font-semibold border-healthyOrange px-2 rounded-full mr-3'>
                                     <p onClick={() => setEdit(!edit)} className='cursor-pointer hover:text-healthyDarkOrange'>Edit</p>
@@ -163,7 +169,10 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
                                     />
                                 ))}
                             </div>
-                            <FontAwesomeIcon onClick={handleAddFood} icon={faCirclePlus} className='text-2xl w-1/12 text-white hover:text-healthyDarkOrange2 cursor-pointer' />
+                            <div className='flex flex-col justify-center items-center w-2/12'>
+                                <FontAwesomeIcon onClick={handleAddFood} icon={faCirclePlus} className='text-2xl w-full mb-2 text-white hover:text-healthyDarkOrange2 cursor-pointer' />
+                                <Visibility publicPlate={publicPlate} setPublicPlate={setPublicPlate} vertical={true}/>
+                            </div>
                         </div>
                         <div className='w-full flex justify-center items-center'>
                             <div onClick={updateData} className='hover:cursor-pointer bg-white shadow-md rounded-2xl px-2 lg:px-4 py-1 flex flex-row items-center justify-center mt-2 w-full lg:w-1/2'>

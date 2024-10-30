@@ -2,8 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import FoodItem from './FoodItem';
 import {createplate} from '../../../firebaseService'
 import { uploadImageToStorage } from "../../../firebaseConfig";
-import { faImage, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faImage, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Visibility } from './Visibility';
 
 const NewPlate = ({ foodData, setPlates, plates }) => {
   const [plateName, setPlateName] = useState('');
@@ -15,6 +16,7 @@ const NewPlate = ({ foodData, setPlates, plates }) => {
   const [plateFoodIds, setPlateFoodIds] = useState([]); // State for storing plate food IDs
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
+  const [publicPlate, setPublicPlate]=useState(false)
   // Function to handle adding/removing food items
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -77,6 +79,7 @@ const createPlate = async () => {
       ingredients: ingredientsArray,
       total_cal: totalCalories,
       image: imageUrl, // Add the image URL to the plate data
+      public:publicPlate
     };
 
     // Update the UI without refreshing the page
@@ -89,6 +92,8 @@ const createPlate = async () => {
     // Clear form inputs and display success message
     setMessage("Your Plate is created!");
     setPlateName("");
+    setPublicPlate(false)
+    setSearch('')
     setSelectedFoods([]);
     setImage(null); // Clear the selected image
     setReset(true);
@@ -121,12 +126,13 @@ const savePlate = async () => {
       <div className="flex md:sticky md:top-0 py-2 w-full justify-center items-center text-healthyDarkGreen bg-white">
         <div className='flex w-full items-center justify-around'>
           <input
-            className="text-sm font-semibold bg-healthyGray p-1 text-healthyDarkGreen focus:outline-none rounded-lg text-center w-10/12 focus:ring-healthyGreen"
+            className="text-sm font-semibold bg-healthyGray p-1 text-healthyDarkGreen focus:outline-none rounded-lg text-center w-10/12 focus:ring-healthyGreen ml-2"
             type="text"
             placeholder="Plate name"
             value={plateName}
             onChange={(e) => setPlateName(e.target.value)}
           />
+          <Visibility publicPlate={publicPlate} setPublicPlate={setPublicPlate}/>
           <input
             type="file"
             ref={fileInputRef}
