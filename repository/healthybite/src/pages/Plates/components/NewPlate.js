@@ -1,12 +1,14 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import FoodItem from './FoodItem';
 import {createplate} from '../../../firebaseService'
 import { uploadImageToStorage } from "../../../firebaseConfig";
-import { faImage } from '@fortawesome/free-solid-svg-icons';
+import { faImage, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const NewPlate = ({ foodData, setPlates, plates }) => {
   const [plateName, setPlateName] = useState('');
+  const [search, setSearch]=useState('')
+  const [foods, setFoods]=useState(foodData)
   const [selectedFoods, setSelectedFoods] = useState([]);
   const [message, setMessage] = useState(''); // State for success message
   const [reset, setReset] = useState(false); // State to trigger reset in FoodItem
@@ -17,6 +19,14 @@ const NewPlate = ({ foodData, setPlates, plates }) => {
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
+
+  useEffect(()=>{
+    if(search===''){
+      setFoods(foodData)
+    }else{
+      setFoods(foodData.filter((item)=>item.name.toLowerCase().startsWith(search.toLowerCase())))
+    }
+  },[search])
   
   const handleFoodChange = (food, quantity ) => {
     if (quantity > 0) {
@@ -128,15 +138,16 @@ const savePlate = async () => {
             <FontAwesomeIcon icon={faImage} className='text-2xl' /> {/* Cambia el tamaño según tus necesidades */}
           </button>
         </div>
-
-          
         </div>
       {message && (
         <p className="text-white bg-healthyGreen px-2 py-1 rounded-full text-sm text-center font-semibold mt-2">{message}</p>
       )}
-
+      <div className='flex w-11/12 my-2  rounded-full items-center justify-between py-1 px-2  bg-healthyGray  text-sm '>
+        <input onChange={(e)=>setSearch(e.target.value)} type='text' placeholder='Search food...' className='font-quicksand font-semibold px-1 focus:outline-none text-healthyGray1 w-full bg-healthyGray ' />
+        <FontAwesomeIcon icon={faMagnifyingGlass} className='text-lg text-healthyGray1 px-1'/>
+      </div>
       <div className="font-quicksand text-sm text-healthyGreen px-2 w-full">
-        {foodData.map((food) => (
+        {foods.map((food) => (
           <FoodItem
             key={food.id}
             food={food}
