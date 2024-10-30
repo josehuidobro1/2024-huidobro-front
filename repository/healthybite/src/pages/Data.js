@@ -45,6 +45,10 @@ const Data={
         {
             id:4,
             name:'Carbohidrates'
+        },
+        {
+            id:5,
+            name:'Protein'
         }
     ]
 }

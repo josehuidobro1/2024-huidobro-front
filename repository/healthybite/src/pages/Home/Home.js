@@ -30,6 +30,10 @@ const goals=[
     {
         idGoal:4,
         goal:100
+    },
+    {
+        idGoal:5,
+        goal:500
     }
 ]
 
@@ -295,9 +299,10 @@ function Home() {
                                     legend: { hidden: true },
                                 }}
                             />
-                            <div className="font-quicksand text center flex flex-col absolute   text center justify-center items-center w-full h-full  ">
-                                <p className="font-bold text-3xl text-healthyOrange">{(goalConsumed*(goals.find((e)=>e.idGoal===index)).goal)/100}%</p>
-                                <p className="text-center text-xs font-bold text-healthyOrange">completed</p>
+                            <div className={`font-quicksand text center flex flex-col absolute  text center justify-center items-center ${goalConsumed>(goals.find((e)=>e.idGoal===index)).goal ? ' rounded-full sm:rounded-2xl bg-healthyOrange text-white shadow-md py-2 px-4 sm:px-2 md:px-1 ':'w-full text-healthyOrange h-full'}  `}>
+                                {goalConsumed<=(goals.find((e)=>e.idGoal===index)).goal && <p className="font-bold text-2xl  text-center">{((goalConsumed*100)/(goals.find((e)=>e.idGoal===index)).goal)}%</p>}
+                                {goalConsumed>(goals.find((e)=>e.idGoal===index)).goal && <p className="text-xs font-bold text-center w-full pb-2 pl-2 ">You've already passed your&nbsp;goal!</p>}
+                                <p className="text-center text-xs font-bold ">{goalConsumed<=(goals.find((e)=>e.idGoal===index)).goal ? 'completed' : `${goalConsumed}/${goals.find((e)=>e.idGoal===index).goal}`}</p>
                             </div>
                             </div>
                         </div>
