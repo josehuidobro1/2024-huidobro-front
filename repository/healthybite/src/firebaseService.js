@@ -683,3 +683,30 @@ export const getGroupedDrinkTypes = async () => {
 
 }
 
+export const getPublicPlates = async () => {
+    const response = await axios.get(`http://127.0.0.1:8000/GetPlatePublicPlates/`)
+    const plates = response.data.Plates
+    return plates
+}
+export const PlateReviews = async () => {
+    const response = await axios.get(`http://127.0.0.1:8000/PlateReviews/`)
+    const review = response.data.Review
+    return review
+}
+
+export const updateComments = async (doc_id, data) => {
+    try {
+        console.log("Updating comments:", { doc_id, data });
+        const response = await axios.put(`http://127.0.0.1:8000/UpdateReview/${doc_id}`, data); // Check if you need {...data}
+        
+        // Log the response from the server
+        console.log("Server response:", response.data);
+
+        // Return success or handle response as needed
+        return response.data;
+    } catch (error) {
+        console.error('Error updating review by ID:', error.response ? error.response.data : error.message);
+        return null; // Return null or handle the error as needed
+    }
+};
+

@@ -6,7 +6,7 @@ const Ingridients = ({data}) => {
         {data.map((item,index)=>
             (<div key={index} className='flex flex-row w-full justify-between items-center  py-1 rounded-md  px-2 bg-white text-healthyOrange my-1  '>
                 <p className='text-sm sm:text-md font-semibold'>{item.name}</p>
-                <p className='text-sm '>{item.amount} {item.measure_portion}</p>
+                <p className='text-sm '>{item.quantity} {item.measure}</p>
             </div>)
         )}
     </div>

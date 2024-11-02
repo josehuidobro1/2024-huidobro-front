@@ -39,6 +39,7 @@ module.exports = {
         healthyDarkGreen: '#8ba020',
         healthyYellow: '#ffd43b',
         healthyOrange:'#FA9B6A',
+        healthyLightOrange: '#fcd5c1',
         healthyDarkOrange: '#C25C28',
         healthyBrown: '#f1e8d6',
         messidepaul:'#7F522E',
