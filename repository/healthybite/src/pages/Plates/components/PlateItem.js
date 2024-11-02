@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Counter from '../../../components/Counter'
 import EditFood from './EditFood'
 import DeletePopUp from '../../../components/DeletePopUp'
-import {deleteplate,updatePlate} from '../../../firebaseService'
+import {deleteplate,updatePlate,createReview} from '../../../firebaseService'
 import { Visibility } from './Visibility'
 
 export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessage , setAddFood,selection, setPlate}) => {
@@ -63,25 +63,44 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
         );
         setIngredientsUpdate(updatedIngredients);
     };
-
-    const updateData=async()=>{
-        const updatedPlate = {
-            ...plate,
-            image: plate.image,
-            public:publicPlate,
-            ingredients: ingredientsUpdate,
-            calories_portion: foodPlate.reduce((acc, item) => acc + (item.calories_portion * item.amount), 0), // Updated ingredients with new quantities
+    const createReviewForPublicPlate = async () => {
+        const review = {
+            id_plate: plate.id,
+            comments: [],
+            score: 0
         };
         try {
-            await updatePlate(updatedPlate,plate.id ); // Assuming updatePlate is your Firebase update function
-            setSuccessMessage('Plate updated successfully!'); // Set success message
-            setTimeout(() => setSuccessMessage(''), 1000); // Clear message after 3 seconds
-            setEdit(false)
+            // Assume createReviewAPI is the function that saves the review to Firebase
+            await createReview(review);
+            console.log("Review created successfully!");
         } catch (error) {
-            console.error('Error updating plate:', error);
+            console.error("Error creating review:", error);
         }
-    }
-    
+    };
+
+    const updateData = async () => {
+        const updatedPlate = {
+            ...plate,
+            ingredients: ingredientsUpdate,
+            calories_portion: foodPlate.reduce((acc, item) => acc + (item.calories_portion * item.amount), 0),
+            public: publicPlate
+        };
+
+        try {
+            await updatePlate(updatedPlate, plate.id);
+            setSuccessMessage("Plate updated successfully!");
+
+            // Trigger review creation if the plate was made public
+            if (publicPlate && !plate.public) {
+                await createReviewForPublicPlate();
+            }
+            
+            setTimeout(() => setSuccessMessage(""), 1000);
+            setEdit(false);
+        } catch (error) {
+            console.error("Error updating plate:", error);
+        }
+    };
     const handleOptions = () => {
         edit && setEdit(false)
         setOption(!options)
@@ -115,74 +134,87 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
 
     return (
         <>
-            {deleteItem ? 
+            {deleteItem ? (
                 <DeletePopUp handleDelete={handleSingleClick} setCancel={setDeleteItem} />
-                : 
-                <div className='w-full flex flex-col justify-center items-center'>
-
-                    <div className='z-5 flex w-full justify-between mt-2 bg-white p-1 items-center rounded-full shadow-md'>
-                    <div className='flex items-center'>
+            ) : (
+                <div className="w-full flex flex-col justify-center items-center">
+                    <div className="z-5 flex w-full justify-between mt-2 bg-white p-1 items-center rounded-full shadow-md">
+                        <div className="flex items-center">
                             {plate.image ? (
-                            <img 
-                                src={plate.image} 
-                                alt={plate.name} 
-                                className='w-12 h-12 object-cover border-2 border-healthyDarkOrange rounded-full'
-                            />
+                                <img
+                                    src={plate.image}
+                                    alt={plate.name}
+                                    className="w-12 h-12 object-cover border-2 border-healthyDarkOrange rounded-full"
+                                />
                             ) : (
-                                <FontAwesomeIcon icon={faUtensils} className='border-2 border-healthyDarkOrange text-healthyDarkOrange py-2 px-2 text-2xl rounded-full' />
-
+                                <FontAwesomeIcon
+                                    icon={faUtensils}
+                                    className="border-2 border-healthyDarkOrange text-healthyDarkOrange py-2 px-2 text-2xl rounded-full"
+                                />
                             )}
-                            <div className='flex flex-col justify-center items-start ml-3'>
-                            <p className='font-semibold text-healthyDarkOrange'>{plate.name}</p>
-                            <p className='text-xs text-healthyDarkOrange'>
-                                {foodPlate.reduce((acc, item) => acc + (item.calories_portion * item.amount), 0)} calories
-                            </p>
+                            <div className="flex flex-col justify-center items-start ml-3">
+                                <p className="font-semibold text-healthyDarkOrange">{plate.name}</p>
+                                <p className="text-xs text-healthyDarkOrange">
+                                    {foodPlate.reduce((acc, item) => acc + (item.calories_portion * item.amount), 0)} calories
+                                </p>
                             </div>
-
-
-
-                        </div>
-                        <div className='flex items-center'>
-                            <div className=' flex justify-end items-center mx-2'>
-                                <FontAwesomeIcon className='p-1 rounded-full bg-healthyOrange text-white shadow-sm text-sm ' icon={plate.public ? faEye : faEyeSlash}/>
-                            </div>
-                            {options &&
-                                <div className='flex items-center border-2 justify-center text-xs text-healthyOrange font-semibold border-healthyOrange px-2 rounded-full mr-3'>
-                                    <p onClick={() => setEdit(!edit)} className='cursor-pointer hover:text-healthyDarkOrange'>Edit</p>
-                                    <p onClick={() => setDeleteItem(true)} className='ml-1 border-l-2 border-l-healthyOrange pl-1 hover:text-healthyDarkOrange cursor-pointer'>Delete</p>
-                                </div>
-                            }
-                            <FontAwesomeIcon onClick={handleOptions} icon={faEllipsisVertical} className='text-healthyDarkOrange cursor-pointer text-2xl mr-4' />
                         </div>
 
+                        <div className="flex items-center">
+                            <div className="flex justify-end items-center mx-2">
+                                <FontAwesomeIcon
+                                    className="p-1 rounded-full bg-healthyOrange text-white shadow-sm text-sm"
+                                    icon={publicPlate ? faEye : faEyeSlash}
+                                />
+                            </div>
+
+                            {/* Only show the options button if the plate is not public */}
+                            {!publicPlate && (
+                                <FontAwesomeIcon
+                                    onClick={handleOptions}
+                                    icon={faEllipsisVertical}
+                                    className="text-healthyDarkOrange cursor-pointer text-2xl mr-4"
+                                />
+                            )}
+                        </div>
                     </div>
 
-                    {edit && <div className='flex flex-col w-11/12 bg-healthyDarkOrange p-2 rounded-b-md'>
-                        <div className='flex flex-row justify-between items-start'>
-                            <div className='flex flex-col w-10/12'>
-                                {foodPlate.map((item, index) => (
-                                    <EditFood
-                                        item={item}
-                                        key={index}
-                                        onQuantityChange={(newQuantity) => handleUpdateIngredient(index, newQuantity)}
-                                        onRemove={() => handleRemoveIngredient(index)}
+                    {/* Render editing section only if edit is active and plate is not public */}
+                    {edit && !publicPlate && (
+                        <div className="flex flex-col w-11/12 bg-healthyDarkOrange p-2 rounded-b-md">
+                            <div className="flex flex-row justify-between items-start">
+                                <div className="flex flex-col w-10/12">
+                                    {foodPlate.map((item, index) => (
+                                        <EditFood
+                                            item={item}
+                                            key={index}
+                                            onQuantityChange={(newQuantity) => handleUpdateIngredient(index, newQuantity)}
+                                            onRemove={() => handleRemoveIngredient(index)}
+                                        />
+                                    ))}
+                                </div>
+                                <div className="flex flex-col justify-center items-center w-2/12">
+                                    <FontAwesomeIcon
+                                        onClick={handleAddFood}
+                                        icon={faCirclePlus}
+                                        className="text-2xl w-full mb-2 text-white hover:text-healthyDarkOrange2 cursor-pointer"
                                     />
-                                ))}
+                                    {!publicPlate && <Visibility publicPlate={publicPlate} setPublicPlate={setPublicPlate} vertical />}
+                                </div>
                             </div>
-                            <div className='flex flex-col justify-center items-center w-2/12'>
-                                <FontAwesomeIcon onClick={handleAddFood} icon={faCirclePlus} className='text-2xl w-full mb-2 text-white hover:text-healthyDarkOrange2 cursor-pointer' />
-                                {!plate.public && <Visibility publicPlate={publicPlate} setPublicPlate={setPublicPlate} vertical={true}/>}
+                            <div className="w-full flex justify-center items-center">
+                                <div
+                                    onClick={updateData}
+                                    className="hover:cursor-pointer bg-white shadow-md rounded-2xl px-2 lg:px-4 py-1 flex flex-row items-center justify-center mt-2 w-full lg:w-1/2"
+                                >
+                                    <FontAwesomeIcon icon={faBookmark} className="text-healthyOrange text-sm" />
+                                    <p className="font-semibold text-xs text-center text-healthyOrange ml-2">Save changes</p>
+                                </div>
                             </div>
                         </div>
-                        <div className='w-full flex justify-center items-center'>
-                            <div onClick={updateData} className='hover:cursor-pointer bg-white shadow-md rounded-2xl px-2 lg:px-4 py-1 flex flex-row items-center justify-center mt-2 w-full lg:w-1/2'>
-                                <FontAwesomeIcon icon={faBookmark} className='text-healthyOrange text-sm' />
-                                <p className='font-semibold text-xs text-center text-healthyOrange ml-2'>Save changes</p>
-                            </div>
-                        </div>
-                    </div>}
+                    )}
                 </div>
-            }
+            )}
         </>
-    )
-}
+    );
+};

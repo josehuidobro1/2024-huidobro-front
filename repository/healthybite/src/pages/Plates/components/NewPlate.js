@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import FoodItem from './FoodItem';
-import {createplate} from '../../../firebaseService'
-import { uploadImageToStorage } from "../../../firebaseConfig";
+import {createplate,createReview} from '../../../firebaseService'
+import { uploadImageToStorage, } from "../../../firebaseConfig";
 import { faEye, faEyeSlash, faImage, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Visibility } from './Visibility';
@@ -83,11 +83,12 @@ const createPlate = async () => {
     };
 
     // Update the UI without refreshing the page
-    const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totalCalories, image: imageUrl })
+    const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totalCalories, image: imageUrl,public:publicPlate  })
     console.log('ASI QUEDARIA LOS NUEVOS PLATOS ', newPlates)
     setPlates(newPlates);
 
-    await createplate(data);
+    const plate_id= await createplate(data);
+    await createReviewForPublicPlate(plate_id)
 
     // Clear form inputs and display success message
     setMessage("Your Plate is created!");
@@ -105,6 +106,21 @@ const createPlate = async () => {
     setMessage("An error occurred while creating the plate.");
   }
 };
+const createReviewForPublicPlate = async (plate_id) => {
+  const review = {
+      id_plate: plate_id,
+      comments: [],
+      score: 0
+  };
+  try {
+      // Assume createReviewAPI is the function that saves the review to Firebase
+      await createReview(review);
+      console.log("Review created successfully!");
+  } catch (error) {
+      console.error("Error creating review:", error);
+  }
+};
+
 
 const savePlate = async () => {
   await createPlate();
