@@ -159,7 +159,12 @@ function Home() {
                         name: foodDetails?.name || 'Unknown',
                         measure: foodDetails?.measure || 'Plate/s',
                         measure_portion: foodDetails?.measure_portion || 1,
-                        calories_portion: calories
+                        calories_portion: calories,
+                        amount_carbs: foodDetails?.amount_carbs || 0,
+                        amount_sodium: foodDetails?.amount_sodium ||0,
+                        amount_fat: foodDetails?.amount_fat||0,
+                        amount_protein: foodDetails?.amount_protein||0,
+
                     };
                 }));
     
@@ -182,7 +187,6 @@ function Home() {
             const cats = await getCategories();
             const defaultCats= await getDefaultCategories();
             const drinkCats = await getGroupedDrinkTypes();
-            console.log(cats,defaultCats,drinkCats)
             await handleChangesCat()
             const combinedCats = [
                 ...cats, 

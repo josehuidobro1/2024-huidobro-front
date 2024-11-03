@@ -80,7 +80,7 @@ const NewFood = ({ setAddFood, setNewFood}) => {
                             {inValidation && measure === '' && <p className='text-red-500 text-xs'>Measure is required.</p>}
                         </div>
                         <div className='flex flex-col font-quicksand font-semibold text-darkGray text-sm w-full mb-2'>
-                            <p className='text-sm font-bold text-darkGray'>Amount</p>
+                            <p className='text-sm font-bold text-darkGray'>Portion</p>
                             {inValidation && <p className="font-quicksand mt-2 md:mt-0 text-xs md:text-sm text-healthyDarkOrange font-semibold">This field is required</p>}
                             <input 
                                 className={`focus:outline-none focus:ring focus:ring-healthyGreen decoration-none bg-white p-1 md:p-2 rounded-md md:rounded-xl font-quicksand my-1 text-sm md:text-md ${inValidation ? 'ring ring-healthyDarkOrange' : '' }`}  

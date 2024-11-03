@@ -10,7 +10,7 @@ const store='https://two024-ranchoaparte-back.onrender.com'
 
 export const fetchUser=async()=>{
     try {
-        const response = await axios.get(`${store}/User/${auth.currentUser.uid}`);
+        const response = await axios.get(`http://127.0.0.1:8000/User/${auth.currentUser.uid}`);
         
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
@@ -21,7 +21,7 @@ export const fetchUser=async()=>{
 
 export const editUserData=async(data)=>{
     try {
-        const response = await axios.put(`${store}/update_user/${auth.currentUser.uid}`, data);
+        const response = await axios.put(`http://127.0.0.1:8000/update_user/${auth.currentUser.uid}`, data);
         
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
@@ -32,7 +32,7 @@ export const editUserData=async(data)=>{
 
 export const deleteUserAc=async()=>{
     try {
-        await axios.delete(`${store}/delete-user/${auth.currentUser.uid}`); // Adjust this based on your backend response structure
+        await axios.delete(`http://127.0.0.1:8000/delete-user/${auth.currentUser.uid}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error deleting user by ID:', error);
         return null; // Return null or handle the error as needed
@@ -66,7 +66,7 @@ export const fetchUserFoods = async (date) => {
 
 export const fetchFoodByID = async (foodId) => {
     try {
-        const response = await axios.get(`${store}/Foods/${foodId}`);
+        const response = await axios.get(`http://127.0.0.1:8000/Foods/${foodId}`);
         return response.data.message.food; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
@@ -76,7 +76,7 @@ export const fetchFoodByID = async (foodId) => {
 
 const userFoodMeals = async()=>{
     try {
-        const response = await axios.get(`${store}/mealUserDay/${auth.currentUser.uid}`);
+        const response = await axios.get(`http://127.0.0.1:8000/mealUserDay/${auth.currentUser.uid}`);
         return response.data.message.foods; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
@@ -88,7 +88,7 @@ const userFoodMeals = async()=>{
 
 export const fetchAllFoods = async () => {
     try {
-        const response = await axios.get(`${store}/Foods/`);
+        const response = await axios.get(`http://127.0.0.1:8000/Foods/`);
         console.log(response.data.message.food)
         return response.data.message.food; // Adjust this based on your backend response structure
     } catch (error) {
@@ -100,7 +100,7 @@ export const fetchAllFoods = async () => {
 
 export const addUserFood = async (selection, date, amount) => {
     try {
-        const response = await fetch(`${store}/UserFood_log`, {
+        const response = await fetch(`http://127.0.0.1:8000/UserFood_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -128,7 +128,7 @@ export const addUserFood = async (selection, date, amount) => {
 
 export const addNewFood = async (newFood) => {
     try {
-        const response = await fetch(`${store}/Food_log`, {
+        const response = await fetch(`http://127.0.0.1:8000/Food_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -137,7 +137,11 @@ export const addNewFood = async (newFood) => {
                 "name": newFood.name,
                 "calories_portion": Number(newFood.calories),
                 "measure": newFood.measure,
-                "measure_portion": Number(newFood.amount)
+                "measure_portion": Number(newFood.amount),
+                "amount_carbs":  Number(newFood.carbohydrate),
+                "amount_sodium": Number(newFood.sodium),
+                "amount_fat": Number(newFood.fat),
+                "amount_protein": Number(newFood.protein)
             }),
             
         });
@@ -157,7 +161,7 @@ export const addNewFood = async (newFood) => {
 export const deleteUserFood = async (doc_id) => {
 
     try {
-        await axios.delete(`${store}/DeleteMealUser/${doc_id}`); // Adjust this based on your backend response structure
+        await axios.delete(`http://127.0.0.1:8000/DeleteMealUser/${doc_id}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
@@ -168,7 +172,7 @@ export const deleteUserFood = async (doc_id) => {
 export const editUserFood = async (doc_id,data) => {
 
     try {
-        await axios.put(`${store}/UpdateUserFood/${doc_id}`,data); // Adjust this based on your backend response structure
+        await axios.put(`http://127.0.0.1:8000/UpdateUserFood/${doc_id}`,data); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
@@ -178,7 +182,7 @@ export const editUserFood = async (doc_id,data) => {
 export const getCategories = async()=>{
     const uid=auth.currentUser.uid
     try {
-        const response = await axios.get(`${store}/GetCategoryUser/${uid}`);
+        const response = await axios.get(`http://127.0.0.1:8000/GetCategoryUser/${uid}`);
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
@@ -189,7 +193,7 @@ export const getCategories = async()=>{
 export const getDefaultCategories = async () => {
     const uid = auth.currentUser.uid;
     try {
-        const response = await axios.get(`${store}/GetCategoryUser/default`);
+        const response = await axios.get(`http://127.0.0.1:8000/GetCategoryUser/default`);
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching default categories:', error);
@@ -219,7 +223,7 @@ export const getBarCategory = async () => {
 export const createCategory =async (data)=>{
     const uid=auth.currentUser.uid
     try{
-        const response = await axios.post(`${store}/CreateCategory/`, {...data,id_User: uid });
+        const response = await axios.post(`http://127.0.0.1:8000/CreateCategory/`, {...data,id_User: uid });
         return response.data
     }catch(error){
         console.error('Error adding new category: ', error);
@@ -229,7 +233,7 @@ export const createCategory =async (data)=>{
 
 export const updateCategory=async(data,category_id)=>{
     try{
-        const response = await axios.put(`${store}/UpdateCategory/${category_id}`,{...data,id_User: auth.currentUser.uid });
+        const response = await axios.put(`http://127.0.0.1:8000/UpdateCategory/${category_id}`,{...data,id_User: auth.currentUser.uid });
         return response.data
     }catch(error){
         console.error('Error updating category by id: ', error);
@@ -238,7 +242,7 @@ export const updateCategory=async(data,category_id)=>{
 }
 export const updateCategoryDefault=async(data,category_id)=>{
     try{
-        const response = await axios.put(`${store}/UpdateCategory/${category_id}`,{...data,id_User: 'default' });
+        const response = await axios.put(`http://127.0.0.1:8000/UpdateCategory/${category_id}`,{...data,id_User: 'default' });
         return response.data
     }catch(error){
         console.error('Error updating category by id: ', error);
@@ -248,18 +252,18 @@ export const updateCategoryDefault=async(data,category_id)=>{
 
 export const deleteCategory=async(category_id)=>{
     try {
-        await axios.delete(`${store}/DeleteCategory/${category_id}`); 
+        await axios.delete(`http://127.0.0.1:8000/DeleteCategory/${category_id}`); 
     } catch (error) {
         console.error('Error deleting category by ID:', error);
         return null; 
     }
 }
 
-export const createTotCal = async (totCal, date) => {
+export const createTotCal = async (data, date) => {
     try {
         const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
-
-        const response = await fetch(`${store}/CreateTotCaloriesUser/`, {
+        console.log("LO QUE LLEGA AL TOT CAL ", data)
+        const response = await fetch(`http://127.0.0.1:8000/CreateTotCaloriesUser/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -267,34 +271,57 @@ export const createTotCal = async (totCal, date) => {
             body: JSON.stringify({
                 "id_user": auth.currentUser.uid,
                 "day": validDate, // Using the valid date here
-                "totCal": totCal,
+                "totCal": data.calories,
+                "totProt": data.protein,
+                "totSodium": data.sodium,
+                "totCarbs": data.carbs,
+                "totFats": data.fat,
             }),
         });
 
-        const data = await response.json();
+        // Await response.json() before referencing 'data'
+        const responseData = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.detail || "Something went wrong");
-            
+            throw new Error(responseData.detail || "Something went wrong");
         }
-        
 
-        console.log("Calories entry added successfully:", data);
-        return data;
+        console.log("Calories entry added successfully:", responseData);
+        return responseData;
     } catch (error) {
         console.error("Error adding calories entry:", error);
         return null;
     }
 };
 
-export const UpdateTotCal=async(totcal_id,newTotCal)=>{
+
+
+export const UpdateTotCal = async (totcal_id, data, date) => {
     try {
-        await axios.put(`${store}/UpdateTotCaloriesUser/${totcal_id}`,{ calUpdate: newTotCal }); 
+        // Ensure the date is in the correct format
+        const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
+
+        // Prepare payload matching backend expectations
+        const payload = {
+            id_user: auth.currentUser.uid,
+            day: validDate,   // Using "day" instead of "date" to match the model
+            totCal: data.calories,
+            totProt: data.protein,
+            totSodium: data.sodium,
+            totCarbs: data.carbs,
+            totFats: data.fat,
+        };
+
+        console.log("Payload:", payload); // Log to confirm structure before sending
+
+        // Send the request
+        await axios.put(`http://127.0.0.1:8000/UpdateTotCaloriesUser/${totcal_id}`, payload); 
     } catch (error) {
-        console.error('Error fetching food by ID:', error);
+        console.error('Error updating total calories:', error);
         return null; // Return null or handle the error as needed
     }
-}
+};
+
 export const fetchTotCalByDay = async (date) => {
     const userTotCal = await getTotCalUser(); // Wait for the promise to resolve
     
@@ -376,7 +403,7 @@ export const getCaloriesByCategories= ( userCalories, categories, foods, barFood
 export const getTotCalUser=async()=>{
     const uid=auth.currentUser.uid
     if(uid){try {
-        const response = await axios.get(`${store}/GetTotCalUser/${uid}`);
+        const response = await axios.get(`http://127.0.0.1:8000/GetTotCalUser/${uid}`);
         return response.data.message.totCals; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);

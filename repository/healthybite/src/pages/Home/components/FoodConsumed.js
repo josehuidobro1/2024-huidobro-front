@@ -81,23 +81,19 @@ const FoodConsumed = ({ usfood, handleDeleteMeal , handleEditFoodConsumed}) => {
             </div>
             <div className='flex justify-center min-w-20 sm:min-w-12  flex-col items-center text-white text-sm'>
                 <p className='font-semibold '>Sodium</p>
-                <p>{Math.ceil((usfood.sodium_portion * usfood.amount_eaten) / usfood.measure_portion)} mg</p>
+                <p>{Math.ceil((usfood.amount_sodium * usfood.amount_eaten) / usfood.measure_portion)} mg</p>
             </div>
             <div className='flex justify-center min-w-20 sm:min-w-12  flex-col items-center text-white text-sm'>
                 <p className='font-semibold '>Carbohidrates</p>
-                <p>{Math.ceil((usfood.carbohidrate_portion * usfood.amount_eaten) / usfood.measure_portion)} g</p>
+                <p>{Math.ceil((usfood.amount_carbs * usfood.amount_eaten) / usfood.measure_portion)} g</p>
             </div>
             <div className='flex justify-center min-w-20 sm:min-w-12 mt-3 sm:mt-0  flex-col items-center text-white text-sm'>
                 <p className='font-semibold '>Fat</p>
-                <p>{Math.ceil((usfood.fat_portion * usfood.amount_eaten) / usfood.measure_portion)} g</p>
-            </div>
-            <div className='flex justify-center min-w-20 sm:min-w-12 mt-3 sm:mt-0  flex-col items-center text-white text-sm'>
-                <p className='font-semibold '>Cholesterol</p>
-                <p>{Math.ceil((usfood.cholesterol_portion * usfood.amount_eaten) / usfood.measure_portion)} mg</p>
+                <p>{Math.ceil((usfood.amount_fat * usfood.amount_eaten) / usfood.measure_portion)} g</p>
             </div>
             <div className='flex justify-center min-w-20 sm:min-w-12 mt-3 sm:mt-0  flex-col items-center text-white text-sm'>
                 <p className='font-semibold '>Protein</p>
-                <p>{Math.ceil((usfood.protein_portion * usfood.amount_eaten) / usfood.measure_portion)} g</p>
+                <p>{Math.ceil((usfood.amount_protein * usfood.amount_eaten) / usfood.measure_portion)} g</p>
             </div>
         </div>}
     </div>}</>
