@@ -16,7 +16,8 @@ const FoodItem = ({ food, setSelection }) => {
 
     const handleAddFood = () => {
         if (amount > 0) { // Ensure amount is greater than 0
-            setSelection({ id_food: food.id, name: food.name, amount, measure: food.measure });
+            console.log('COMIDS SELECCIONADA',food)
+            setSelection({ id_food: food.id, name: food.name, amount, measure: food.measure, amount_carbs: food.amount_carbs,amount_fat: food.amount_fat, amount_protein: food.amount_protein, amount_sodium: food.amount_sodium});
         } else {
             setErrorMessage("Please enter a valid amount greater than 0.");
         }
