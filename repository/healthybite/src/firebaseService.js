@@ -478,7 +478,7 @@ export const getProdByID= async(prod_id)=>{
 // things that need to be deployed
 export const createplate = async (selection) => {
     try {
-        const response = await fetch("https://two024-ranchoaparte-back.onrender.com/CreatePlate/", {
+        const response = await fetch("http://127.0.0.1:8000/CreatePlate/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -488,7 +488,8 @@ export const createplate = async (selection) => {
                 "ingredients": selection.ingredients,
                 "name": selection.name,
                 "calories_portion": selection.total_cal,
-                "image": selection.image
+                "image": selection.image,
+                "public": selection.public
             }),
             
         });
@@ -502,7 +503,7 @@ export const createplate = async (selection) => {
         
 
         console.log("plate entry added successfully:", data);
-        return data;
+        return data.id;
     } catch (error) {
         console.error("Error adding plate entry:", error);
         return null;
@@ -526,7 +527,7 @@ export const getUserPlates = async () => {
 };
 export const updatePlate=async(data,plate_id)=>{
     try{
-        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdatePlate/${plate_id}`,{...data,id_User: auth.currentUser.uid });
+        const response = await axios.put(`http://127.0.0.1:8000/UpdatePlate/${plate_id}`,{...data,id_User: auth.currentUser.uid });
         return response.data
     }catch(error){
         console.error('Error updating plate by id: ', error);
@@ -707,6 +708,37 @@ export const updateComments = async (doc_id, data) => {
     } catch (error) {
         console.error('Error updating review by ID:', error.response ? error.response.data : error.message);
         return null; // Return null or handle the error as needed
+    }
+};
+export const createReview = async (selection) => {
+    try {
+        console.log(selection)
+        const response = await fetch('http://127.0.0.1:8000/newReview', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify( {
+                "plate_Id": selection.id_plate,
+                "comments": selection.comments,
+                "score": selection.score,
+            }),
+            
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.detail || "Something went wrong");
+            
+        }
+        
+
+        console.log("drink entry added successfully:", data);
+        return data.drinkType_id;
+    } catch (error) {
+        console.error("Error adding drink entry:", error);
+        return null;
     }
 };
 

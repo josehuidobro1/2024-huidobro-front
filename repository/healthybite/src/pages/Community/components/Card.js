@@ -29,7 +29,7 @@ const Card = ({ plate }) => {
             <div className={`pb-3 pt-2 px-3 flex flex-col ${openDetails ? 'w-3/4 sm:w-2/3 items-between justify-between h-full' : 'w-full h-1/3 justify-between items-center'}`}>
                 <div className='flex flex-col justify-start items-center w-full'>
                     <div className='flex items-center justify-between w-full'>
-                        <h1 className='text-md font-semibold text-healthyDarkGray1 text-left w-9/12'>{plate.plate}</h1>
+                        <h1 className='text-md font-semibold text-healthyDarkGray1 text-left w-9/12'>{plate.name}</h1>
                         <div className='flex justify-end items-center text-md text-healthyYellow w-3/12'>
                             <p className='font-bold pr-1'>{scores}</p>
                             <FontAwesomeIcon icon={faStar} className='text-healthyYellow' />
