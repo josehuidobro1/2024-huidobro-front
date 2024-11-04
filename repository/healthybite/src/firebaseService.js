@@ -769,3 +769,9 @@ export const createReview = async (selection) => {
     }
 };
 
+export const getstreak = async () => {
+    const user_id  = auth.currentUser.uid
+    const response = await axios.get(`http://127.0.0.1:8000/Streak/${user_id}`,)
+    const streak = response.data.message
+    return streak
+}

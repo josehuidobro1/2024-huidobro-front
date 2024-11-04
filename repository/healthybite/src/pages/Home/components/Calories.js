@@ -64,19 +64,19 @@ const Calories = ({ userFood }) => {
             calculateTotals();
         }
     }, [userFood]);
-
+    
     useEffect(() => {
-        if (userFood && userFood.length > 0) {
+        if (userFood && userFood.length > 0 && totals.calories > 0) {
             const date = userFood[0]?.date_ingested ? new Date(userFood[0].date_ingested) : new Date();
             createOrUpdateTotCalories(totals, date);
         }
     }, [totals, userFood]);
+    
 
     return (
         <div className="flex flex-row sm:flex-col justify-center items-center w-full">
             <p className="mr-4 sm:mr-0 font-quicksand text-darkGray text-md sm:text-xl text-center lg:text-left">Total calories</p>
             <p className="mr-2 sm:mr-0 font-quicksand text-darkGray text-xl font-semibold sm:text-4xl lg:text-6xl">{totals.calories}</p>
-            <p className="font-quicksand text-darkGray text-sm sm:text-md">calories</p>
         </div>
     );
 };
