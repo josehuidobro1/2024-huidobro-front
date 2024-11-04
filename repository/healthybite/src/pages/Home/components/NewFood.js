@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import Input from '../../../components/Input';
-import {handleInputChange} from '../../inputValidation';
+import {handleInputChange, handleInputChange2} from '../../inputValidation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCookieBite } from '@fortawesome/free-solid-svg-icons'; 
 
 const NewFood = ({ setAddFood, setNewFood}) => {
     const [inValidation, setInValidation] = useState(false);
@@ -20,17 +22,9 @@ const NewFood = ({ setAddFood, setNewFood}) => {
             measure !== '' 
         );
     };
-    
-    const handleAmountChange= (e) => {
-        const value = Number(e.target.value);
-        if (!isNaN(value) && value >= 0 && value<=1000) {
-            setAmount(value);
-        }
-        handleInputChange(parseInt(e.target.value), 0, 500, setAmount);
-    }
 
     const handleCaloriesChange= (e) => {
-        handleInputChange(parseInt(e.target.value), 0, 500, setCalories);
+        handleInputChange2(parseInt(e.target.value), 0, 500, setCalories);
     }
 
     const save = () => {
@@ -53,13 +47,19 @@ const NewFood = ({ setAddFood, setNewFood}) => {
 
     return (
         <div className='w-full h-full flex flex-col'>
-            <h2 className='text-2xl font-semibold mb-4'>CREATE NEW FOOD</h2>
+            <div className='w-full h-full flex flex-row'>
+                <h2 className='text-2xl font-semibold font-quicksand text-center mb-4'>CREATE NEW FOOD</h2>
+                <FontAwesomeIcon icon={faCookieBite} />
+            </div>
+
             <div className='flex-1 flex flex-col'>
                 <div className='flex flex-col md:flex-row w-full items-start justify-start sm:h-full max-h-84 overflow-y-scroll'>
                     <div className='flex-1 pb-0 px-2 sm:p-2 rounded-md w-full md:w-1/2 flex flex-col '>
                         <div className='flex flex-col w-full mb-2'>
-                            <Input
+                        <p className='text-black font-semibold font-quicksand text-sm'>Name</p>
+                            <input
                                 required={inValidation && name === ''}
+                                className='bg-white rounded-md text-left text-darkGray text-sm p-1 focus:outline-none  py-2 px-3 focus:ring-2 focus:ring-healthyGreen'
                                 label='Name'
                                 placeholder='Chicken'
                                 value={name}
@@ -69,9 +69,10 @@ const NewFood = ({ setAddFood, setNewFood}) => {
                             {inValidation && name === '' && <p className='text-red-500 text-xs'>Name is required.</p>}
                         </div>
                         <div className='flex flex-col w-full mb-2'>
-                            <Input
+                        <p className='text-black font-semibold font-quicksand text-sm'>Measure</p>
+                            <input
                                 required={inValidation && measure === ''}
-                                label='Measure'
+                                className='bg-white rounded-md text-left text-darkGray text-sm p-1 focus:outline-none  py-2 px-3 focus:ring-2 focus:ring-healthyGreen'
                                 placeholder='gr'
                                 value={measure}
                                 inputType='text'
@@ -80,57 +81,64 @@ const NewFood = ({ setAddFood, setNewFood}) => {
                             {inValidation && measure === '' && <p className='text-red-500 text-xs'>Measure is required.</p>}
                         </div>
                         <div className='flex flex-col font-quicksand font-semibold text-darkGray text-sm w-full mb-2'>
-                            <p className='text-sm font-bold text-darkGray'>Portion</p>
+                            <p className='text-black font-quicksand font-semibold text-sm'>Portion</p>
                             {inValidation && <p className="font-quicksand mt-2 md:mt-0 text-xs md:text-sm text-healthyDarkOrange font-semibold">This field is required</p>}
                             <input 
-                                className={`focus:outline-none focus:ring focus:ring-healthyGreen decoration-none bg-white p-1 md:p-2 rounded-md md:rounded-xl font-quicksand my-1 text-sm md:text-md ${inValidation ? 'ring ring-healthyDarkOrange' : '' }`}  
                                 placeholder="250" 
+                                className='bg-white rounded-md text-left text-darkGray text-sm p-1 focus:outline-none  py-2 px-3 focus:ring-2 focus:ring-healthyGreen'
                                 type="number" 
                                 value={amount} 
-                                onChange={handleAmountChange} 
+                                onChange={(e)=> handleInputChange(e.target.value, 0, 1000, setAmount)}
                             />
                         
                             {inValidation && amount <= 0 && <p className='text-red-500 text-xs'>Amount must be a positive number.</p>}
                         </div>
                         <div className='flex flex-col w-full mb-2 sm:mb-0'>
-                            <Input
+                        <p className='text-black font-quicksand  font-semibold text-sm'>Calories</p>
+                            <input
                                 required={inValidation && calories <= 0}
                                 label="Calories"
                                 placeholder="448"
+                                className='bg-white rounded-md text-left text-darkGray text-sm p-1 focus:outline-none  py-2 px-3 focus:ring-2 focus:ring-healthyGreen'
                                 value={calories}
                                 inputType='number'
-                                onChange={handleCaloriesChange}
+                                onChange={(e)=> handleInputChange(e.target.value, 0, 1000, setCalories)}
                             />
                             {inValidation && calories <= 0 && <p className='text-red-500 text-xs'>Calories must be a positive number.</p>}
                         </div>
                     </div>
                     <div className='flex-1 pt-0 px-2 sm:p-2 rounded-md w-full md:w-1/2 flex flex-col justify-start '>
                         <div className='flex flex-col w-full mb-2'>
-                            <Input
+                        <p className='text-black font-quicksand  font-semibold text-sm'>Sodium</p>
+                            <input
                                 required={inValidation && sodium <= 0}
-                                label="Sodium"
                                 placeholder="448"
                                 value={sodium}
+                                className='bg-white rounded-md text-left text-darkGray text-sm p-1 focus:outline-none  py-2 px-3 focus:ring-2 focus:ring-healthyGreen'
                                 inputType='number'
-                                onChange={(e)=> handleInputChange(parseInt(e.target.value), 0, 500, setSodium)}
+                                onChange={(e)=> handleInputChange(e.target.value, 0, 1000, setSodium)}
                             />
                             {inValidation && sodium <= 0 && <p className='text-red-500 text-xs'>Sodium must be a positive number.</p>}
                         </div>
-                        <div className='flex flex-col w-full '>
-                            <Input
+                        <div className='flex flex-col w-full mb-2 '>
+                        <p className='text-black font-quicksand font-semibold text-sm'>Carbohidrates</p>
+                            <input
                                 required={inValidation && carbohydrate <= 0}
                                 label="Carbohydrate"
                                 placeholder="448"
+                                className='bg-white rounded-md text-left text-darkGray text-sm p-1 focus:outline-none  py-2 px-3 focus:ring-2 focus:ring-healthyGreen'
                                 value={carbohydrate}
                                 inputType='number'
                                 onChange={(e)=> handleInputChange(parseInt(e.target.value), 0, 500, setCarbohydrate)}
                             />
                             {inValidation && carbohydrate <= 0 && <p className='text-red-500 text-xs'>Carbohydrate must be a positive number.</p>}
                         </div>
-                        <div className='flex flex-col w-full '>
-                            <Input
+                        <div className='flex flex-col w-full mb-2'>
+                        <p className='text-black font-quicksand  font-semibold text-sm'>Fats</p>
+                            <input
                                 required={inValidation && fat <= 0}
                                 label="Fat"
+                                className='bg-white rounded-md text-left text-darkGray text-sm p-1 focus:outline-none  py-2 px-3 focus:ring-2 focus:ring-healthyGreen'
                                 placeholder="448"
                                 value={fat}
                                 inputType='number'
@@ -138,11 +146,13 @@ const NewFood = ({ setAddFood, setNewFood}) => {
                             />
                             {inValidation && fat <= 0 && <p className='text-red-500 text-xs'>Fat must be a positive number.</p>}
                         </div>
-                        <div className='flex flex-col w-full '>
-                            <Input
+                        <div className='flex flex-col w-full mb-2'>
+                        <p className='text-black font-quicksand font-semibold text-sm'>Protein</p>
+                            <input
                                 required={inValidation && protein <= 0}
                                 label="Protein"
                                 placeholder="448"
+                                className='bg-white rounded-md text-left text-darkGray text-sm p-1 focus:outline-none  py-2 px-3 focus:ring-2 focus:ring-healthyGreen'
                                 value={protein}
                                 inputType='number'
                                 onChange={(e)=> handleInputChange(parseInt(e.target.value), 0, 500, setProtein)}
