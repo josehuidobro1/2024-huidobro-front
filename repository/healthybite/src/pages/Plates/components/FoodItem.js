@@ -4,12 +4,12 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const FoodItem = ({ food, onFoodAdd, reset, onResetComplete, selectedFood }) => {
   // Ensure selectedFood is defined and is an array
-  const foodSeledted = Array.isArray(selectedFood)
+  /*const foodSeledted = Array.isArray(selectedFood)
     ? selectedFood.find((item) => item.ingredientId === food.id && item.quantity > 0)
     : null;
-
-  const [value, setValue] = useState(foodSeledted ? foodSeledted.quantity : 0);
-  const [isAdded, setIsAdded] = useState(!!foodSeledted);
+*/
+  const [value, setValue] = useState(food.quantity ? food.quantity: 0);
+  const [isAdded, setIsAdded] = useState(food.quantity ? true : false);
   const [errorMessage, setErrorMessage] = useState(''); // State for error message
 
   // Trigger reset of the component when reset prop changes to true
@@ -43,7 +43,7 @@ const FoodItem = ({ food, onFoodAdd, reset, onResetComplete, selectedFood }) => 
             placeholder='000'
             value={value}
             onChange={(e) => e.target.value >= 0 && setValue(e.target.value)}
-            className='bg-healthyGray2 text-healthyDarkGray1 text-md text-right pl-1 py-1 rounded-md w-12 ml-1'
+            className='bg-healthyGray2 pr-1 text-healthyDarkGray1 text-md text-right pl-1 py-1 rounded-md w-12 ml-1'
           />
           <button
             className={`ml-2 px-2 py-1 text-xs border-2 border-healthyGreen ${isAdded ? 'bg-healthyGreen  text-white' : 'bg-white text-healthyGreen'} rounded`}

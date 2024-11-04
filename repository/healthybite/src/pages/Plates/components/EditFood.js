@@ -33,10 +33,10 @@ const EditFood = ({ item, onQuantityChange, onRemove }) => {
             type="number"
             value={value}
             onChange={handleChange}
-            className=' bg-healthyOrange text-center text-white p-1 text-sm rounded-md w-12 ml-1'
+            className=' bg-healthyOrange text-center text-white px-1 text-sm rounded-md w-12 ml-1'
             min="0"
           /> 
-          <p className='text-white text-xs font-bold ml-2'>{item.measure}</p>
+          <p className='text-white text-xs font-bold ml-1 w-10'>{item.measure}</p>
       </div>
   );
 };

@@ -73,11 +73,14 @@ const Comments = ({ data, setScores }) => {
                     type='text'
                     placeholder='Leave your comment...'
                 />
-                <Rating 
-                    value={score} 
-                    onChange={(e, newScore) => setScore(newScore)} 
-                    sx={{ '& .MuiRating-icon': { marginX: '-2px' } }} // Adjust margin between stars
-                />
+                <div className='flex items-center justify-center mx-2'>
+                    <Rating 
+                        value={score} 
+                        onChange={(e, newScore) => setScore(newScore)} 
+                        sx={{ '& .MuiRating-icon': { marginX: '-2px' } }} // Adjust margin between stars
+                    />
+
+                </div>
                 <div onClick={handleNewComment} className='flex w-2/12 md:w-1/12 h-full justify-center items-center bg-healthyOrange hover:bg-healthyDarkOrange p-1 cursor-pointer rounded-r-md'>
                     <FontAwesomeIcon icon={faPaperPlane} className='text-white text-lg' />
                 </div>

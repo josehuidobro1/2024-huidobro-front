@@ -3,6 +3,7 @@ import NavBar from '../../components/NavBar';
 import Card from './components/Card';
 import { getPublicPlates } from '../../firebaseService';
 import { auth } from "../../firebaseConfig";
+import Loading from "../../components/Loading";
 
 export const Community = () => {
     const [plates, setPlates] = useState([]);
@@ -47,11 +48,11 @@ export const Community = () => {
     return (
         <div className="h-screen w-full overflow-y-hidden">
             <NavBar />
-            <div className="w-full h-full flex justify-center items-start overflow-y-scroll font-quicksand mt-4 sm:mt-16 md:mt-16 lg:mt-24 pb-32">
+            {loading ?
+            <Loading/>
+            :<div className="w-full h-full flex justify-center items-start overflow-y-scroll font-quicksand mt-4 sm:mt-16 md:mt-16 lg:mt-24 pb-32">
                 <div className="w-full flex flex-wrap justify-center">
-                    {loading ? (
-                        <p>Loading plates...</p>
-                    ) : (
+                    {
                         plates && plates.length > 0 ? (
                             plates.map((item, index) => (
                                 <Card key={index} plate={item} review={item.review} />
@@ -59,9 +60,9 @@ export const Community = () => {
                         ) : (
                             <p>No plates available.</p>
                         )
-                    )}
+                    }
                 </div>
-            </div>
+            </div>}
         </div>
     );
 };

@@ -22,7 +22,7 @@ const Card = ({ plate }) => {
     }
 
     return (
-        <div className={`rounded-xl bg-white shadow-md flex justify-center items-center ${openDetails ? 'w-full sm:w-1/2 md:w-1/3 lg:w-full h-80 md:h-72 flex-row' : 'w-full sm:w-1/3 md:w-1/4 h-64 sm:h-80 lg:h-64 flex-col'} m-2`}>
+        <div className={`rounded-xl bg-white shadow-md flex justify-center items-center ${openDetails ? 'w-full sm:w-1/2 md:w-1/3 lg:w-2/3 h-80 md:h-72 flex-row' : 'w-full sm:w-1/3 md:w-1/4 h-64 sm:h-80 lg:h-64 flex-col'} m-2`}>
             <div className={`flex items-center justify-center ${openDetails ? 'h-full rounded-tl-xl w-1/4 sm:w-1/3' : 'w-full h-2/3 rounded-t-xl'}`}>
                 <img src={plate.image ? plate.image : noPlateImage} alt={plate.name} className={`w-full object-cover h-full ${openDetails ? 'rounded-l-xl' : 'rounded-t-xl'}`} />
             </div>

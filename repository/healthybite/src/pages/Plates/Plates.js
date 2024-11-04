@@ -85,18 +85,18 @@ export const Plates = () => {
                         <div className='flex md:h-full flex-col lg:mr-10 w-10/12 md:w-3/5 lg:w-2/4  ' >
                             <div className='flex flex-row justify-start md:justify-start items-center w-full '>
                                 <p className='text-healthyDarkGray1 font-belleza text-3xl  '>My plates</p>
-
+                                {successMessage && (
+                                    <div className='bg-healthyGreen text-white font-bold text-sm text center rounded-full shadow-sm mx-3 px-3 py-1  font-quicksand '>
+                                        {successMessage}
+                                    </div>
+                                )}
                             </div>
                             <div className='flex flex-col  font-quicksand text-darkGray items-start w-full lg:ml-12 '>
 
                                 
                             {plates && plates.length > 0 ?
                             <div className='flex flex-col w-full md:w-11/12 justify-start items-start mt-8 md:max-h-[400px] md:overflow-y-auto'>
-                                        {successMessage && (
-                                        <div className='text-healthyGreen mt-2  font-quicksand'>
-                                            {successMessage}
-                                        </div>
-                                    )}
+                                        
                                 {plates.map((plate, index) => (
                                     <PlateItem plate={plate} key={index} foodData={foodData} handleupdatePlates={handleupdatePlates} setSuccessMessage={setSuccessMessage} setAddFood={setAddFood} setPlate={setPlate} selection={selection} />
                                 ))}

@@ -94,9 +94,9 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
             if (publicPlate && !plate.public) {
                 await createReviewForPublicPlate();
             }
-            
-            setTimeout(() => setSuccessMessage(""), 1000);
-            setEdit(false);
+            setEdit(false)
+            setTimeout(() => setSuccessMessage(""), 2500);
+            setOption(false)
         } catch (error) {
             console.error("Error updating plate:", error);
         }
@@ -168,8 +168,20 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
                                 />
                             </div>
 
-                            {/* Only show the options button if the plate is not public */}
-                            {!publicPlate && (
+                            {!plate.public && options && (
+                                <div className="flex items-center border-2 justify-center text-xs text-healthyOrange font-semibold border-healthyOrange px-2 rounded-full mr-3">
+                                    <p onClick={() => setEdit(!edit)} className="cursor-pointer hover:text-healthyDarkOrange">
+                                        Edit
+                                    </p>
+                                    <p
+                                        onClick={() => setDeleteItem(true)}
+                                        className="ml-1 border-l-2 border-l-healthyOrange pl-1 hover:text-healthyDarkOrange cursor-pointer"
+                                    >
+                                        Delete
+                                    </p>
+                                </div>
+                            )}
+                            {!publicPlate && !edit && (
                                 <FontAwesomeIcon
                                     onClick={handleOptions}
                                     icon={faEllipsisVertical}
@@ -180,7 +192,7 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
                     </div>
 
                     {/* Render editing section only if edit is active and plate is not public */}
-                    {edit && !publicPlate && (
+                    {edit && !plate.public && (
                         <div className="flex flex-col w-11/12 bg-healthyDarkOrange p-2 rounded-b-md">
                             <div className="flex flex-row justify-between items-start">
                                 <div className="flex flex-col w-10/12">
@@ -193,16 +205,16 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
                                         />
                                     ))}
                                 </div>
-                                <div className="flex flex-col justify-center items-center w-2/12">
+                                <div className="flex flex-col justify-center items-center  bg-white/30 p-1 rounded-full w-8">
                                     <FontAwesomeIcon
                                         onClick={handleAddFood}
                                         icon={faCirclePlus}
                                         className="text-2xl w-full mb-2 text-white hover:text-healthyDarkOrange2 cursor-pointer"
                                     />
-                                    {!publicPlate && <Visibility publicPlate={publicPlate} setPublicPlate={setPublicPlate} vertical />}
+                                    <Visibility publicPlate={publicPlate} setPublicPlate={setPublicPlate} vertical />
                                 </div>
                             </div>
-                            <div className="w-full flex justify-center items-center">
+                            <div className="w-full flex justify-center items-center ">
                                 <div
                                     onClick={updateData}
                                     className="hover:cursor-pointer bg-white shadow-md rounded-2xl px-2 lg:px-4 py-1 flex flex-row items-center justify-center mt-2 w-full lg:w-1/2"

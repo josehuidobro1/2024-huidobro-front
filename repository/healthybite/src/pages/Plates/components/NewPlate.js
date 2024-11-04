@@ -24,7 +24,8 @@ const NewPlate = ({ foodData, setPlates, plates }) => {
 
   useEffect(()=>{
     if(search===''){
-      setFoods(foodData)
+      const showFood=selectedFoods.concat(foodData.filter(item=>!(selectedFoods.map(e=>e.id)).includes(item.id)))
+      setFoods(showFood)
     }else{
       setFoods(foodData.filter((item)=>item.name.toLowerCase().startsWith(search.toLowerCase())))
     }
