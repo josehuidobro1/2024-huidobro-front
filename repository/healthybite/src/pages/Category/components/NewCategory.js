@@ -6,7 +6,7 @@ import Data from '../../Data';
 import noodle from '../../../assets/icon.png'
 import { createCategory, fetchAllFoods } from '../../../firebaseService';
 
-function NewCategory({handleUpdate, setAddCategory, setAddFood, foods}) {
+function NewCategory({handleUpdate, setAddCategory, setAddFood, foods, platesData}) {
     const [name, setName]=useState('')
     const [selectedFoods, setSelectedFoods] = useState([]); 
     const iconOptions = Data.iconOptions
@@ -98,17 +98,14 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods}) {
             </div>}
         </div>
         <div className='flex flex-col w-full mt-3 '>
-            <div className='w-full flex flex-row items-center justify-between mb-2'>
-                <p className='font-semibold text-white text-xs lg:text-sm mr-2 '>Food</p>
-            </div>
-            <div className='flex flex-col w-full p-2 bg-white rounded-md mt-1 max-h-44 overflow-y-auto'>
+            <div className='flex flex-col w-full p-2 bg-white rounded-md max-h-44 overflow-y-auto'>
                 {foods.map((food, index)=>(<div key={index} className='flex flex-row items-center w-full justify-start mb-2'>
                     <input type="checkbox" checked={selectedFoods.includes(food.id)}  className='text-xl text-darkGray ' value={food.id} onChange={() => handleFoodSelection(food.id)} />
                     <div className='flex flex-col items-start ml-2'>
                         <p className='text-sm lg:text-md font-semibold text-darkGray'>{food.name}</p>
                         {food.bar && <p className='text-xs text-messidepaul  '>by C&V menu</p>}
                         {food.drink && <p className='text-xs text-messidepaul  '>Drink</p>}
-                        {food.plate && <p className='text-xs text-messidepaul  '>Plate</p>}
+                        {food.plate &&  <p className='text-xs text-messidepaul  '>{food.private ? 'My plate' : 'Public plate' }</p>}
                     </div>
                 </div>))}
             </div>

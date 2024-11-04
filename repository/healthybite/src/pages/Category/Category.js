@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIceCream, faTrash, faPen, faPlus} from '@fortawesome/free-solid-svg-icons'; 
 import CategoryItem from './components/CategoryItem';
 import NewCategory from './components/NewCategory';
-import { fetchAllFoods, getCategories, getProducts, getUserDrinks,getUserPlates} from "../../firebaseService";
+import { fetchAllFoods, getCategories, getProducts, getPublicPlates, getUserDrinks,getUserPlates} from "../../firebaseService";
 import PopUpCat from "./components/PopUpCat";
 import { auth } from "../../firebaseConfig";
 import Loading from "../../components/Loading";
@@ -20,6 +20,7 @@ function Category() {
     const [loading, setLoading] = useState(true);
 
     const fetchCategories = async () => {
+        setLoading(true)
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
@@ -37,19 +38,23 @@ function Category() {
     };
 
     const fetchFoods =async()=>{ 
+        setLoading(true)
         try{
             const food = await fetchAllFoods()
             const barFood=await getProducts()
             const drinks = await getUserDrinks()
             const plates = await getUserPlates()
+            const publicPlates= await getPublicPlates()
             const combinedFoodData = [
                 ...food, 
                 ...barFood.map((item) => ({ ...item, bar: true })),
                 ...drinks.map((item) => ({ ...item, drink: true })),
-                ...plates.map((item) => ({ ...item, plate: true }))
+                ...plates.map((item) => ({ ...item, plate: true, private:true })),
+                ...publicPlates.filter(item=>!(plates.map(e=>e.id)).includes(item.id)).map((item) => ({ ...item, plate: true, private:false }))
             ];
     
             setFoodData(combinedFoodData)
+            combinedFoodData && setLoading(false)
         }catch(error){
             console.log("Error fetching foods in Category page: ", error)
         }

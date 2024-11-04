@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes} from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes, getPublicPlates} from "../../firebaseService";
 import Filter from "./components/Filter";
 import Loading from "../../components/Loading";
 import Data from "../Data";
@@ -83,9 +83,19 @@ function Home() {
             setFilteredFood(userFood)
         }
     },[filterSelected])
+
     const getUserData = async()=> {
-        setPlatesData(await  getUserPlates())
-        setDrinksData (await getUserDrinks())
+        setLoading(true)
+        const privatePlates = await  getUserPlates()
+        const publicPlates= await getPublicPlates()
+        const otherPlates=publicPlates && privatePlates && publicPlates.filter(item=>!(privatePlates.map(e=>e.id)).includes(item.id) ) 
+        const plates={mines: privatePlates, others:otherPlates}
+        console.log('PLATES CHARGED : ' , plates)
+        setPlatesData(plates)
+        const drinks=await getUserDrinks()
+        setDrinksData (drinks)
+        setLoading(false);
+
     }
     
     const handleChangesCat = async () => {
@@ -138,7 +148,6 @@ function Home() {
                     // If no details are found in the 'food' table, try the 'menu' table
                     if (!foodDetails) {
                         foodDetails = await getPlateByID(item.id_Food);
-                        console.log(foodDetails)
                         if(!foodDetails){
                             foodDetails = await getDrinkByID(item.id_Food);
                             if(!foodDetails){
@@ -171,7 +180,7 @@ function Home() {
                 // Set user food with the resolved details
                 setUserFood(userFoodDetails);
                 setFilteredFood(userFoodDetails);
-                if (userFood) setLoading(false);
+                userFood && platesData && drinksData && categories && setLoading(false);
             } catch (err) {
                 console.log('Error al obtener los datos: ' + err.message);
             }
@@ -194,6 +203,7 @@ function Home() {
                 ...drinkCats
             ];
             setCategories(combinedCats);
+            userFood && categories && platesData && drinksData && setLoading(false)
         } catch (err) {
             console.log('Error al obtener las categorias: ' + err);
         }
@@ -205,11 +215,14 @@ function Home() {
         fetchFoods();
         fetchCategories();
     },[date])
-    useEffect(()=>{
-        getUserData()
-        console.log(drinksData, platesData)
-    },[])
 
+    useEffect(() => {
+        const fetchData = async () => {
+            await getUserData();
+        };
+    
+        fetchData();
+    }, []);
 
     const handleAddMeal = async () => {
         try {
