@@ -7,36 +7,13 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes, getPublicPlates} from "../../firebaseService";
+import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes, getPublicPlates, fetchUser, editUserData} from "../../firebaseService";
 import Filter from "./components/Filter";
 import Loading from "../../components/Loading";
 import Data from "../Data";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { PieChart } from "@mui/x-charts";
-
-const goals=[
-    {
-        idGoal:1,
-        goal:200
-    },
-    {
-        idGoal:2,
-        goal:200
-    },
-    {
-        idGoal:3,
-        goal:50
-    },
-    {
-        idGoal:4,
-        goal:100
-    },
-    {
-        idGoal:5,
-        goal:500
-    }
-]
-
+import Goals from "../../components/Goals";
 
 function Home() {
     const [foodData, setFoodData] = useState([]); // datos de tabla Food
@@ -52,6 +29,7 @@ function Home() {
     const [filteredFood, setFilteredFood]=useState([])
     const [filterSelected, setFilterSelected]=useState(null)
     const [loading, setLoading] = useState(true);
+    const [user, setUser]=useState()
     const goalName=Data.goals
     const [index,setIndex]=useState(1)
     const [goalConsumed, setGoalConsumed]=useState(0)
@@ -60,19 +38,25 @@ function Home() {
         let value=0
         switch (index){
             case 1:
-                value=userFood.reduce((acc,food)=>acc+((food.calories_portion * food.amount_eaten) / food.measure_portion),0)
-            /*
+                value=userFood.reduce((acc,food)=>acc+((food.calories_portion * food.amount_eaten) / food.measure_portion),0);
+                break;
             case 2:
-                const value=userFood.reduce((acc,food)=>acc+((food.sodium_portion * food.amount_eaten) / food.measure_portion),0)
+                value=userFood.reduce((acc,food)=>acc+((food.sodium_portion  ? food.sodium_portion : 0 * food.amount_eaten) / food.measure_portion),0);
+                break;
             case 3:
-                const value=userFood.reduce((acc,food)=>acc+((food.fats_portion * food.amount_eaten) / food.measure_portion),0)
+                value=userFood.reduce((acc,food)=>acc+((food.fats_portion ? food.fats_portion : 0 * food.amount_eaten) / food.measure_portion),0);
+                break;
             case 4:
-                const value=userFood.reduce((acc,food)=>acc+((food.carbohidrates_portion * food.amount_eaten) / food.measure_portion),0)
-            */
+                value=userFood.reduce((acc,food)=>acc+((food.carbohydrates_portion ? food.carbohydrates_portion : 0 * food.amount_eaten) / food.measure_portion),0);
+                break;
+            case 5: 
+                value=userFood.reduce((acc,food)=>acc+((food.protein_portion ? food.protein_portion : 0 * food.amount_eaten) / food.measure_portion),0);
+                break;
+            default:
+                value=0;
+            
         }
         setGoalConsumed(value)
-        console.log('VALUE CALCULATED FOR INDEX ', index)
-        console.log('Esto es lo consumido ', userFood.reduce((acc,food)=>acc+((food.calories_portion * food.amount_eaten) / food.measure_portion),0))
     },[index, userFood])
 
     useEffect(()=>{
@@ -86,11 +70,13 @@ function Home() {
 
     const getUserData = async()=> {
         setLoading(true)
+        const userInfo = await fetchUser()
+        setUser(userInfo)
+        console.log('USER INFO ', userInfo) 
         const privatePlates = await  getUserPlates()
         const publicPlates= await getPublicPlates()
         const otherPlates=publicPlates && privatePlates && publicPlates.filter(item=>!(privatePlates.map(e=>e.id)).includes(item.id) ) 
         const plates={mines: privatePlates, others:otherPlates}
-        console.log('PLATES CHARGED : ' , plates)
         setPlatesData(plates)
         const drinks=await getUserDrinks()
         setDrinksData (drinks)
@@ -169,10 +155,10 @@ function Home() {
                         measure: foodDetails?.measure || 'Plate/s',
                         measure_portion: foodDetails?.measure_portion || 1,
                         calories_portion: calories,
-                        amount_carbs: foodDetails?.amount_carbs || 0,
-                        amount_sodium: foodDetails?.amount_sodium ||0,
-                        amount_fat: foodDetails?.amount_fat||0,
-                        amount_protein: foodDetails?.amount_protein||0,
+                        carbohydrates_portion: foodDetails?.carbohydrates_portion || 0,
+                        sodium_portion: foodDetails?.sodium_portion ||0,
+                        fats_portion: foodDetails?.fats_portion||0,
+                        protein_portion: foodDetails?.protein_portion||0,
 
                     };
                 }));
@@ -208,6 +194,12 @@ function Home() {
             console.log('Error al obtener las categorias: ' + err);
         }
     };
+
+    useEffect(()=>{
+        const updateGoals= async()=>{
+            await editUserData(user)}
+        updateGoals()
+    },[user])
     
 
     useEffect(()=>{
@@ -293,7 +285,7 @@ function Home() {
                         <div className="flex  flex-col w-full justify-center items-center sm:items-between py-3">
                             <div className="w-full max-w-48 py-1 px-3 flex items-center justify-between rounded-full text-white bg-healthyOrange  ">
                                 <FontAwesomeIcon className="cursor-pointer px-1" icon={faAngleLeft} onClick={()=>index===1 ? setIndex(goalName.length) : setIndex(index-1) } />
-                                <p className="text-white font-semibold px-2">{goalName.find((item)=>item.id===index).name}</p>
+                                <p className="text-white font-semibold px-2">{goalName.find((item)=>item.id===index).name.charAt(0).toUpperCase() + goalName.find((item)=>item.id===index).name.slice(1)}</p>
                                 <FontAwesomeIcon className="cursor-pointer px-1" icon={faAngleRight} onClick={()=>index===goalName.length ? setIndex(1) : setIndex(index+1) }/>
                             </div>
                             <div className="flex relative w-full justify-center items-center my-2">
@@ -302,7 +294,7 @@ function Home() {
                                     {
                                         data:[
                                             {value:goalConsumed},
-                                            {value:(goals.find((e)=>e.idGoal===index)).goal-goalConsumed}
+                                            {value: user.goals[(goalName.find(goal=>goal.id===index)).name]-goalConsumed}
                                         ],
                                         innerRadius: 50,
                                         outerRadius: 70,
@@ -316,10 +308,10 @@ function Home() {
                                     legend: { hidden: true },
                                 }}
                             />
-                            <div className={`font-quicksand text center flex flex-col absolute  text center justify-center items-center ${goalConsumed>(goals.find((e)=>e.idGoal===index)).goal ? ' rounded-full sm:rounded-2xl bg-healthyOrange text-white shadow-md py-2 px-4 sm:px-2 md:px-1 ':'w-full text-healthyOrange h-full'}  `}>
-                                {goalConsumed<=(goals.find((e)=>e.idGoal===index)).goal && <p className="font-bold text-2xl  text-center">{((goalConsumed*100)/(goals.find((e)=>e.idGoal===index)).goal)}%</p>}
-                                {goalConsumed>(goals.find((e)=>e.idGoal===index)).goal && <p className="text-xs font-bold text-center w-full pb-2 pl-2 ">You've already passed your&nbsp;goal!</p>}
-                                <p className="text-center text-xs font-bold ">{goalConsumed<=(goals.find((e)=>e.idGoal===index)).goal ? 'completed' : `${goalConsumed}/${goals.find((e)=>e.idGoal===index).goal}`}</p>
+                            <div className={`font-quicksand text center flex flex-col absolute  text center justify-center items-center ${goalConsumed> user.goals[(goalName.find(goal=>goal.id===index)).name] ? ' rounded-full sm:rounded-2xl bg-healthyOrange text-white shadow-md py-2 px-4 sm:px-2 md:px-1 ':'w-full text-healthyOrange h-full'}  `}>
+                                {goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="font-bold text-xl  text-center">{((goalConsumed*100)/(user.goals[(goalName.find(goal=>goal.id===index)).name])).toFixed(1)}%</p>}
+                                {goalConsumed>user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="text-xs font-bold text-center w-full pb-2 pl-2 ">You've already passed your&nbsp;goal!</p>}
+                                <p className="text-center text-xs font-bold ">{goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] ? 'completed' : `${goalConsumed}/${user.goals[(goalName.find(goal=>goal.id===index)).name]}`}</p>
                             </div>
                             </div>
                         </div>
@@ -354,7 +346,9 @@ function Home() {
             {addMeal &&
                 <PopUp newFood={newFood} setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
             }
+            {user && Object.values(user.goals).some(goal => Number(goal) === 0) && <Goals user={user} setUser={setUser}/> }
         </div>
+        
     );
 }
 

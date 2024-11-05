@@ -138,10 +138,10 @@ export const addNewFood = async (newFood) => {
                 "calories_portion": Number(newFood.calories),
                 "measure": newFood.measure,
                 "measure_portion": Number(newFood.amount),
-                "amount_carbs":  Number(newFood.carbohydrate),
-                "amount_sodium": Number(newFood.sodium),
-                "amount_fat": Number(newFood.fat),
-                "amount_protein": Number(newFood.protein)
+                "carbohydrates_portion":  Number(newFood.carbohydrate),
+                "sodium_portion": Number(newFood.sodium),
+                "fats_portion": Number(newFood.fat),
+                "protein_portion": Number(newFood.protein)
             }),
             
         });
