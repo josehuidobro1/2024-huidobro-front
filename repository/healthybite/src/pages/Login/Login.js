@@ -79,6 +79,11 @@ function Login() {
             return 
         }
 
+        if(password.length<6){
+            setMessage("Password should be at least 6 characters")
+            return
+        }
+
     }
 
     const handleSubmit = async (e) => {
@@ -98,7 +103,14 @@ function Login() {
             surname: surname,
             weight: parseInt(weight),
             height: parseInt(height),
-            birthDate: birthDate
+            birthDate: birthDate,
+            goals:{
+                calories:0,
+                sodium:0,
+                protein:0,
+                carbohydrates:0,
+                fats:0
+            }
             });
     
             console.log('Usuario registrado y agregado a Firestore:', user.uid);
