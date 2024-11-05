@@ -514,7 +514,11 @@ export const createplate = async (selection) => {
                 "id_User": auth.currentUser.uid,
                 "ingredients": selection.ingredients,
                 "name": selection.name,
-                "calories_portion": selection.total_cal,
+                "calories_portion": selection.calories_portion,
+                "sodium_portion": selection.sodium_portion,
+                "carbohydrates_portion": selection.carbohydrates_portion,
+                "protein_portion": selection.protein_portion,
+                "fats_portion": selection.fats_portion,
                 "image": selection.image,
                 "public": selection.public
             }),

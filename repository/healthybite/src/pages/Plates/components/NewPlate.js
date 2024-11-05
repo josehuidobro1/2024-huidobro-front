@@ -42,11 +42,21 @@ const NewPlate = ({ foodData, setPlates, plates }) => {
   };
 
   // Function to calculate total calories
-  const calculateTotalCalories = () => {
-    return selectedFoods.reduce((total, food) => {
-      return total + (food.quantity * food.calories_portion) / food.measure_portion;
-    }, 0);
+  const calculateTotalNutrients = () => {
+    return selectedFoods.reduce(
+      (totals, food) => {
+        const quantityFactor = food.quantity / food.measure_portion;
+        totals.calories += food.calories_portion * quantityFactor;
+        totals.sodium += food.sodium_portion * quantityFactor;
+        totals.fats += food.fats_portion * quantityFactor;
+        totals.carbohydrates += food.carbohydrates_portion * quantityFactor;
+        totals.protein += food.protein_portion * quantityFactor;
+        return totals;
+      },
+      { calories: 0, sodium: 0, fats: 0, carbohydrates: 0, protein: 0 }
+    );
   };
+
   const ingredientsArray = selectedFoods.map(food => ({
     ingredientId: food.id,
     quantity: food.quantity
@@ -68,8 +78,7 @@ const createPlate = async () => {
       // Upload the image and get the URL
       imageUrl = await uploadImageToStorage(image);
     }
-
-    const totalCalories = calculateTotalCalories();
+    const totals = calculateTotalNutrients();
     const ingredientsArray = selectedFoods.map((food) => ({
       ingredientId: food.id,
       quantity: food.quantity,
@@ -78,14 +87,17 @@ const createPlate = async () => {
     const data = {
       name: plateName,
       ingredients: ingredientsArray,
-      total_cal: totalCalories,
-      image: imageUrl, // Add the image URL to the plate data
-      public:publicPlate
+      calories_portion: totals.calories,
+      image: imageUrl,
+      public: publicPlate,
+      sodium_portion: totals.sodium,
+      fats_portion: totals.fats,
+      carbohydrates_portion: totals.carbohydrates,
+      protein_portion: totals.protein,
     };
 
     // Update the UI without refreshing the page
-    const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totalCalories, image: imageUrl,public:publicPlate  })
-    console.log('ASI QUEDARIA LOS NUEVOS PLATOS ', newPlates)
+    const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totals.calories, sodium_portion: totals.sodium, carbohydrates_portion: totals.carbohydrates, protein_portion: totals.protein, fats_portion:  totals.fats, image: imageUrl,public:publicPlate  })
     setPlates(newPlates);
 
     const plate_id= await createplate(data);

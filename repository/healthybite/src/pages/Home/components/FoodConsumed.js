@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleXmark, faPenToSquare, faCircleCheck, faCaretDown} from '@fortawesome/free-solid-svg-icons'
 import { format } from 'date-fns';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DeletePopUp from '../../../components/DeletePopUp';
 
 
@@ -12,6 +12,10 @@ const FoodConsumed = ({ usfood, handleDeleteMeal , handleEditFoodConsumed}) => {
     const [deleteItem, setDeleteItem]=useState(false)
     const [clickable, setClickable] = useState(true);
     const [details, setDetails]=useState(false)
+
+    useEffect(()=>{
+        console.log('USFOOD >>>>>>>>>>>>>> ', usfood)
+    },[])
 
 
     const handleChange=()=>{

@@ -72,7 +72,6 @@ function Home() {
         setLoading(true)
         const userInfo = await fetchUser()
         setUser(userInfo)
-        console.log('USER INFO ', userInfo) 
         const privatePlates = await  getUserPlates()
         const publicPlates= await getPublicPlates()
         const otherPlates=publicPlates && privatePlates && publicPlates.filter(item=>!(privatePlates.map(e=>e.id)).includes(item.id) ) 

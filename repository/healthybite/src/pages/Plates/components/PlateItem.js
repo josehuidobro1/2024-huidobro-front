@@ -83,6 +83,10 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
             ...plate,
             ingredients: ingredientsUpdate,
             calories_portion: foodPlate.reduce((acc, item) => acc + (item.calories_portion * item.amount), 0),
+            sodium_portion: foodPlate.reduce((acc, item) => acc + (item.sodium_portion * item.amount), 0),
+            carbohydrates_portion: foodPlate.reduce((acc, item) => acc + (item.carbohydrates_portion * item.amount), 0),
+            protein_portion: foodPlate.reduce((acc, item) => acc + (item.protein_portion * item.amount), 0),
+            fats_portion: foodPlate.reduce((acc, item) => acc + (item.fats_portion * item.amount), 0),
             public: publicPlate
         };
 
@@ -127,7 +131,6 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
     };
     
     const handleAddFood=()=>{
-        console.log('EL PLATO SELECCIONADO ',plate)
         setPlate(plate)
         setAddFood(true)
     }
