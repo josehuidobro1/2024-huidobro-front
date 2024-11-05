@@ -17,10 +17,10 @@ const Calories = ({ userFood }) => {
         userFood.forEach((food) => {
             const portionFactor = food.amount_eaten / food.measure_portion;
             calories += food.calories_portion * portionFactor;
-            carbs += food.amount_carbs * portionFactor;
-            fat += food.amount_fat * portionFactor;
-            sodium += food.amount_sodium * portionFactor;
-            protein += food.amount_protein * portionFactor;
+            carbs += food.carbohydrates_portion * portionFactor;
+            fat += food.fats_portion * portionFactor;
+            sodium += food.sodium_portion * portionFactor;
+            protein += food.protein_portion * portionFactor;
         });
 
         setTotals({

@@ -32,23 +32,23 @@ const Data={
     goals:[
         {
             id:1,
-            name:'Calories'
+            name:'calories'
         },
         {
             id:2,
-            name:'Sodium'
+            name:'sodium'
         },
         {
             id:3,
-            name:'Fats'
+            name:'fats'
         },
         {
             id:4,
-            name:'Carbohidrates'
+            name:'carbohydrates'
         },
         {
             id:5,
-            name:'Protein'
+            name:'protein'
         }
     ]
 }

@@ -3,7 +3,7 @@ import NavBar from '../../components/NavBar'
 import userImg from '../../assets/userImg.jpg'
 import { fetchUser } from '../../firebaseService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenToSquare, faArrowDown, faKey, faTrash } from '@fortawesome/free-solid-svg-icons'; 
+import { faPenToSquare, faArrowDown, faKey, faTrash, faBullseye } from '@fortawesome/free-solid-svg-icons'; 
 import Input from '../../components/Input'
 import DataUser from './components/DataUser'
 import {editUserData} from '../../firebaseService'
@@ -12,6 +12,7 @@ import {auth} from '../../firebaseConfig'
 import PopUp from './components/PopUp'
 import {handleInputChange} from '../inputValidation';
 import Loading from '../../components/Loading'
+import Goals from '../../components/Goals'
 
 
 function UserProfile() {
@@ -26,6 +27,7 @@ function UserProfile() {
     const [edit, setEdit]=useState(false)
     const [deleteAc, setDeleteAc]=useState(false)
     const [loading, setLoading]=useState(true)
+    const [openGoals, setOpenGoals]=useState(false)
     const handleWeightChange = (e) => {
         handleInputChange(e.target.value, 0, 500, setWeight);
     };
@@ -73,7 +75,8 @@ function UserProfile() {
             height: height,
             name: name,
             surname: surname,
-            weight: weight
+            weight: weight,
+            goals: user.goals
         };
         try {
             await editUserData(data);
@@ -81,6 +84,14 @@ function UserProfile() {
         } catch (err) {
             console.log('Error editing user: ' + err.message);
         }
+    }
+
+    const editGoals=()=>{
+        setOpenGoals(false)
+        const updateGoals=async()=>{
+            await editUserData(user)
+        }
+        updateGoals()
     }
     
 
@@ -97,17 +108,18 @@ function UserProfile() {
     <div className={`w-full ${ loading ? 'bg-white' : 'bg-healthyBrown'} h-screen overflow-y-hidden`}>
         <NavBar/>
         {loading ? <Loading/> :
-        <div className='w-full h-full sm:h-screen flex flex-col lg:flex-row justify-between items-strech overflow-y-auto  '>
-            <div className='w-full md:w-8/12 lg:w-1/2 flex flex-col items-center  md:items-end justify-center mt-8 sm:mt-32 self-start'>
-                <div className=' w-10/12 lg:w-2/3 flex items-center justify-between mb-3'>
+        <div className='w-full h-full sm:h-screen flex flex-col lg:flex-row justify-start  items-center overflow-y-auto  '>
+            <div className='w-full z-10   md:w-10/12 lg:w-2/3 flex flex-col  items-center justify-center mt-8 md:mt-20 lg::mt-32'>
+                <div className=' w-11/12 lg:w-2/3 flex items-center justify-between mb-3'>
                     <h1 className='text-xl xs:text-2xl font-belleza text-darkGray'>User profile</h1>
                 </div>
-                <div className='flex w-10/12 lg:w-2/3  flex-row flex-wrap justify-around items-center mb-3 font-quicksand text-white font-semibold text-sm '>
+                <div className='flex w-11/12 lg:w-2/3 flex-row flex-wrap justify-center md:justify-around  items-center mb-3 font-quicksand text-white font-semibold text-sm '>
                     <button onClick={edit ? saveChanges : ()=>setEdit(true)} className={`py-1 px-3 mb-1 xs:px-5 mr-1 rounded-lg ${edit  ? 'bg-healthyGray1' : 'bg-healthyGreen'  }  ${ edit ?  'hover:bg-healthyDarkGray1' : 'hover:bg-healthyDarkGreen' }`}> <FontAwesomeIcon icon={edit  ?  faArrowDown : faPenToSquare} className='text-white text-md mr-2' />{edit ?  'Save changes' : 'Edit profile'}</button>
+                    <button onClick={()=>setOpenGoals(true)} className='py-1 px-3  xs:px-5  rounded-lg text-white bg-healthyYellow hover:bg-healthyDarkYellow cursor-pointer mb-1 '><FontAwesomeIcon icon={faBullseye} className='mr-2 '  />My goals</button>
                     {!edit && <><Link to={`/resetPassword/${auth.currentUser?.accessToken}`}  className='bg-healthyOrange hover:bg-healthyDarkOrange px-3 mb-1  py-1 rounded-lg '><FontAwesomeIcon icon={faKey}  className='pr-2'/>Edit password</Link>
                     <button onClick={()=>setDeleteAc(true)} className='bg-healthyGray1 hover:bg-healthyDarkGray1 px-3 mb-1 py-1 rounded-lg  ml-1 '><FontAwesomeIcon icon={faTrash} className='pr-2'/>Delete account</button></>}
                 </div>
-                <div className='flex flex-wrap w-10/12 lg:w-2/3 font-quicksand'>
+                <div className='flex flex-wrap w-11/12 lg:w-2/3 font-quicksand'>
             
                     
                     {edit ?
@@ -143,12 +155,18 @@ function UserProfile() {
                     }
                 </div>
             </div>
-            <div className='w-full  flex sm:w-2/3 justify-end items-end md:w-full lg:w-1/2  lg:justify-end lg:items-end'>
-                <img src={userImg} alt='Background image photo' className=' md:w-3/4 w-full' />
+            <div className='flex md:absolute z-0 bottom-0 right-0 w-screen h-screen  '>
+                <div className='flex justify-end items-end w-full h-full z-0 '>
+                    <img src={userImg} alt='Background image photo' className=' md:w-3/5 lg:w-1/3 w-full z-0' />
+                </div>
             </div>
         </div>}
         {deleteAc &&
             <PopUp setDeleteAc={setDeleteAc} />
+        }
+        {
+            openGoals &&
+            <Goals user={user} setUser={setUser} editGoals={editGoals}/>
         }
     </div>
   )
