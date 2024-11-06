@@ -9,6 +9,9 @@ import Loading from "../../components/Loading";
 import Data from "../Data";
 import { EmptyChart } from "./components/EmptyChart";
 import GoalPie from "./components/GoalPie";
+import DrinksTable from "./components/DrinksTable";
+import CategoryChart from "./components/CategoryChart";
+import Goals from "./components/Goals";
   
 
 
@@ -288,57 +291,15 @@ export default function Dashboard() {
                 </div>
                 {userCalories && userCalories.find(item=>item.day===formatDate(currentDate)) ?
                 <div className="xs:mt-6 mt-0 flex flex-col   w-full  items-center justify-start ">
-                    <div className="flex w-full justify-center items-center ">
-                        <PieChart
-                            colors={palette}
-                            series={[{data: userCalories.find(item=> item.day===formatDate(currentDate)).categories}]}
-                            width={window.innerWidth<'400' ? chartWidth*1.68 : chartWidth*1.9}
-                            height={window.innerWidth<'400' ? chartWidth*0.9 : chartWidth }
-                        />   
-                    </div>
-                    {(drinksDay && drinksDay.length > 0 && userCalories.find(item=>item.day===formatDate(currentDate))) ? 
-                    <table className="w-full  mx-2 xs:mx-0 font-quicksand text-sm xs:text-md  my-6 lg:my-12 border-spacing-2  table-fixed border-collapse font-normal text-healthyDarkOrange rounded-lg border border-healthyDarkOrange ">
-                        <thead>
-                            <tr className="bg-healthyDarkOrange w-full text-white font-bold text-center px-2 py-2 rounded-t-md">
-                                <th className="py-2   w-3/12 ">Drink Name</th>
-                                <th className="py-2   w-3/12 ">Sugar</th>
-                                <th className="py-2    w-3/12">Caffeine</th>
-                                <th className="py-2    w-3/12">Calories</th>
-                                <th className="py-2   w-3/12">Type</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {drinksDay.map((drink, index)=>
-                            <tr key={index} className=" px-2 py-2 w-full ">
-                                <th className=" border-2 border-healthyOrange/20 text-left  w-3/12  px-2 py-2">{drink.name}</th>
-                                <th className=" border-2 border-healthyOrange/20  px-2 py-2 w-1/12">{drink.sugar}</th>
-                                <th className=" border-2 border-healthyOrange/20  px-2 py-2 w-1/12">{drink.caffeine}</th>
-                                <th className=" border-2 border-healthyOrange/20  px-2 py-2 w-1/12">{drink.calories}</th>
-                                <th className=" border-2 border-healthyOrange/20 text-right w-3/12  px-2 py-2">{drink.type}</th>
-                            </tr>
-                            )}
-                        </tbody>
-                    
-                    </table>:
-                    <p className="font-quicksand text-sm font-semibold text-healthyGray1 text-center mt-4 md:w-fulls md:my-10 lg:mt-12">There are no drinks recorded from&nbsp;{formatDate(currentDate)}</p>
-                    }
+                    <CategoryChart userCalories={userCalories} currentDate={formatDate(currentDate)} palette={palette} chartWidth={chartWidth} />
                 </div>
                 :
                 <p className="font-quicksand text-sm font-semibold text-healthyGray1 text-center mt-4 md:w-3/5 md:my-10 lg:mt-4" >There are no meals recorded from&nbsp;{formatDate(currentDate)}</p>
                 }
-                {userCalories && goals && 
-                <div className="w-full flex flex-col justify-center items-center my-2 mb-4 sm:mb-0 ">
-                    <h2 className="w-full text-left text-healthyYellow text-xl font-belleza pb-2 ">History of goals</h2>
-                    <div className="flex justify-center items-center w-full flex-wrap ">
-                        <GoalPie consumed={userCalories.find(item=> item.day===formatDate(currentDate))?.calories || 0 } goal={goals.calories} label='calories'/>
-                        <GoalPie consumed={userCalories.find(item=> item.day===formatDate(currentDate))?.protein || 0 } goal={goals.protein} label='protein'/>
-                        <GoalPie consumed={userCalories.find(item=> item.day===formatDate(currentDate))?.sodium || 0 } goal={goals.sodium} label='sodium'/>
-                        <div className="flex ">
-                        <GoalPie consumed={userCalories.find(item=> item.day===formatDate(currentDate))?.carbohydrates || 0 } goal={goals.carbohydrates} label='carbs'/>
-                        <GoalPie consumed={userCalories.find(item=> item.day===formatDate(currentDate))?.fats || 0 } goal={goals.fats} label='fats'/>
-                        </div>
-                    </div>
-                </div>}
+                {userCalories && goals && <Goals userCalories={userCalories} currentDate={formatDate(currentDate)} goals={goals} />}
+                {(drinksDay && drinksDay.length > 0 && userCalories.find(item=>item.day===formatDate(currentDate))) ? <DrinksTable drinksDay={drinksDay}/>:
+                    <p className="font-quicksand text-sm font-semibold text-healthyGray1 text-center mt-4 md:w-fulls md:my-10 lg:mt-12">There are no drinks recorded from&nbsp;{formatDate(currentDate)}</p>
+                }
             </div>
 
             <div className="flex flex-col overflow-y-auto lg:w-3/5 w-full md:mt-4 lg:mt-0 pb-32 xs:pb-0 lg:ml-2 lg:overflow-x-hidden justify-center">

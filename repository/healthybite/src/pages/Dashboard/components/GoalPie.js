@@ -16,7 +16,7 @@ function GoalPie({consumed, goal,label}) {
                 }
                 
             ]}
-            colors={['#ffd43b','#ebebeb']}
+            colors={['#FA9B6A','#ebebeb']}
             width={5}
             height={window.innerWidth < 468 ? 75: 110}
             slotProps={{
@@ -24,7 +24,7 @@ function GoalPie({consumed, goal,label}) {
             }}
         />
         <div className="absolute top-0 flex items-center justify-center w-full h-full">
-            <p className="font-semibold text-sm md:text-md text-healthyYellow">{label}</p>
+            <p className="font-semibold text-sm md:text-md text-healthyOrange">{label}</p>
         </div>
     </div>
     )
