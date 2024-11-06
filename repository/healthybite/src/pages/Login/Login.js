@@ -110,7 +110,9 @@ function Login() {
                 protein:0,
                 carbohydrates:0,
                 fats:0
-            }
+            },
+            validation: 0
+
             });
     
             console.log('Usuario registrado y agregado a Firestore:', user.uid);
