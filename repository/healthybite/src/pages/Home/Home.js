@@ -345,7 +345,7 @@ function Home() {
             {addMeal &&
                 <PopUp newFood={newFood} setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
             }
-            {user && Object.values(user.goals).some(goal => Number(goal) === 0) && <Goals user={user} setUser={setUser}/> }
+            {user && user.goals && Object.values(user.goals).some(goal => Number(goal) === 0) && <Goals user={user} setUser={setUser}/> }
         </div>
         
     );
