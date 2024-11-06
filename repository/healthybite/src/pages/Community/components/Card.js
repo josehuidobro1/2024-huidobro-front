@@ -24,7 +24,7 @@ const Card = ({ plate }) => {
     const isCurrentUserPlate = plate.id_User === currentUserID;
 
     // Determine icon color based on verification level
-    const verificationColor = plate.verified === 'basic' ? 'healthyGreen' : 'healthyOrange';
+    const verificationColor = plate.verified === 1 ? 'healthyGreen' : 'healthyOrange';
 
     return (
         <div className={`relative rounded-xl bg-white shadow-md w-full sm:w-2/3 md:w-1/2 lg:w-1/3 m-2 ${openDetails ? 'pb-4' : 'h-64'}`}>
@@ -47,7 +47,7 @@ const Card = ({ plate }) => {
                     </button>
                     {showTooltip && (
                         <div className={`absolute -top-6 left-1/2 transform -translate-x-1/2 px-3 py-1 min-w-max text-xs text-white  rounded transition-opacity duration-200 bg-${verificationColor} `}>
-                            {plate.verified === 'basic' ? 'Verified Level 1' : 'Verified Level 2'}
+                            {plate.verified === 1 ? 'Verified Level 1' : 'Verified Level 2'}
                         </div>
                     )}
                 </div>

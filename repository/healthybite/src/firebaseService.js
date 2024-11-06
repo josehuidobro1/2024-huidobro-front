@@ -536,7 +536,8 @@ export const createplate = async (selection) => {
                 "protein_portion": selection.protein_portion,
                 "fats_portion": selection.fats_portion,
                 "image": selection.image,
-                "public": selection.public
+                "public": selection.public,
+                "verified": selection.verified
             }),
             
         });
