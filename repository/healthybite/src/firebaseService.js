@@ -361,18 +361,29 @@ export const getCategoriesAndDefaults = async () => {
 };
 
 export const getCaloriesByCategories= ( userCalories, categories, foods, barFood, drinks, plates)=>{
-    try{
+   try{
         
         const result = userCalories.map(item => {
             let foodDetail = foods.find(food => food.id === item.id_Food) || barFood.find(food => food.id === item.id_Food) || drinks.find(e=>item.id_Food===e.id) || plates.find(plate=> plate.id === item.id_Food) ;
             if (foodDetail) {
                 return {
                     id_Food: item.id_Food,
-                    calories: Number((item.amount_eaten * (foodDetail.calories_portion || foodDetail.calories)) / (foodDetail.measure_portion || 1))
+                    calories: Number((item.amount_eaten * (foodDetail.calories_portion || foodDetail?.calories || 0 )) / (foodDetail.measure_portion || 1)),
+                    fats: Number((item.amount_eaten * (foodDetail.fats_portion || foodDetail?.fats || 0 )) / (foodDetail.measure_portion || 1)),
+                    sodium: Number((item.amount_eaten * (foodDetail.sodium_portion || foodDetail?.sodium || 0 )) / (foodDetail.measure_portion || 1)),
+                    carbohydrates: Number((item.amount_eaten * (foodDetail.carbohydrates_portion || foodDetail?.carbohydrates || 0 )) / (foodDetail.measure_portion || 1)),
+                    protein: Number((item.amount_eaten * (foodDetail.protein_portion || foodDetail?.protein || 0 )) / (foodDetail.measure_portion || 1))
                 };
             }else{
-                return {id_Food: item.id_Food, 
-                calories:0}
+                return {
+                    id_Food: item.id_Food, 
+                    calories:0,
+                    sodium:0,
+                    carbohydrates:0,
+                    fats:0,
+                    protein:0
+                }
+
             }
         })
 
@@ -380,7 +391,11 @@ export const getCaloriesByCategories= ( userCalories, categories, foods, barFood
             return { categories: [], total: 0 };
         } 
 
-        const totalCal = result.reduce((acc,value)=>acc+value.calories, 0) 
+        const calories = result.reduce((acc,value)=>acc+value.calories, 0) 
+        const sodium = result.reduce((acc,value)=>acc+value.sodium, 0) 
+        const carbohydrates = result.reduce((acc,value)=>acc+value.carbohydrates, 0) 
+        const fats = result.reduce((acc,value)=>acc+value.fats, 0) 
+        const protein = result.reduce((acc,value)=>acc+value.protein, 0) 
         // divide calories by categories
         const getCalories = categories.map(cat => {
             const cals = result.filter(food => cat.foods.includes(food.id_Food)).reduce((acc, item) => acc + Number(item.calories), 0);
@@ -388,12 +403,12 @@ export const getCaloriesByCategories= ( userCalories, categories, foods, barFood
         });
 
         const caloriesInCat = getCalories.reduce((acc, value) => acc + value.value, 0);
-        if (caloriesInCat < totalCal) {
-            getCalories.push({ label: 'Others', value: totalCal - caloriesInCat });
+        if (caloriesInCat < calories) {
+            getCalories.push({ label: 'Others', value: calories - caloriesInCat });
         }
 
 
-        return {categories:getCalories, total: totalCal}
+        return {categories:getCalories, calories: calories, fats: fats, sodium: sodium, carbohydrates: carbohydrates, protein: protein, }
     }catch(error){
         console.log('Error fetching calories by categories: ', error)
         return []
@@ -423,7 +438,7 @@ export const formatDate = (date) => {
 
 export const getFilterData = async () => {
     try{
-        const [userCalories,foods, barFoods, categories, drinksType,drinks, plates ] = await Promise.all([ userFoodMeals(), fetchAllFoods(), getProducts(), getCategoriesAndDefaults(), await fechDrinkTypes(), getUserDrinks(), getUserPlates()])
+        const [userCalories,foods, barFoods, categories, drinksType,drinks, plates, user ] = await Promise.all([ userFoodMeals(), fetchAllFoods(), getProducts(), getCategoriesAndDefaults(), await fechDrinkTypes(), getUserDrinks(), getUserPlates(), fetchUser()])
         userCalories.sort((a, b) => new Date(a.date_ingested) - new Date(b.date_ingested));
         const groupedByDate = userCalories.reduce((acc, current) => {
             const date = formatDate(new Date(current.date_ingested)); // Solo tomar la fecha sin la hora
@@ -447,6 +462,7 @@ export const getFilterData = async () => {
             if (item.foods.length === 0) {
                 return null; 
             }
+            
             caloriesByCat = getCaloriesByCategories(item.foods, categories, foods, barFoods, drinks, plates.map(item=> {return {...item, measure_portion: 1}}));
             if (caloriesByCat) {
                 return { ...caloriesByCat, day: item.date };
@@ -466,7 +482,7 @@ export const getFilterData = async () => {
                 type: drinksType.find(drinkType=> drinkType.id===drinkConsumed.typeOfDrink).name
             })
         })
-        return {calories: calPerCat, drinks: drinksData};
+        return {calories: calPerCat, drinks: drinksData, goals:user.goals};
     }catch(e){
         console.log("Error fetching data for fitell in dashboard", e)
         return []
@@ -487,7 +503,7 @@ export const resetPassword = async (oobCode, newPassword) => {
 // APP MESIIDEPAUL
 
 export const getProducts=async()=>{
-    const response = await axios.get('https://candvbar-back.onrender.com/products');
+    const response = await axios.get('https://cv-bar-back.onrender.com');
     return response.data.products ? response.data.products : [];
 }
 
