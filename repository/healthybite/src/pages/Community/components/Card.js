@@ -34,7 +34,7 @@ const Card = ({ plate }) => {
                     alt={plate.name} 
                     className="w-full h-full object-cover rounded-t-xl" 
                 />
-                {plate.verified && (
+                {plate.verified!=0 && (
                 <div className="absolute top-2 right-2">
                     <button 
                         onClick={handleIconClick} 
