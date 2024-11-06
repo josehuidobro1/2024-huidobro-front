@@ -13,11 +13,15 @@ const Comments = ({ data, setScores }) => {
     const [score, setScore] = useState(null);
     const comments = data.comments.filter((item) => item.id_User !== auth.currentUser?.uid);
     const [allComments, setAllComments] = useState(data.comments);
+    const [isSubmitting, setIsSubmitting] = useState(false);  // Track submission status
 
     const handleNewComment = async () => {
-        if (comment !== '' && score) {
+        // Allow submission if there's a score or both score and comment
+        if ((comment !== '' || score) && !isSubmitting) {  
+            setIsSubmitting(true);  // Set submitting state to true
+
             const newComment = {
-                comment: comment,
+                comment: comment,  // Can be empty if only rating is given
                 score: score,
                 id_User: auth.currentUser?.uid,
             };
@@ -46,25 +50,29 @@ const Comments = ({ data, setScores }) => {
     
             setComment('');
             setScore(null);
+            setIsSubmitting(false);  // Reset submitting state after completion
         }
     };
 
     return (
         <div className='flex flex-col justify-between items-between w-full h-full px-2 pt-1'>
-            <div className='bg-white rounded-md p-1 flex flex-col w-full shadow-sm max-h-32 justify-start items-center h-full overflow-y-auto'>
-                {comments.length === 0 && myComments.length === 0 ? (
-                    <p className="text-gray-500 text-sm">No comments yet</p>
-                ) : (
-                    <>
-                        {comments.map((item, index) => (
-                            <Comment key={index} data={item} />
-                        ))}
-                        {myComments.map((item, index) => (
-                            <MyComment data={item} key={index} />
-                        ))}
-                    </>
-                )}
-            </div>
+            {/* Show comments only if there are comments or my comments */}
+            {(comments.length > 0 || myComments.length > 0) && (
+                <div className='bg-white rounded-md p-1 flex flex-col w-full shadow-sm max-h-32 justify-start items-center h-full overflow-y-auto'>
+                    {comments.length === 0 && myComments.length === 0 ? (
+                        <p className="text-gray-500 text-sm">No comments yet</p>
+                    ) : (
+                        <>
+                            {comments.map((item, index) => (
+                                <Comment key={index} data={item} />
+                            ))}
+                            {myComments.map((item, index) => (
+                                <MyComment data={item} key={index} />
+                            ))}
+                        </>
+                    )}
+                </div>
+            )}
             <div className='flex justify-between items-center w-full sticky bottom-0 bg-white rounded-md my-2 shadow-sm'>
                 <input
                     value={comment}
@@ -80,7 +88,11 @@ const Comments = ({ data, setScores }) => {
                         sx={{ '& .MuiRating-icon': { marginX: '-2px' } }} 
                     />
                 </div>
-                <div onClick={handleNewComment} className='flex w-2/12 md:w-1/12 h-full justify-center items-center bg-healthyOrange hover:bg-healthyDarkOrange p-1 cursor-pointer rounded-r-md'>
+                <div 
+                    onClick={handleNewComment} 
+                    className={`flex w-2/12 md:w-1/12 h-full justify-center items-center bg-healthyOrange hover:bg-healthyDarkOrange p-1 cursor-pointer rounded-r-md ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    disabled={isSubmitting}  // Disable if submitting
+                >
                     <FontAwesomeIcon icon={faPaperPlane} className='text-white text-lg' />
                 </div>
             </div>
@@ -89,4 +101,6 @@ const Comments = ({ data, setScores }) => {
 }
 
 export default Comments;
+
+
 

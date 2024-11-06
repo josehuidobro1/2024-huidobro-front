@@ -94,6 +94,7 @@ const createPlate = async () => {
       fats_portion: totals.fats,
       carbohydrates_portion: totals.carbohydrates,
       protein_portion: totals.protein,
+      verified: "",
     };
 
     // Update the UI without refreshing the page

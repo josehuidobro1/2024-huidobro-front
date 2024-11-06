@@ -7,8 +7,9 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes, getPublicPlates, fetchUser, editUserData} from "../../firebaseService";
+import { getstreak,addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes, getPublicPlates, fetchUser, editUserData} from "../../firebaseService";
 import Filter from "./components/Filter";
+import StreakCounter from "./components/StreakCounter";
 import Loading from "../../components/Loading";
 import Data from "../Data";
 import { CircularProgressbar } from 'react-circular-progressbar';
@@ -33,6 +34,7 @@ function Home() {
     const goalName=Data.goals
     const [index,setIndex]=useState(1)
     const [goalConsumed, setGoalConsumed]=useState(0)
+    const [streak, setStreak] = useState(0);
 
     useEffect(()=>{
         let value=0
@@ -58,6 +60,18 @@ function Home() {
         }
         setGoalConsumed(value)
     },[index, userFood])
+    useEffect(() => {
+        const fetchStreak = async () => {
+            try {
+                const streakValue = await getstreak();
+                setStreak(streakValue);
+            } catch (error) {
+                console.error("Error fetching streak:", error);
+            }
+        };
+
+        fetchStreak();
+    }, [userFood]);
 
     useEffect(()=>{
         if(filterSelected) {
@@ -314,6 +328,9 @@ function Home() {
                             </div>
                             </div>
                         </div>
+                        <div className="flex flex-col items-center my-4">
+                            <StreakCounter streakDays={streak} />
+                            </div>
                         <Calories userFood={userFood} />
                     </div>
                     <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12 ">

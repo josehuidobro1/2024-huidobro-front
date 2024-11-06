@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import NavBar from '../../components/NavBar';
 import Card from './components/Card';
-import { getPublicPlates } from '../../firebaseService';
+import { getPublicPlates,fetchUser } from '../../firebaseService';
 import { auth } from "../../firebaseConfig";
 import Loading from "../../components/Loading";
 
 export const Community = () => {
     const [plates, setPlates] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState("");  // State for search query
 
     const fetchPublicPlatesAndReviews = async () => {
         console.log("1. Starting to fetch plates...");
@@ -34,35 +35,42 @@ export const Community = () => {
         }
     };
 
-    // First useEffect to fetch data
     useEffect(() => {
         console.log("Initial useEffect running - fetching data");
         fetchPublicPlatesAndReviews();
     }, []);
 
-    // Second useEffect to monitor plates state
-    useEffect(() => {
-        console.log("4. Plates state updated:", plates);
-    }, [plates]);
+    const filteredPlates = plates.filter(plate =>
+        plate.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     return (
         <div className="h-screen w-full overflow-y-hidden">
             <NavBar />
-            {loading ?
-            <Loading/>
-            :<div className="w-full h-full flex justify-center items-start overflow-y-scroll font-quicksand mt-4 sm:mt-16 md:mt-16 lg:mt-24 pb-32">
-                <div className="w-full flex flex-wrap justify-center">
-                    {
-                        plates && plates.length > 0 ? (
-                            plates.map((item, index) => (
+            {loading ? (
+                <Loading/>
+            ) : (
+                <div className="w-full h-full flex flex-col items-center overflow-y-scroll font-quicksand mt-4 sm:mt-16 md:mt-16 lg:mt-24 pb-32">
+                    <div className="w-2/3  justify-center">
+                    <input
+                        type="text"
+                        placeholder="Search plates..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        class="w-full p-2 border border-gray-300 font-quicksand rounded mb-4"                    />
+                    </div>
+                    
+                    <div className="w-full flex flex-wrap justify-center">
+                        {filteredPlates && filteredPlates.length > 0 ? (
+                            filteredPlates.map((item, index) => (
                                 <Card key={index} plate={item} review={item.review} />
                             ))
                         ) : (
                             <p>No plates available.</p>
-                        )
-                    }
+                        )}
+                    </div>
                 </div>
-            </div>}
+            )}
         </div>
     );
 };
