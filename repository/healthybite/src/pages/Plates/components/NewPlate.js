@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import FoodItem from './FoodItem';
-import {createplate,createReview} from '../../../firebaseService'
+import {createplate,createReview, fetchUser} from '../../../firebaseService'
 import { uploadImageToStorage, } from "../../../firebaseConfig";
 import { faEye, faEyeSlash, faImage, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -17,6 +17,7 @@ const NewPlate = ({ foodData, setPlates, plates }) => {
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
   const [publicPlate, setPublicPlate]=useState(false)
+
   // Function to handle adding/removing food items
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
@@ -73,6 +74,8 @@ const createPlate = async () => {
   }
 
   try {
+    const user= await fetchUser()
+    console.log("LEVEL", user.validation)
     let imageUrl = "";
     if (image) {
       // Upload the image and get the URL
@@ -94,15 +97,18 @@ const createPlate = async () => {
       fats_portion: totals.fats,
       carbohydrates_portion: totals.carbohydrates,
       protein_portion: totals.protein,
-      verified: "",
+      verified: user.validation,
     };
 
     // Update the UI without refreshing the page
-    const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totals.calories, sodium_portion: totals.sodium, carbohydrates_portion: totals.carbohydrates, protein_portion: totals.protein, fats_portion:  totals.fats, image: imageUrl,public:publicPlate  })
+    const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totals.calories, sodium_portion: totals.sodium, carbohydrates_portion: totals.carbohydrates, protein_portion: totals.protein, fats_portion:  totals.fats, image: imageUrl,public:publicPlate,verified: user.validation  })
     setPlates(newPlates);
 
     const plate_id= await createplate(data);
-    await createReviewForPublicPlate(plate_id)
+    if(data.public == true){
+      await createReviewForPublicPlate(plate_id)
+    }
+
 
     // Clear form inputs and display success message
     setMessage("Your Plate is created!");
