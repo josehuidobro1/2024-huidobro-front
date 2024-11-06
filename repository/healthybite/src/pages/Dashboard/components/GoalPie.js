@@ -3,7 +3,7 @@ import React from 'react'
 
 function GoalPie({consumed, goal,label}) {
     return (
-    <div className="flex relative justify-center items-center w-32 md:w-40 p-3">
+    <div className="flex relative justify-center items-center w-28 sm:w-32 md:w-36 lg:w-40 p-3">
         <PieChart
             series={[
                 {
