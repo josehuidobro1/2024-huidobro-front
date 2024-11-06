@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { getstreak,addNewFood, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes, getPublicPlates, fetchUser, editUserData} from "../../firebaseService";
+import { getstreak,addNewFood,getPlatesNotUser, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes, getPublicPlates, fetchUser, editUserData} from "../../firebaseService";
 import Filter from "./components/Filter";
 import StreakCounter from "./components/StreakCounter";
 import Loading from "../../components/Loading";
@@ -93,8 +93,7 @@ function Home() {
         const userInfo = await fetchUser()
         setUser(userInfo)
         const privatePlates = await  getUserPlates()
-        const publicPlates= await getPublicPlates()
-        const otherPlates=publicPlates && privatePlates && publicPlates.filter(item=>!(privatePlates.map(e=>e.id)).includes(item.id) ) 
+        const otherPlates=await getPlatesNotUser() 
         const plates={mines: privatePlates, others:otherPlates}
         setPlatesData(plates)
         const drinks=await getUserDrinks()

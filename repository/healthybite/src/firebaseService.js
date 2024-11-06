@@ -796,3 +796,29 @@ export const getstreak = async () => {
     const streak = response.data.message
     return streak
 }
+export const getUserNotification = async () => {
+    const user_id  = auth.currentUser.uid
+    const response = await axios.get(`http://127.0.0.1:8000/getUserNotifications/${user_id}`,)
+    const notifications = response.data.notifications
+    return notifications
+}
+export const markNotificationAsRead = async (doc_id) => {
+    try {
+        console.log("Updating comments:", { doc_id });
+        const response = await axios.put(`http://127.0.0.1:8000/markNotificationAsRead/${doc_id}`); // Check if you need {...data}
+        
+        console.log("Server response:", response);
+
+
+        return;
+    } catch (error) {
+        console.error('Error updating review by ID:', error.response ? error.response.data : error.message);
+        return null; // Return null or handle the error as needed
+    }
+};
+export const getPlatesNotUser = async () => {
+    const user_id  = auth.currentUser.uid
+    const response = await axios.get(`http://127.0.0.1:8000/PublicplatesNotFromUser/${user_id}`,)
+    const plates = response.data.Plates
+    return plates
+}
