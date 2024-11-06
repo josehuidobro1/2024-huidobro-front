@@ -54,6 +54,12 @@ function Home() {
             case 5: 
                 value=userFood.reduce((acc,food)=>acc+((food.protein_portion ? food.protein_portion : 0 * food.amount_eaten) / food.measure_portion),0);
                 break;
+            case 6: 
+                value=userFood.reduce((acc,food)=>acc+((food.caffeine_portion ? food.caffeine_portion : 0 * food.amount_eaten) / food.measure_portion),0);
+                break;
+            case 7: 
+                value=userFood.reduce((acc,food)=>acc+((food.sugar_portion ? food.sugar_portion : 0 * food.amount_eaten) / food.measure_portion),0);
+                break;
             default:
                 value=0;
             
@@ -172,6 +178,8 @@ function Home() {
                         sodium_portion: foodDetails?.sodium_portion ||0,
                         fats_portion: foodDetails?.fats_portion||0,
                         protein_portion: foodDetails?.protein_portion||0,
+                        caffeine_portion: foodDetails?.caffeine_portion||0,
+                        sugar_portion: foodDetails?.sugar_portion||0,
 
                     };
                 }));

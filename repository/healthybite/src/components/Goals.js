@@ -10,13 +10,15 @@ function Goals({user, setUser, editGoals}) {
     const [carbohydrate, setCarbohydrate] = useState(user.goals.carbohydrates ? user.goals.carbohydrates : 0);
     const [fat, setFat] = useState(user.goals.fats ? user.goals.fats : 0);
     const [protein, setProtein]=useState(user.goals.protein ? user.goals.protein : 0)
+    const [caffeine, setCaffeine]=useState(user.goals.caffeine ? user.goals.caffeine : 0)
+    const [sugar, setSugar]=useState(user.goals.sugar ? user.goals.sugar : 0)
 
     const saveChanges=()=>{
-        setUser({...user, goals: {calories:calories, fats:fat, carbohydrates:carbohydrate, protein:protein, sodium:sodium}})
+        setUser({...user, goals: {calories:calories, fats:fat, carbohydrates:carbohydrate, protein:protein, sodium:sodium, sugar:sugar, caffeine:caffeine}})
         editGoals && editGoals()
     }
     return (
-        <div className="w-full absolute z-10 top-0 left-0 h-screen bg-black/40">
+        <div className="w-full absolute z-50 top-0 left-0 h-screen bg-black/40">
             <div className="w-full flex items-center justify-center h-full">
                 <div className=" w-11/12 md:w-3/4 lg:w-1/2 flex flex-col justify-center items-center shadow-lg bg-white rounded-lg py-3 px-6">
                     <div className='w-full flex flex-col sm:flex-row justify-between items-center  py-2  '>
@@ -30,6 +32,8 @@ function Goals({user, setUser, editGoals}) {
                         <GoalSetter label='Carbohydrates' measure='g' value={carbohydrate} setValue={setCarbohydrate} max={400} />
                         <GoalSetter label='Fat' measure='g' value={fat} setValue={setFat} max={100} />
                         <GoalSetter label='Protein' measure='g' value={protein} setValue={setProtein} max={200} />
+                        <GoalSetter label='Sugar' measure='g' value={sugar} setValue={setSugar} max={100} />
+                        <GoalSetter label='Caffeine' measure='mg' value={caffeine} setValue={setCaffeine} max={600} />
                     </div>
                 </div>
             </div>

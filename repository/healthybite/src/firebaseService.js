@@ -476,8 +476,8 @@ export const getFilterData = async () => {
             drinkConsumed && drinksData.push({
                 date_ingested:item.date_ingested,
                 name:drinkConsumed.name,
-                sugar:(item.amount_eaten * drinkConsumed.amount_sugar)/ drinkConsumed.measure_portion ,
-                caffeine: (item.amount_eaten * drinkConsumed.amount_cafeine )/ drinkConsumed.measure_portion ,
+                sugar:(item.amount_eaten * drinkConsumed.sugar_portion)/ drinkConsumed.measure_portion ,
+                caffeine: (item.amount_eaten * drinkConsumed.caffeine_portion )/ drinkConsumed.measure_portion ,
                 calories:(item.amount_eaten * drinkConsumed.calories_portion )/ drinkConsumed.measure_portion,
                 type: drinksType.find(drinkType=> drinkType.id===drinkConsumed.typeOfDrink).name
             })
@@ -659,8 +659,8 @@ export const createDrink = async (selection) => {
             },
             body: JSON.stringify( {
                 "name": selection.name,
-                "amount_sugar": selection.amount_sugar,
-                "amount_cafeine": selection.amount_caffeine,
+                "sugar_portion": selection.sugar_portion,
+                "caffeine_portion": selection.caffeine_portion,
                 "calories_portion": selection.calories_portion,
                 "measure": selection.measure,
                 "measure_portion": selection.measure_portion,

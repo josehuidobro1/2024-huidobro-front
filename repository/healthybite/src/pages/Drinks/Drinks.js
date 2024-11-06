@@ -30,11 +30,13 @@ export const Drinks = () => {
     const fetchUserDrinks= async () => {
         const drinks = await getUserDrinks();
         setDrinksData(drinks);
+        setLoading(false)
         return drinks
     }
 
     const fetchUserDrinkTypes = async () => {
         const types = await fechDrinkTypes();
+        fetchUserDrinks();
         setDrinktypes(types);
         return types
     };
@@ -54,9 +56,7 @@ export const Drinks = () => {
 
     useEffect(()=>{
         setLoading(true)
-        const types=fetchUserDrinkTypes();
-        const drinks=fetchUserDrinks();
-        types && drinks && setLoading(false)
+        fetchUserDrinkTypes();
     },[])
 
     return (

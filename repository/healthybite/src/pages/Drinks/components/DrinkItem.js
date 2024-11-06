@@ -20,8 +20,8 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
 
     // Add state for each input field
     const [name, setName] = useState(drink.name || "");
-    const [caffeine, setCaffeine] = useState(drink.amount_cafeine || "");
-    const [sugar, setSugar] = useState(drink.amount_sugar || "");
+    const [caffeine, setCaffeine] = useState(drink.caffeine_portion || "");
+    const [sugar, setSugar] = useState(drink.sugar_portion || "");
     const [calories, setCalories] = useState(drink.calories_portion || "");
     const [amount, setAmount] = useState(drink.measure_portion || "");
     const [measure, setMeasure] = useState(drink.measure || "");
@@ -29,8 +29,8 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
     useEffect(() => {
         // Reset input fields when drink changes
         setName(drink.name || "");
-        setCaffeine(drink.amount_cafeine || "");
-        setSugar(drink.amount_sugar || "");
+        setCaffeine(drink.caffeine_portion || "");
+        setSugar(drink.sugar_portion || "");
         setCalories(drink.calories_portion || "");
         setAmount(drink.measure_portion || "");
         setMeasure(drink.measure || "");
@@ -65,8 +65,8 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
     
         const data = {
             name: name,
-            amount_sugar: sugar,
-            amount_cafeine: caffeine,
+            sugar_portion: sugar,
+            caffeine_portion: caffeine,
             calories_portion: calories,
             measure: measure,
             measure_portion: amount,

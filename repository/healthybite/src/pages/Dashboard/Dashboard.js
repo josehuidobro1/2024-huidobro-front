@@ -387,10 +387,56 @@ export default function Dashboard() {
                         <div className=" w-full p-2 bg-healthyGreen rounded-t-xl">
                             <p className="font-belleza text-lg text-darkGray pl-3">Drink chart</p>
                         </div>
-                        <div className="bg-hbGreen p-2 rounded-b-xl flex justify-center items-center " >
+                        <div className="bg-hbGreen p-2 rounded-b-xl flex flex-col justify-center items-center " >
+                            <div className="flex justify-center items-center w-full flex-wrap">
+                                <div className="flex items-center justify-start font-quicksand py-1 px-2 ">
+                                    <FontAwesomeIcon icon={faSquare}  style={{ color: '#FA9B6A' }} className={` mr-1`} />
+                                    <p className="text-xs text-darkGray ">Sugar</p>
+                                </div>
+                                <div className="flex items-center justify-start font-quicksand py-1 px-2 ">
+                                    <FontAwesomeIcon icon={faSquare}  style={{ color: '#a1bc1f' }} className={` mr-1`} />
+                                    <p className="text-xs text-darkGray ">Caffeine</p>
+                                </div>
+                                <div className="flex items-center justify-start font-quicksand py-1 px-2 ">
+                                    <FontAwesomeIcon icon={faSquare}  style={{ color: '#c3c3c3'}} className={` mr-1`} />
+                                    <p className="text-xs text-darkGray ">Calories</p>
+                                </div>
+                            </div>
                             {drinksDay && drinksDay.length>0 ? <BarChart
                                 xAxis={[{ scaleType: 'band', data: filterTypeDrinks().types }]}
-                                series={[{ data: filterTypeDrinks().sugarData, label:'Sugar' }, { data: filterTypeDrinks().caffeineData , label:'Caffeine' }, { data: filterTypeDrinks().caloriesData, label:'Calories'  }]}
+                                series={[      
+                                    {
+                                        data: Array(filterTypeDrinks().types.length).fill(goals.sugar), // Metas de azúcar
+                                        stack:'Sugar',
+                                        color: '#C25C28', // Color oscuro y más transparente para metas
+                                    },
+                                    {
+                                        data: Array(filterTypeDrinks().types.length).fill(goals.caffeine), // Metas de cafeína
+                                        stack:'Caffeine',
+                                        color: '#8ba020', // Color oscuro y más transparente para metas
+                                    },
+                                    {
+                                        data: Array(filterTypeDrinks().types.length).fill(goals.calories), // Metas de calorías
+                                        color: '#8e8b8b', // Color oscuro y más transparente para metas
+                                        stack:'Calories',
+                                    },
+                                    // Los datos reales, en colores más claros
+                                    {
+                                        data: filterTypeDrinks().sugarData,
+                                        stack: 'Sugar',
+                                        color: '#FA9B6A', // Color más claro para los datos actuales
+                                    },
+                                    {
+                                        data: filterTypeDrinks().caffeineData,
+                                        stack: 'Caffeine',
+                                        color: '#a1bc1f', // Color más claro para los datos actuales
+                                    },
+                                    {
+                                        data: filterTypeDrinks().caloriesData,
+                                        stack: 'Calories',
+                                        color: '#c3c3c3', // Color más claro para los datos actuales
+                                    }
+                                    ]}
                                 colors={palette}
                                 height={window.innerWidth>'400' ? 400: 300 }
                                 width={window.innerWidth>'400' ? 700: 300}

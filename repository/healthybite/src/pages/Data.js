@@ -49,6 +49,14 @@ const Data={
         {
             id:5,
             name:'protein'
+        },
+        {
+            id:6,
+            name:'caffeine'
+        },
+        {
+            id:7,
+            name:'sugar'
         }
     ]
 }
