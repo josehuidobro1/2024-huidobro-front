@@ -30,6 +30,7 @@ export const Plates = () => {
                 try {
                     const plates = await getUserPlates();
                     setPlates(plates);
+                    setLoading(false)
                 } catch (err) {
                     console.log('Error al obtener las platos: ' + err);
                 }
@@ -45,15 +46,14 @@ export const Plates = () => {
         try {
             const food=await fetchAllFoods()
             setFoodData(food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1))
-            setLoading(false)
+            fetchPlates()
         }catch (e){
             console.log("Error fetching food data on Plate page ", e)
         }
     }
     const handleupdatePlates = ()=>{
         setLoading(true)
-        const platesRecorded=fetchPlates()
-        foodData.length>0 && platesRecorded && setLoading(false)
+        fetchPlates()
     }
 
     useEffect(()=>{
@@ -65,8 +65,7 @@ export const Plates = () => {
 
     useEffect(()=>{
         setLoading(true)
-        const platesRecorded=fetchPlates()
-        const foodRecorded=fetchFood()
+        fetchFood()
     },[])
 
   return (
@@ -98,7 +97,7 @@ export const Plates = () => {
                             <div className='flex flex-col w-full md:w-11/12 justify-start items-start mt-8 md:max-h-[400px] md:overflow-y-auto'>
                                         
                                 {plates.map((plate, index) => (
-                                    <PlateItem plate={plate} key={index} foodData={foodData} handleupdatePlates={handleupdatePlates} setSuccessMessage={setSuccessMessage} setAddFood={setAddFood} setPlate={setPlate} selection={selection} />
+                                    <PlateItem plateDetail={plate} key={index} foodData={foodData} handleupdatePlates={handleupdatePlates} setSuccessMessage={setSuccessMessage} setAddFood={setAddFood} setPlate={setPlate} selection={selection} />
                                 ))}
                             </div>
                             :

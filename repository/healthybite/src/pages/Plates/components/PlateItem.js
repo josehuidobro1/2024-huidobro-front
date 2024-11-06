@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { faBookmark, faCirclePlus, faEllipsisVertical, faEye, faEyeSlash, faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Counter from '../../../components/Counter'
@@ -6,13 +6,16 @@ import EditFood from './EditFood'
 import DeletePopUp from '../../../components/DeletePopUp'
 import {deleteplate,updatePlate,createReview} from '../../../firebaseService'
 import { Visibility } from './Visibility'
+import { uploadImageToStorage } from '../../../firebaseConfig'
 
-export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessage , setAddFood,selection, setPlate}) => {
+export const PlateItem = ({ plateDetail, foodData, handleupdatePlates,setSuccessMessage , setAddFood,selection, setPlate}) => {
+    const [plate, setPlateDetail]=useState(plateDetail)
     const [options, setOption] = useState(false)
     const [edit, setEdit] = useState(false)
     const [deleteItem, setDeleteItem] = useState(false)
     const [clickable, setClickable] = useState(true);
-    const [publicPlate, setPublicPlate]=useState(plate.public)
+    const [publicPlate, setPublicPlate]=useState(plateDetail.public)
+    const fileInputRef = useRef(null);
     const [ingredientsUpdate, setIngredientsUpdate] = useState(
         plate.ingredients.map((item) => ({ ...item })) // Clone ingredients
     );
@@ -135,6 +138,14 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
         setAddFood(true)
     }
 
+    const updateImage=async(e)=>{
+        const imageUrl = await uploadImageToStorage(e.target.files[0]);
+        setPlateDetail({...plate, image: imageUrl })
+        setPlate({...plate, image: imageUrl});
+        await updatePlate({...plate, image: imageUrl}, plate.id);
+        
+    }
+
     return (
         <>
             {deleteItem ? (
@@ -150,10 +161,15 @@ export const PlateItem = ({ plate, foodData, handleupdatePlates,setSuccessMessag
                                     className="w-12 h-12 object-cover border-2 border-healthyDarkOrange rounded-full"
                                 />
                             ) : (
-                                <FontAwesomeIcon
-                                    icon={faUtensils}
-                                    className="border-2 border-healthyDarkOrange text-healthyDarkOrange py-2 px-2 text-2xl rounded-full"
-                                />
+                                <div className='group'>
+                                    <input type="file" ref={fileInputRef} accept="image/*" onChange={(e)=>updateImage(e)} className='hidden'/>
+                                    <FontAwesomeIcon
+                                        onClick={()=>fileInputRef.current.click()}
+                                        icon={faUtensils}
+                                        className="border-2 cursor-pointer border-healthyDarkOrange text-healthyDarkOrange py-2 px-2 text-2xl rounded-full"
+                                    />
+                                    <p className='absolute  text-white text-xs font-semibold px-2 py-1 rounded-md bg-healthyDarkOrange shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300'>Update image</p>
+                                </div>
                             )}
                             <div className="flex flex-col justify-center items-start ml-3">
                                 <p className="font-semibold text-healthyDarkOrange">{plate.name}</p>
