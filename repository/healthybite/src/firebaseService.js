@@ -522,6 +522,7 @@ export const getProdByID= async(prod_id)=>{
 // things that need to be deployed
 export const createplate = async (selection) => {
     try {
+        console.log("PLATO", selection)
         const response = await fetch("http://127.0.0.1:8000/CreatePlate/", {
             method: "POST",
             headers: {
@@ -531,11 +532,11 @@ export const createplate = async (selection) => {
                 "id_User": auth.currentUser.uid,
                 "ingredients": selection.ingredients,
                 "name": selection.name,
-                "calories_portion": selection.calories_portion,
-                "sodium_portion": selection.sodium_portion,
-                "carbohydrates_portion": selection.carbohydrates_portion,
-                "protein_portion": selection.protein_portion,
-                "fats_portion": selection.fats_portion,
+                "calories_portion": selection?.calories_portion || 0,
+                "sodium_portion": selection?.sodium_portion || 0,
+                "carbohydrates_portion": selection?.carbohydrates_portion || 0,
+                "protein_portion": selection?.protein_portion || 0,
+                "fats_portion": selection?.fats_portion || 0,
                 "image": selection.image,
                 "public": selection.public,
                 "verified": selection.verified

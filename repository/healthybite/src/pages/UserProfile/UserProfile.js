@@ -114,7 +114,7 @@ function UserProfile() {
             weight: weight,
             goals: user.goals,
             validation: user.validation,
-            achivements: user.achivements,
+            achivements: user.achievements,
         };
         try {
             await editUserData(data);

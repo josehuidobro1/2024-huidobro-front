@@ -7,12 +7,13 @@ import { PlateItem } from './components/PlateItem'
 import { fetchAllFoods } from '../../firebaseService'
 import Loading from '../../components/Loading'
 import NewPlate from './components/NewPlate'
-import {getUserPlates} from '../../firebaseService'
+import {getUserPlates,getUserNotification,markNotificationAsRead} from '../../firebaseService'
 import { auth } from "../../firebaseConfig";
 import emptyPlate from '../../assets/emptyPlate.png'
 import PopUpPlate from './components/PopUpPlates'
 import { PickersSectionListSectionContent } from '@mui/x-date-pickers/PickersSectionList/PickersSectionList'
 import { plateAchivements } from '../../components/AchivementsValidation'
+import NotificationPopup from '../../components/NotificationPopup';
 
 export const Plates = () => {
     const [addFood, setAddFood]=useState(false)
@@ -24,25 +25,36 @@ export const Plates = () => {
     const [newPlate, setNewPlate]=useState(false)
     const [successMessage, setSuccessMessage] = useState('');
     const [selection , setSelection]=useState(null)
+    const [notifications, setNotifications] = useState([]);
 
     const fetchPlates = async () => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
-            if (user) {
                 try {
                     const plates = await getUserPlates();
                     setPlates(plates);
+                    plateAchivements(plates.length)
                     setLoading(false)
                     
 
                 } catch (err) {
                     console.log('Error al obtener las platos: ' + err);
                 }
-            }else{
-                console.log('No user is signed in');
-            }
+            
             
         })
         return () => unsubscribe();
+    };
+    const fetchUserNotifications=async ()=>{
+        const fetchedNotifications = await getUserNotification();
+        setNotifications(fetchedNotifications || []);
+    }
+    const handleDismissNotification = async (notificationId) => {
+        try {
+            await markNotificationAsRead(notificationId);
+            setNotifications(notifications.filter(notif => notif.id !== notificationId));
+        } catch (err) {
+            console.error("Error dismissing notification:", err);
+        }
     };
 
     const fetchFood=async ()=>{
@@ -57,6 +69,7 @@ export const Plates = () => {
     const handleupdatePlates = ()=>{
         setLoading(true)
         fetchPlates()
+        fetchUserNotifications()
         plateAchivements(plates.length)
     }
 
@@ -70,6 +83,7 @@ export const Plates = () => {
     useEffect(()=>{
         setLoading(true)
         fetchFood()
+        fetchUserNotifications();
     },[])
 
   return (
@@ -117,6 +131,12 @@ export const Plates = () => {
                         </div>
                     </div>
                 </div>
+                {notifications.length > 0 && (
+                        <NotificationPopup
+                            notifications={notifications}
+                            onDismiss={handleDismissNotification}
+                        />
+                    )}
                 
 
             </div>
