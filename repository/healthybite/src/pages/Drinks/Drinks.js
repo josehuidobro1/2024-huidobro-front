@@ -7,8 +7,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { NewDrink } from './components/NewDrink'
 import DrinkItem from './components/DrinkItem'
-import {fechDrinkTypes, getUserDrinks} from '../../firebaseService'
+import {fechDrinkTypes, getUserDrinks,getUserNotification,markNotificationAsRead} from '../../firebaseService'
 import { drinkAchievments } from '../../components/AchivementsValidation'
+import NotificationPopup from '../../components/NotificationPopup';
 
 const drinks=[
     {
@@ -27,13 +28,32 @@ export const Drinks = () => {
     const [drinksData, setDrinksData]=useState([])
     const [newDrink,setNewDrink]=useState(false)
     const [drinktypes, setDrinktypes] = useState([]);
+    const [notifications, setNotifications] = useState([]);
+
 
     const fetchUserDrinks= async () => {
         const drinks = await getUserDrinks();
+        const fetchedNotifications = await getUserNotification();
+        setNotifications(fetchedNotifications || []);
+        console.log(fetchedNotifications);
+        drinkAchievments(drinks.length)
+
         setDrinksData(drinks);
         setLoading(false);
         return drinks
     }
+    const fetchUserNotifications=async ()=>{
+        const fetchedNotifications = await getUserNotification();
+        setNotifications(fetchedNotifications || []);
+    }
+    const handleDismissNotification = async (notificationId) => {
+        try {
+            await markNotificationAsRead(notificationId);
+            setNotifications(notifications.filter(notif => notif.id !== notificationId));
+        } catch (err) {
+            console.error("Error dismissing notification:", err);
+        }
+    };
 
     const fetchUserDrinkTypes = async () => {
         const types = await fechDrinkTypes();
@@ -44,7 +64,9 @@ export const Drinks = () => {
     const handleUpdate=()=>{
         setLoading(true)
         const drink=fetchUserDrinks()
+        fetchUserNotifications(); 
         drinkAchievments(drinks.length)
+
         drink && setLoading(false)
 
     }
@@ -53,12 +75,17 @@ export const Drinks = () => {
         const types=fetchUserDrinkTypes()
         types && setLoading(false)
     }
+    useEffect(()=>{
+        fetchUserNotifications()
+
+    },[drinksData])
 
 
 
     useEffect(()=>{
         setLoading(true)
         fetchUserDrinkTypes();
+        fetchUserNotifications();
     },[])
 
     return (
@@ -89,6 +116,12 @@ export const Drinks = () => {
                         {newDrink && <NewDrink setNewDrink={setNewDrink} handleUpdate={handleUpdate} drinktypes={drinktypes} handleDrinkTypeUpdate={handleDrinkTypeUpdate} setDrinksData={setDrinksData}/>}
                     </div>
                 </div>
+                {notifications.length > 0 && (
+                        <NotificationPopup
+                            notifications={notifications}
+                            onDismiss={handleDismissNotification}
+                        />
+                    )}
             </div>
         </div>}
         

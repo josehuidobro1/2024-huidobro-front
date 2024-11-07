@@ -14,7 +14,7 @@ function Goals({user, setUser, editGoals}) {
     const [sugar, setSugar]=useState(user.goals.sugar ? user.goals.sugar : 0)
 
     const saveChanges=()=>{
-        setUser({...user, goals: {calories:calories, fats:fat, carbohydrates:carbohydrate, protein:protein, sodium:sodium, sugar:sugar, caffeine:caffeine}})
+        setUser({...user, goals: {calories:calories, fats:fat, carbohydrates:carbohydrate, protein:protein, sodium:sodium, sugar:sugar, caffeine:caffeine},})
         editGoals && editGoals()
     }
     return (
