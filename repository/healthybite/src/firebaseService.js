@@ -503,16 +503,16 @@ export const resetPassword = async (oobCode, newPassword) => {
 // APP MESIIDEPAUL
 
 export const getProducts=async()=>{
-    const response = await axios.get('https://cv-bar-back.onrender.com');
+    const response = await axios.get('https://candv-back.onrender.com');
     return response.data.products ? response.data.products : [];
 }
 
 export const editCalories=async(id,calories)=>{
-    await axios.put(`https://candvbar-back.onrender.com/add-calories/${id}/${calories}`); 
+    await axios.put(`https://candv-back.onrender.com/add-calories/${id}/${calories}`); 
 
 }
 export const getProdByID= async(prod_id)=>{
-    const response = await axios.get(`https://candvbar-back.onrender.com/products/${prod_id}`);
+    const response = await axios.get(`https://candv-back.onrender.com/products/${prod_id}`);
     const food=response.data.product
     return food
 }
@@ -642,7 +642,7 @@ export const getUserDrinks = async () =>{
     }
     const uid = user.uid;
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetDrinks/${uid}`);
+        const response = await axios.get(`http://127.0.0.1:8000/GetDrinks/${uid}`);
         return response.data.message.Drinks; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching typedrinks :', error);
@@ -652,7 +652,7 @@ export const getUserDrinks = async () =>{
 export const createDrink = async (selection) => {
     try {
         console.log(selection)
-        const response = await fetch('https://two024-ranchoaparte-back.onrender.com/drink_log', {
+        const response = await fetch('http://127.0.0.1:8000/drink_log', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -688,7 +688,7 @@ export const createDrink = async (selection) => {
 export const deleteDrink=async(drink_id)=>{
     try {
         console.log(drink_id)
-        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/DeleteDrink/${drink_id}`); 
+        await axios.delete(`http://127.0.0.1:8000/DeleteDrink/${drink_id}`); 
     } catch (error) {
         console.error('Error deleting plateFood by ID:', error);
         return null; 
@@ -698,7 +698,7 @@ export const updateDrink = async (doc_id,data) => {
 
     try {
         console.log(doc_id,data)
-        await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateDrink/${doc_id}`,{...data,id_User: auth.currentUser.uid }); // Adjust this based on your backend response structure
+        await axios.put(`http://127.0.0.1:8000/UpdateDrink/${doc_id}`,{...data,id_User: auth.currentUser.uid }); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error updating drink by ID:', error);
         return null; // Return null or handle the error as needed
@@ -713,14 +713,16 @@ export const deleteDrinkType = async (doc_id) => {
     }
 };
 export const getDrinkByID = async (drink_id) => {
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/DrinkById/${drink_id}`);
+    const response = await axios.get(`http://127.0.0.1:8000/DrinkById/${drink_id}`);
     const drink=response.data.message.drink
+    console.log("drink", drink)
     return drink
 
 }
-export const getPlateByID = async (plate_id) => {
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetPlateByID/${plate_id}`);
+export const getPlate_ByID = async (plate_id) => {
+    const response = await axios.get(`http://127.0.0.1:8000/GetPlateByID/${plate_id}`);
     const drink=response.data.message.plate
+    console.log("PLATOOOOOOOOOO", drink)
     return drink
 
 }
