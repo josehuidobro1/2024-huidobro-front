@@ -8,6 +8,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { NewDrink } from './components/NewDrink'
 import DrinkItem from './components/DrinkItem'
 import {fechDrinkTypes, getUserDrinks} from '../../firebaseService'
+import { drinkAchievments } from '../../components/AchivementsValidation'
 
 const drinks=[
     {
@@ -30,7 +31,7 @@ export const Drinks = () => {
     const fetchUserDrinks= async () => {
         const drinks = await getUserDrinks();
         setDrinksData(drinks);
-        setLoading(false)
+        setLoading(false);
         return drinks
     }
 
@@ -43,6 +44,7 @@ export const Drinks = () => {
     const handleUpdate=()=>{
         setLoading(true)
         const drink=fetchUserDrinks()
+        drinkAchievments(drinks.length)
         drink && setLoading(false)
 
     }

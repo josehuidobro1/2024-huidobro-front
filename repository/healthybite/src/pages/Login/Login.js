@@ -111,7 +111,8 @@ function Login() {
                 carbohydrates:0,
                 fats:0
             },
-            validation: 0
+            validation: 0,
+            achivements: []
 
             });
     

@@ -2,22 +2,22 @@ import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import NavBar from '../../components/NavBar';
+import NotificationPopup from '../../components/NotificationPopup'; // Corrected path
 import Card from './components/Card';
-import { getPublicPlates, fetchUser, getUserNotification, markNotificationAsRead } from '../../firebaseService';
+import { getPublicPlates, getUserNotification, markNotificationAsRead } from '../../firebaseService';
 import Loading from "../../components/Loading";
 
 export const Community = () => {
     const [plates, setPlates] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [searchQuery, setSearchQuery] = useState(""); 
+    const [searchQuery, setSearchQuery] = useState("");
     const [notifications, setNotifications] = useState([]);
-    const [showNotification, setShowNotification] = useState(true); // Popup visibility
 
     const fetchPublicPlatesAndNotifications = async () => {
         try {
             const fetchedPlates = await getPublicPlates();
             setPlates(fetchedPlates || []);
-            
+
             const fetchedNotifications = await getUserNotification();
             setNotifications(fetchedNotifications || []);
         } catch (err) {
@@ -33,11 +33,10 @@ export const Community = () => {
 
     const handleDismissNotification = async (notificationId) => {
         try {
-            await markNotificationAsRead(notificationId); // Update in Firebase
+            await markNotificationAsRead(notificationId);
             setNotifications(notifications.filter(notif => notif.id !== notificationId));
-            setShowNotification(false);
         } catch (err) {
-            console.error("Error marking notification as read:", err);
+            console.error("Error dismissing notification:", err);
         }
     };
 
@@ -62,18 +61,11 @@ export const Community = () => {
                         />
                     </div>
                     {/* Notification Popup */}
-                    {showNotification && notifications.length > 0 && (
-                        <div className="fixed top-4 right-4 w-1/3 bg-hbGreen p-4 rounded shadow-lg z-50">
-                            <div className="flex justify-between items-center">
-                                <h2 className="font-semibold font-quicksand">Notifications</h2>
-                                <FontAwesomeIcon
-                                    icon={faXmark}
-                                    className="cursor-pointer, text-healthyGreen"
-                                    onClick={() => handleDismissNotification(notifications[0].id)}
-                                />
-                            </div>
-                            <p className="text-sm font-quicksand mt-2">{notifications[0].message}</p>
-                        </div>
+                    {notifications.length > 0 && (
+                        <NotificationPopup
+                            notifications={notifications}
+                            onDismiss={handleDismissNotification}
+                        />
                     )}
                     
                     <div className="w-full flex flex-wrap justify-center">
@@ -90,3 +82,4 @@ export const Community = () => {
         </div>
     );
 };
+
