@@ -12,6 +12,7 @@ import { auth } from "../../firebaseConfig";
 import emptyPlate from '../../assets/emptyPlate.png'
 import PopUpPlate from './components/PopUpPlates'
 import { PickersSectionListSectionContent } from '@mui/x-date-pickers/PickersSectionList/PickersSectionList'
+import { plateAchivements } from '../../components/AchivementsValidation'
 
 export const Plates = () => {
     const [addFood, setAddFood]=useState(false)
@@ -31,6 +32,8 @@ export const Plates = () => {
                     const plates = await getUserPlates();
                     setPlates(plates);
                     setLoading(false)
+                    
+
                 } catch (err) {
                     console.log('Error al obtener las platos: ' + err);
                 }
@@ -54,6 +57,7 @@ export const Plates = () => {
     const handleupdatePlates = ()=>{
         setLoading(true)
         fetchPlates()
+        plateAchivements(plates.length)
     }
 
     useEffect(()=>{

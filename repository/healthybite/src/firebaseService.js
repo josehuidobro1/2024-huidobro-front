@@ -21,6 +21,7 @@ export const fetchUser=async()=>{
 
 export const editUserData=async(data)=>{
     try {
+        console.log("USERDATA",data)
         const response = await axios.put(`http://127.0.0.1:8000/update_user/${auth.currentUser.uid}`, data);
         
         return response.data; // Adjust this based on your backend response structure
@@ -823,4 +824,11 @@ export const getPlatesNotUser = async () => {
     const response = await axios.get(`http://127.0.0.1:8000/PublicplatesNotFromUser/${user_id}`,)
     const plates = response.data.Plates
     return plates
+}
+export const addGoal = async (goal_id) => {
+    const user_id = auth.currentUser.uid;
+    const response = await axios.get(`http://127.0.0.1:8000/addGoal/${user_id}`, {
+        params: { goal_id }
+    });
+    return response;
 }

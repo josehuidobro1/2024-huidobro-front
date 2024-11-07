@@ -3,7 +3,7 @@ import NavBar from '../../components/NavBar'
 import userImg from '../../assets/userImg.jpg'
 import { fetchUser } from '../../firebaseService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenToSquare, faArrowDown, faKey, faTrash, faBullseye } from '@fortawesome/free-solid-svg-icons'; 
+import { faPenToSquare,faTrophy, faArrowDown, faKey, faTrash, faBullseye } from '@fortawesome/free-solid-svg-icons'; 
 import Input from '../../components/Input'
 import DataUser from './components/DataUser'
 import {editUserData} from '../../firebaseService'
@@ -13,6 +13,40 @@ import PopUp from './components/PopUp'
 import {handleInputChange} from '../inputValidation';
 import Loading from '../../components/Loading'
 import Goals from '../../components/Goals'
+const achievements = {
+    1: { 
+        name: "3 days in a row logging food!", 
+        description: "Reach 3 days in a row of logging food to get this trophy" 
+    },
+    2: {
+        name: "10 days in a row logging food!",
+        description: "Reach 10 days in a row of logging food to get this trophy",
+    },
+    3: {
+        name: "First plate logged!",
+        description: "Add a Plate to your profile to get this trophy",
+    },
+    4: {
+        name: "5 plates logged!",
+        description: "Add 5 Plates to your profile to get this trophy",
+    },
+    5:{
+        name: "10 plates logged!",
+        description: "Add 10 Plates to your profile to get this trophy",
+    },
+    6:{
+        name: "First drinks logged!",
+        description: "Add a Drink to your profile to get this trophy",
+    },
+    7:{
+        name: "5 drinks logged!",
+        description: "Add 5 Drinks to your profile to get this trophy",
+    },
+    8:{
+        name: "10 drinks logged!",
+        description: "Add 10 Drinks to your profile to get this trophy",
+    },
+};
 
 
 function UserProfile() {
@@ -28,6 +62,7 @@ function UserProfile() {
     const [deleteAc, setDeleteAc]=useState(false)
     const [loading, setLoading]=useState(true)
     const [openGoals, setOpenGoals]=useState(false)
+    const [myachievements, setMyAchievements] = useState([]);
     const handleWeightChange = (e) => {
         handleInputChange(e.target.value, 0, 500, setWeight);
     };
@@ -56,6 +91,7 @@ function UserProfile() {
             setUser(userData);
             setName(userData.name);
             setSurname(userData.surname);
+            setMyAchievements(userData.achievements || []);
             setWeight(userData.weight);
             setHeight(userData.height);
             // Store the date in ISO format
@@ -78,6 +114,7 @@ function UserProfile() {
             weight: weight,
             goals: user.goals,
             validation: user.validation,
+            achivements: user.achivements,
         };
         try {
             await editUserData(data);
@@ -104,6 +141,66 @@ function UserProfile() {
         edit && editUser()
         setEdit(false)
     }
+    const renderAchievements = () => {
+        // Separate archived and unarchived trophies
+        const archivedAchievements = Object.keys(achievements).filter(id => user?.achievements?.includes(parseInt(id)));
+        const unarchivedAchievements = Object.keys(achievements).filter(id => !user?.achievements?.includes(parseInt(id)));
+    
+        return (
+            <div className="flex flex-col w-full">
+                {/* Render Archived Achievements */}
+                <div className="w-full mb-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {archivedAchievements.map((id) => {
+                            const achievement = achievements[id];
+                            return (
+                                <div key={id} className="m-4 text-center">
+                                    {/* Trophy Icon */}
+                                    <FontAwesomeIcon
+                                        icon={faTrophy}
+                                        size="3x"
+                                        color="#FFD700" // Yellow for achieved
+                                    />
+                                    {/* Achievement Name */}
+                                    <div className="mt-2">
+                                        <h3 className="font-bold text-lg">{achievement.name}</h3>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+    
+                {/* Render Unarchived Achievements */}
+                <div className="w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {unarchivedAchievements.map((id) => {
+                            const achievement = achievements[id];
+                            return (
+                                <div key={id} className="m-4 text-center">
+                                    {/* Trophy Icon */}
+                                    <FontAwesomeIcon
+                                        icon={faTrophy}
+                                        size="3x"
+                                        color="#B0B0B0" // Grey for unachieved
+                                    />
+                                    {/* Achievement Description */}
+                                    <div className="mt-2">
+                                        <p className="text-sm text-gray-500">{achievement.description}</p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+    
+    
+    
+    
+    
 
   return (
     <div className={`w-full ${ loading ? 'bg-white' : 'bg-healthyBrown'} h-screen overflow-y-hidden`}>
@@ -150,6 +247,9 @@ function UserProfile() {
                         <DataUser label="Date of birth" value={birthDate} />
                         <DataUser label="Weight" value={weight} />
                         <DataUser label="Height" value={height} />
+                        <div className="w-full px-2">
+                            {renderAchievements()}
+                        </div>
                     </div>)
                     
             
