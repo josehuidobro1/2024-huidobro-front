@@ -30,25 +30,15 @@ export const PlateItem = ({ plateDetail, foodData, handleupdatePlates,setSuccess
     };
 
     useEffect(()=>{
-        if(plate && foodData.length>0 && plate.ingredients.length>0){
-            const newFoodData=plate.ingredients.map((item)=>{
+        if(plate && foodData.length>0 && selection?.ingredients.length>0 && selection){
+            const newFoodData=selection.ingredients.map((item)=>{
                 const foodItem = foodData.find((food) => food.id === item.ingredientId);
-                return foodItem && { ...foodItem, amount: item.quantity } ;
+                return { ...foodItem, amount: item.quantity } ;
             })
-            
             setFoodPlate(newFoodData)}
         
     },[selection])
-    useEffect(() => {
-        if (plate && plate.ingredients && foodData.length > 0) {
-            const newFoodData = plate.ingredients.map((item) => {
-                const foodItem = foodData.find((food) => food.id === item.ingredientId);
-                return foodItem && { ...foodItem, amount: item.quantity };
-            }).filter(Boolean);
-            
-            setFoodPlate(newFoodData);
-        }
-    }, [plate, foodData, selection]);
+
     
     useEffect(() => {
         const updatedFoodPlate = ingredientsUpdate.map((item) => {
@@ -84,7 +74,7 @@ export const PlateItem = ({ plateDetail, foodData, handleupdatePlates,setSuccess
     const updateData = async () => {
         const updatedPlate = {
             ...plate,
-            ingredients: ingredientsUpdate,
+            ingredients: foodPlate.map((item)=>({ingredientId: item.id , quantity: item.amount  })),
             calories_portion: foodPlate.reduce((acc, item) => acc + (item.calories_portion * item.amount), 0),
             sodium_portion: foodPlate.reduce((acc, item) => acc + (item.sodium_portion * item.amount), 0),
             carbohydrates_portion: foodPlate.reduce((acc, item) => acc + (item.carbohydrates_portion * item.amount), 0),

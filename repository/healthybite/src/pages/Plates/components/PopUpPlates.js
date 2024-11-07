@@ -21,6 +21,7 @@ export default function PopUpPlate({ plate, foodData, setAddFood, setSelection }
 
     const handleAddFood = () => {
         const foodSelected = selectedFoods.filter((item) => item.quantity > 0);
+        
         if (foodSelected.length > 0) {
             setSelection({ ingredients: foodSelected, plate: plate.id });
             setAddFood(false);
