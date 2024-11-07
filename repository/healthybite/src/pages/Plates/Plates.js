@@ -29,7 +29,6 @@ export const Plates = () => {
 
     const fetchPlates = async () => {
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
-            if (user) {
                 try {
                     const plates = await getUserPlates();
                     setPlates(plates);
@@ -40,9 +39,7 @@ export const Plates = () => {
                 } catch (err) {
                     console.log('Error al obtener las platos: ' + err);
                 }
-            }else{
-                console.log('No user is signed in');
-            }
+            
             
         })
         return () => unsubscribe();
