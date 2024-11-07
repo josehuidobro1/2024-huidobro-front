@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { getstreak,addNewFood,getPlatesNotUser, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlateByID, getGroupedDrinkTypes, getPublicPlates, fetchUser, editUserData} from "../../firebaseService";
+import { getstreak,addNewFood,getPlatesNotUser, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlate_ByID, getGroupedDrinkTypes, getPublicPlates, fetchUser, editUserData} from "../../firebaseService";
 import Filter from "./components/Filter";
 import StreakCounter from "./components/StreakCounter";
 import Loading from "../../components/Loading";
@@ -138,35 +138,42 @@ function Home() {
                 if (isNaN(new Date(date).getTime())) {
                     throw new Error('Invalid date value');
                 }
+    
+                console.log('Fetching user food for date:', date);
                 const userFood = await fetchUserFoods(date);
+                console.log('User food fetched:', userFood);
+    
                 const food = await fetchAllFoods();
-                setFoodData(food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1));
-                
+                console.log('All foods fetched:', food);
+    
+                setFoodData(
+                    food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1)
+                );
+    
                 const userFoodDetails = await Promise.all(userFood.map(async (item) => {
-                    let foodDetails;
-    
-                    // Try fetching from the 'food' table first
-                    foodDetails = await fetchFoodByID(item.id_Food);
+                    let foodDetails = await fetchFoodByID(item.id_Food);
+                console.log("Fetched foodDetails:", foodDetails);
 
-                    
-                    // If no details are found in the 'food' table, try the 'menu' table
+            if (!foodDetails || Object.keys(foodDetails).length === 0) {
+                console.log('No food found in food table, checking plates');
+                foodDetails = await getPlate_ByID(item.id_Food);
+                console.log("Fetched plate details:", foodDetails);
+
+                if (!foodDetails) {
+                    console.log('No food found in plate, checking drinks');
+                    foodDetails = await getDrinkByID(item.id_Food);
+
                     if (!foodDetails) {
-                        foodDetails = await getPlateByID(item.id_Food);
-                        if(!foodDetails){
-                            foodDetails = await getDrinkByID(item.id_Food);
-                            if(!foodDetails){
-                                foodDetails = await getProdByID(item.id_Food)
-                            }
-                        }
-
-
+                        console.log('No food found in drinks, checking products');
+                        foodDetails = await getProdByID(item.id_Food);
                     }
-                    const calories = foodDetails?.calories_portion !== undefined 
-                    ? Math.round(foodDetails?.calories_portion) 
-                    : Math.round(foodDetails?.calories || 0);
-
+                }
+            }
     
-                    // Return the item with details or set defaults if not found
+                    const calories = foodDetails?.calories_portion !== undefined 
+                        ? Math.round(foodDetails?.calories_portion) 
+                        : Math.round(foodDetails?.calories || 0);
+    
                     return {
                         ...item,
                         name: foodDetails?.name || 'Unknown',
@@ -174,26 +181,37 @@ function Home() {
                         measure_portion: foodDetails?.measure_portion || 1,
                         calories_portion: calories,
                         carbohydrates_portion: foodDetails?.carbohydrates_portion || 0,
-                        sodium_portion: foodDetails?.sodium_portion ||0,
-                        fats_portion: foodDetails?.fats_portion||0,
-                        protein_portion: foodDetails?.protein_portion||0,
-                        caffeine_portion: foodDetails?.caffeine_portion||0,
-                        sugar_portion: foodDetails?.sugar_portion||0,
-
+                        sodium_portion: foodDetails?.sodium_portion || 0,
+                        fats_portion: foodDetails?.fats_portion || 0,
+                        protein_portion: foodDetails?.protein_portion || 0,
+                        caffeine_portion: foodDetails?.caffeine_portion || 0,
+                        sugar_portion: foodDetails?.sugar_portion || 0,
+                        public: foodDetails?.public || false,
+                        verified: foodDetails?.verified || false
                     };
                 }));
+    
+                console.log('User food details:', userFoodDetails);
+    
+                // Check if required data is defined before setting state
+                if (userFood && platesData && drinksData && categories) {
+                    setLoading(false);
+                } else {
+                    console.warn("Some required data is missing:", { userFood, platesData, drinksData, categories });
+                }
     
                 // Set user food with the resolved details
                 setUserFood(userFoodDetails);
                 setFilteredFood(userFoodDetails);
-                userFood && platesData && drinksData && categories && setLoading(false);
+    
             } catch (err) {
-                console.log('Error al obtener los datos: ' + err.message);
+                console.error('Error fetching data:', err.message);
             }
         };
     
         loadData();
     };
+    
     
 
 

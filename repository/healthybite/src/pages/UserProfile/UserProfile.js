@@ -76,7 +76,8 @@ function UserProfile() {
             name: name,
             surname: surname,
             weight: weight,
-            goals: user.goals
+            goals: user.goals,
+            validation: user.validation,
         };
         try {
             await editUserData(data);
