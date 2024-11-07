@@ -5,6 +5,8 @@ import { uploadImageToStorage, } from "../../../firebaseConfig";
 import { faEye, faEyeSlash, faImage, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Visibility } from './Visibility';
+import { plateAchivements } from '../../../components/AchivementsValidation'
+
 
 const NewPlate = ({ foodData, setPlates, plates }) => {
   const [plateName, setPlateName] = useState('');
@@ -102,6 +104,7 @@ const createPlate = async () => {
 
     // Update the UI without refreshing the page
     const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totals.calories, sodium_portion: totals.sodium, carbohydrates_portion: totals.carbohydrates, protein_portion: totals.protein, fats_portion:  totals.fats, image: imageUrl,public:publicPlate,verified: user.validation  })
+    plateAchivements(newPlates.length)
     setPlates(newPlates);
 
     const plate_id= await createplate(data);

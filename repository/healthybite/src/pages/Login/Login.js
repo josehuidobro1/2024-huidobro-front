@@ -109,10 +109,12 @@ function Login() {
                 sodium:0,
                 protein:0,
                 carbohydrates:0,
-                fats:0
+                fats:0,
+                sugar:0,
+                caffeine:0,
             },
             validation: 0,
-            achivements: []
+            achievements: [],
 
             });
     

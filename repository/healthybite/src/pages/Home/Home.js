@@ -98,7 +98,8 @@ function Home() {
     const getUserData = async()=> {
         setLoading(true)
         const userInfo = await fetchUser()
-        setUser(userInfo)
+        const { email, ...filteredUserData } = userInfo;
+        setUser(filteredUserData)
         const privatePlates = await  getUserPlates()
         const otherPlates=await getPlatesNotUser() 
         const plates={mines: privatePlates, others:otherPlates}
@@ -242,6 +243,7 @@ function Home() {
 
     useEffect(()=>{
         const updateGoals= async()=>{
+            
             await editUserData(user)}
         updateGoals()
     },[user])

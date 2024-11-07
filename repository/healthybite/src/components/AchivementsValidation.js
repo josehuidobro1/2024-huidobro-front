@@ -2,6 +2,7 @@ import { addGoal } from "../firebaseService"
 export const plateAchivements = (amountOfPlates) => {
     // Allow clearing the input
     if (amountOfPlates>=1){
+        console.log("SIII")
         addGoal(3)
     }
     if (amountOfPlates>=5){
