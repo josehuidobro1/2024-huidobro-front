@@ -206,8 +206,8 @@ function UserProfile() {
     <div className={`w-full ${ loading ? 'bg-white' : 'bg-healthyBrown'} h-screen overflow-y-hidden`}>
         <NavBar/>
         {loading ? <Loading/> :
-        <div className='w-full h-full sm:h-screen flex flex-col lg:flex-row justify-start  items-center overflow-y-auto  '>
-            <div className='w-full z-10   md:w-10/12 lg:w-2/3 flex flex-col  items-center justify-center mt-8 md:mt-20 lg::mt-32'>
+        <div className='w-full h-full sm:h-screen flex flex-col lg:flex-row justify-start  items-start overflow-y-auto  '>
+            <div className='w-full z-10   md:w-10/12 lg:w-2/3 flex flex-col  items-center justify-start mt-8 md:mt-20 lg:mt-32'>
                 <div className=' w-11/12 lg:w-2/3 flex items-center justify-between mb-3'>
                     <h1 className='text-xl xs:text-2xl font-belleza text-darkGray'>User profile</h1>
                 </div>

@@ -51,13 +51,13 @@ export const Community = () => {
                 <Loading />
             ) : (
                 <div className="w-full h-full flex flex-col items-center overflow-y-scroll font-quicksand mt-4 sm:mt-16 md:mt-16 lg:mt-24 pb-32">
-                    <div className="w-2/3 justify-center">
+                    <div className="w-full justify-center flex sticky top-0 z-10 bg-white ">
                         <input
                             type="text"
                             placeholder="Search plates..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full p-2 border border-gray-300 font-quicksand rounded mb-4"
+                            className="w-2/3 p-2 border border-gray-300 font-quicksand rounded mb-4"
                         />
                     </div>
                     {/* Notification Popup */}

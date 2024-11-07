@@ -75,7 +75,7 @@ export const Drinks = () => {
                 <h1 className='text-3xl text-healthyDarkGreen font-belleza '>My own drinks</h1>
                 <div className='w-full flex flex-col-reverse lg:flex-row justify-between items-center  lg:items-start mt-5 lg:h-full'>
                     {drinksData && drinksData.length >0 ?
-                    <div className='w-full  lg:w-2/3 lg:mr-5 lg:pr-3  flex flex-col items-start lg:h-[420px]  lg:overflow-y-auto '>
+                    <div className='w-full  lg:w-2/3 lg:mr-5 lg:pr-3  flex flex-col items-start lg:h-[600px]  lg:overflow-y-auto '>
                         {drinksData.map((item)=>
                                 <DrinkItem drink={item} typeOfDrinks={drinktypes} handleUpdate={handleUpdate}/>
                         )}
