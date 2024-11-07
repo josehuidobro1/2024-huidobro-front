@@ -15,23 +15,23 @@ import Loading from '../../components/Loading'
 import Goals from '../../components/Goals'
 const achievements = {
     1: { 
-        name: "3 days in a row logging food!", 
+        name: "Streak 3!", 
         description: "Reach 3 days in a row of logging food to get this trophy" 
     },
     2: {
-        name: "10 days in a row logging food!",
+        name: "healthy Lover! 10 days logging food!",
         description: "Reach 10 days in a row of logging food to get this trophy",
     },
     3: {
-        name: "First plate logged!",
+        name: "sous chef!! first plate logged",
         description: "Add a Plate to your profile to get this trophy",
     },
     4: {
-        name: "5 plates logged!",
+        name: "CHEF! 5 plates logged!",
         description: "Add 5 Plates to your profile to get this trophy",
     },
     5:{
-        name: "10 plates logged!",
+        name: "MASTERCHEF! 10 plates logged!",
         description: "Add 10 Plates to your profile to get this trophy",
     },
     6:{
@@ -39,7 +39,7 @@ const achievements = {
         description: "Add a Drink to your profile to get this trophy",
     },
     7:{
-        name: "5 drinks logged!",
+        name: "BARTENDER! 5 drinks log",
         description: "Add 5 Drinks to your profile to get this trophy",
     },
     8:{

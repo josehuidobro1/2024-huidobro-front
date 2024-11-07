@@ -66,10 +66,10 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
         const data = {
             name: name,
             sugar_portion: sugar,
-            caffeine_portion: caffeine,
-            calories_portion: calories,
-            measure: measure,
-            measure_portion: amount,
+            caffeine_portion: caffeine || 0,
+            calories_portion: calories || 0,
+            measure: measure|| 0,
+            measure_portion: amount|| 0,
             typeOfDrink: typeSelected,
         };
     
