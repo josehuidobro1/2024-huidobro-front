@@ -2,15 +2,14 @@
 import { convertFieldResponseIntoMuiTextFieldProps } from "@mui/x-date-pickers/internals";
 import { auth, firestore } from "../src/firebaseConfig";
 import { getAuth, verifyPasswordResetCode, confirmPasswordReset } from 'firebase/auth';
-import axios from "axios";
+import axios from "axios"; // para hacer solicitudes HTTP al servidor externo
 
-const store='https://two024-ranchoaparte-back.onrender.com'
-//const store='https://two024-ranchoaparte-back.onrender.com'
-
+//const ruta='https://two024-huidobro-back.onrender.com'
+const ruta='http://127.0.0.1:8000'
 
 export const fetchUser=async()=>{
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/User/${auth.currentUser.uid}`);
+        const response = await axios.get(`${ruta}/User/${auth.currentUser.uid}`);
         
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
@@ -22,7 +21,7 @@ export const fetchUser=async()=>{
 export const editUserData=async(data)=>{
     try {
         console.log("USERDATA",data)
-        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/update_user/${auth.currentUser.uid}`, data);
+        const response = await axios.put(`${ruta}/update_user/${auth.currentUser.uid}`, data);
         
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
@@ -33,7 +32,7 @@ export const editUserData=async(data)=>{
 
 export const deleteUserAc=async()=>{
     try {
-        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/delete-user/${auth.currentUser.uid}`); // Adjust this based on your backend response structure
+        await axios.delete(`${ruta}/delete-user/${auth.currentUser.uid}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error deleting user by ID:', error);
         return null; // Return null or handle the error as needed
@@ -67,7 +66,7 @@ export const fetchUserFoods = async (date) => {
 
 export const fetchFoodByID = async (foodId) => {
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/Foods/${foodId}`);
+        const response = await axios.get(`${ruta}/Foods/${foodId}`);
         return response.data.message.food; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
@@ -77,7 +76,7 @@ export const fetchFoodByID = async (foodId) => {
 
 const userFoodMeals = async()=>{
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/mealUserDay/${auth.currentUser.uid}`);
+        const response = await axios.get(`${ruta}/mealUserDay/${auth.currentUser.uid}`);
         return response.data.message.foods; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
@@ -89,7 +88,7 @@ const userFoodMeals = async()=>{
 
 export const fetchAllFoods = async () => {
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/Foods/`);
+        const response = await axios.get(`${ruta}/Foods/`);
         console.log(response.data.message.food)
         return response.data.message.food; // Adjust this based on your backend response structure
     } catch (error) {
@@ -101,7 +100,7 @@ export const fetchAllFoods = async () => {
 
 export const addUserFood = async (selection, date, amount) => {
     try {
-        const response = await fetch(`https://two024-ranchoaparte-back.onrender.com/UserFood_log`, {
+        const response = await fetch(`${ruta}/UserFood_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -129,7 +128,7 @@ export const addUserFood = async (selection, date, amount) => {
 
 export const addNewFood = async (newFood) => {
     try {
-        const response = await fetch(`https://two024-ranchoaparte-back.onrender.com/Food_log`, {
+        const response = await fetch(`${ruta}/Food_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -162,7 +161,7 @@ export const addNewFood = async (newFood) => {
 export const deleteUserFood = async (doc_id) => {
 
     try {
-        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/DeleteMealUser/${doc_id}`); // Adjust this based on your backend response structure
+        await axios.delete(`${ruta}/DeleteMealUser/${doc_id}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
@@ -173,7 +172,7 @@ export const deleteUserFood = async (doc_id) => {
 export const editUserFood = async (doc_id,data) => {
 
     try {
-        await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateUserFood/${doc_id}`,data); // Adjust this based on your backend response structure
+        await axios.put(`${ruta}/UpdateUserFood/${doc_id}`,data); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
@@ -183,7 +182,7 @@ export const editUserFood = async (doc_id,data) => {
 export const getCategories = async()=>{
     const uid=auth.currentUser.uid
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetCategoryUser/${uid}`);
+        const response = await axios.get(`${ruta}/GetCategoryUser/${uid}`);
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
@@ -194,7 +193,7 @@ export const getCategories = async()=>{
 export const getDefaultCategories = async () => {
     const uid = auth.currentUser.uid;
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetCategoryUser/default`);
+        const response = await axios.get(`${ruta}/GetCategoryUser/default`);
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching default categories:', error);
@@ -224,7 +223,7 @@ export const getBarCategory = async () => {
 export const createCategory =async (data)=>{
     const uid=auth.currentUser.uid
     try{
-        const response = await axios.post(`https://two024-ranchoaparte-back.onrender.com/CreateCategory/`, {...data,id_User: uid });
+        const response = await axios.post(`${ruta}/CreateCategory/`, {...data,id_User: uid });
         return response.data
     }catch(error){
         console.error('Error adding new category: ', error);
@@ -234,7 +233,7 @@ export const createCategory =async (data)=>{
 
 export const updateCategory=async(data,category_id)=>{
     try{
-        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateCategory/${category_id}`,{...data,id_User: auth.currentUser.uid });
+        const response = await axios.put(`${ruta}/UpdateCategory/${category_id}`,{...data,id_User: auth.currentUser.uid });
         return response.data
     }catch(error){
         console.error('Error updating category by id: ', error);
@@ -243,7 +242,7 @@ export const updateCategory=async(data,category_id)=>{
 }
 export const updateCategoryDefault=async(data,category_id)=>{
     try{
-        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateCategory/${category_id}`,{...data,id_User: 'default' });
+        const response = await axios.put(`${ruta}/UpdateCategory/${category_id}`,{...data,id_User: 'default' });
         return response.data
     }catch(error){
         console.error('Error updating category by id: ', error);
@@ -253,7 +252,7 @@ export const updateCategoryDefault=async(data,category_id)=>{
 
 export const deleteCategory=async(category_id)=>{
     try {
-        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/DeleteCategory/${category_id}`); 
+        await axios.delete(`${ruta}/DeleteCategory/${category_id}`); 
     } catch (error) {
         console.error('Error deleting category by ID:', error);
         return null; 
@@ -264,7 +263,7 @@ export const createTotCal = async (data, date) => {
     try {
         const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
         console.log("LO QUE LLEGA AL TOT CAL ", data)
-        const response = await fetch(`https://two024-ranchoaparte-back.onrender.com/CreateTotCaloriesUser/`, {
+        const response = await fetch(`${ruta}/CreateTotCaloriesUser/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -316,7 +315,7 @@ export const UpdateTotCal = async (totcal_id, data, date) => {
         console.log("Payload:", payload); // Log to confirm structure before sending
 
         // Send the request
-        await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateTotCaloriesUser/${totcal_id}`, payload); 
+        await axios.put(`${ruta}/UpdateTotCaloriesUser/${totcal_id}`, payload); 
     } catch (error) {
         console.error('Error updating total calories:', error);
         return null; // Return null or handle the error as needed
@@ -419,7 +418,7 @@ export const getCaloriesByCategories= ( userCalories, categories, foods, barFood
 export const getTotCalUser=async()=>{
     const uid=auth.currentUser.uid
     if(uid){try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetTotCalUser/${uid}`);
+        const response = await axios.get(`${ruta}/GetTotCalUser/${uid}`);
         return response.data.message.totCals; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
@@ -523,7 +522,7 @@ export const getProdByID= async(prod_id)=>{
 export const createplate = async (selection) => {
     try {
         console.log("PLATO", selection)
-        const response = await fetch("https://two024-ranchoaparte-back.onrender.com/CreatePlate/", {
+        const response = await fetch("${ruta}/CreatePlate/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -568,7 +567,7 @@ export const getUserPlates = async () => {
     }
     const uid = user.uid;
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetPlatesUser/${uid}`);
+        const response = await axios.get(`${ruta}/GetPlatesUser/${uid}`);
         return response.data.message.Plates; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching plates :', error);
@@ -578,7 +577,7 @@ export const getUserPlates = async () => {
 export const updatePlate=async(data,plate_id)=>{
     try{
         console.log("PLATO",data)
-        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdatePlate/${plate_id}`,{...data,id_User: auth.currentUser.uid });
+        const response = await axios.put(`${ruta}/UpdatePlate/${plate_id}`,{...data,id_User: auth.currentUser.uid });
         return response.data
     }catch(error){
         console.error('Error updating plate by id: ', error);
@@ -587,7 +586,7 @@ export const updatePlate=async(data,plate_id)=>{
 }
 export const deleteplate=async(plate_id)=>{
     try {
-        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/DeletePlate/${plate_id}`); 
+        await axios.delete(`${ruta}/DeletePlate/${plate_id}`); 
     } catch (error) {
         console.error('Error deleting plate by ID:', error);
         return null; 
@@ -601,7 +600,7 @@ export const fechDrinkTypes = async () =>{
     }
     const uid = user.uid;
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/getUserDrinkType/${uid}`);
+        const response = await axios.get(`${ruta}/getUserDrinkType/${uid}`);
         return response.data.message.drinkType; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching typedrinks :', error);
@@ -610,7 +609,7 @@ export const fechDrinkTypes = async () =>{
 }
 export const createDrinkType = async (selection) => {
     try {
-        const response = await fetch('https://two024-ranchoaparte-back.onrender.com/drinkType_log', {
+        const response = await fetch('${ruta}/drinkType_log', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -645,7 +644,7 @@ export const getUserDrinks = async () =>{
     }
     const uid = user.uid;
     try {
-        const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetDrinks/${uid}`);
+        const response = await axios.get(`${ruta}/GetDrinks/${uid}`);
         return response.data.message.Drinks; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching typedrinks :', error);
@@ -655,7 +654,7 @@ export const getUserDrinks = async () =>{
 export const createDrink = async (selection) => {
     try {
         console.log(selection)
-        const response = await fetch('https://two024-ranchoaparte-back.onrender.com/drink_log', {
+        const response = await fetch('${ruta}/drink_log', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -691,7 +690,7 @@ export const createDrink = async (selection) => {
 export const deleteDrink=async(drink_id)=>{
     try {
         console.log(drink_id)
-        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/DeleteDrink/${drink_id}`); 
+        await axios.delete(`${ruta}/DeleteDrink/${drink_id}`); 
     } catch (error) {
         console.error('Error deleting plateFood by ID:', error);
         return null; 
@@ -701,7 +700,7 @@ export const updateDrink = async (doc_id,data) => {
 
     try {
         console.log(doc_id,data)
-        await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateDrink/${doc_id}`,{...data,id_User: auth.currentUser.uid }); // Adjust this based on your backend response structure
+        await axios.put(`${ruta}/UpdateDrink/${doc_id}`,{...data,id_User: auth.currentUser.uid }); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error updating drink by ID:', error);
         return null; // Return null or handle the error as needed
@@ -709,21 +708,21 @@ export const updateDrink = async (doc_id,data) => {
 };
 export const deleteDrinkType = async (doc_id) => {
     try {
-        await axios.delete(`https://two024-ranchoaparte-back.onrender.com/DeleteDrinkType/${doc_id}`); // Adjust this based on your backend response structure
+        await axios.delete(`${ruta}/DeleteDrinkType/${doc_id}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error deleting drinktype by ID:', error);
         return null; // Return null or handle the error as needed
     }
 };
 export const getDrinkByID = async (drink_id) => {
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/DrinkById/${drink_id}`);
+    const response = await axios.get(`${ruta}/DrinkById/${drink_id}`);
     const drink=response.data.message.drink
     console.log("drink", drink)
     return drink
 
 }
 export const getPlate_ByID = async (plate_id) => {
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetPlateByID/${plate_id}`);
+    const response = await axios.get(`${ruta}/GetPlateByID/${plate_id}`);
     const drink=response.data.message.plate
     console.log("PLATOOOOOOOOOO", drink)
     return drink
@@ -731,19 +730,19 @@ export const getPlate_ByID = async (plate_id) => {
 }
 
 export const getGroupedDrinkTypes = async () => {
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/getUserGroupDrinkType/${auth.currentUser.uid}`);
+    const response = await axios.get(`${ruta}/getUserGroupDrinkType/${auth.currentUser.uid}`);
     const drink=response.data.Drinks
     return drink
 
 }
 
 export const getPublicPlates = async () => {
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/GetPlatePublicPlates/`)
+    const response = await axios.get(`${ruta}/GetPlatePublicPlates/`)
     const plates = response.data.Plates
     return plates
 }
 export const PlateReviews = async () => {
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/PlateReviews/`)
+    const response = await axios.get(`${ruta}/PlateReviews/`)
     const review = response.data.Review
     return review
 }
@@ -751,7 +750,7 @@ export const PlateReviews = async () => {
 export const updateComments = async (doc_id, data) => {
     try {
         console.log("Updating comments:", { doc_id, data });
-        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/UpdateReview/${doc_id}`, data); // Check if you need {...data}
+        const response = await axios.put(`${ruta}/UpdateReview/${doc_id}`, data); // Check if you need {...data}
         
         // Log the response from the server
         console.log("Server response:", response.data);
@@ -766,7 +765,7 @@ export const updateComments = async (doc_id, data) => {
 export const createReview = async (selection) => {
     try {
         console.log(selection)
-        const response = await fetch('https://two024-ranchoaparte-back.onrender.com/newReview', {
+        const response = await fetch('${ruta}/newReview', {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -797,20 +796,20 @@ export const createReview = async (selection) => {
 
 export const getstreak = async () => {
     const user_id  = auth.currentUser.uid
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/Streak/${user_id}`,)
+    const response = await axios.get(`${ruta}/Streak/${user_id}`,)
     const streak = response.data.message
     return streak
 }
 export const getUserNotification = async () => {
     const user_id  = auth.currentUser.uid
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/getUserNotifications/${user_id}`,)
+    const response = await axios.get(`${ruta}/getUserNotifications/${user_id}`,)
     const notifications = response.data.notifications
     return notifications
 }
 export const markNotificationAsRead = async (doc_id) => {
     try {
         console.log("Updating comments:", { doc_id });
-        const response = await axios.put(`https://two024-ranchoaparte-back.onrender.com/markNotificationAsRead/${doc_id}`); // Check if you need {...data}
+        const response = await axios.put(`${ruta}/markNotificationAsRead/${doc_id}`); // Check if you need {...data}
         
         console.log("Server response:", response);
 
@@ -823,14 +822,49 @@ export const markNotificationAsRead = async (doc_id) => {
 };
 export const getPlatesNotUser = async () => {
     const user_id  = auth.currentUser.uid
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/PublicplatesNotFromUser/${user_id}`,)
+    const response = await axios.get(`${ruta}/PublicplatesNotFromUser/${user_id}`,)
     const plates = response.data.Plates
     return plates
 }
 export const addGoal = async (goal_id) => {
     const user_id = auth.currentUser.uid;
-    const response = await axios.get(`https://two024-ranchoaparte-back.onrender.com/addGoal/${user_id}`, {
+    const response = await axios.get(`${ruta}/addGoal/${user_id}`, {
         params: { goal_id }
     });
     return response;
+}
+
+
+
+export const getAllergies = async () => {
+    try {
+        const response = await axios.get(`${ruta}/allergies`);
+        console.log(response.data.message.allergies)
+        return response.data.message.allergies;
+    } catch (error) {
+        console.error('Error fetching allergies data:', error);
+        return []; 
+    }
+};
+
+export const createAllergy =async (data)=>{
+    try{
+
+        const response = await axios.post(`${ruta}/allergie/`, data);
+        return response.data
+    }catch(error){
+        console.error('Error adding new allergy: ', error);
+        return null;
+    }
+}
+
+export const editAllergie=async(data)=>{
+    try {
+        const response = await axios.put(`${ruta}/allergie/${data.id}`, {name:data.name, foods_ids:data.foods_ids});
+        
+        return response.data; // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error editing allergie by ID:', error);
+        return null; // Return null or handle the error as needed
+    }
 }

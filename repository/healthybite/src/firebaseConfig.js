@@ -14,9 +14,10 @@ const firebaseConfig = {
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
-  databaseURL: "https://healthybite-b2a20-default-rtdb.firebaseio.com",
+  databaseURL: "https://healthy-bite-cb732-default-rtdb.firebaseio.com",
 };
 
+console.log(firebaseConfig)
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);

@@ -98,8 +98,12 @@ function Home() {
     const getUserData = async()=> {
         setLoading(true)
         const userInfo = await fetchUser()
-        const { email, ...filteredUserData } = userInfo;
-        setUser(filteredUserData)
+        if(userInfo){
+            const { email, ...filteredUserData } = userInfo;
+            setUser(filteredUserData)
+        }else{
+            console.error('no esta conectando con el user id del usuario, por eso no consigue informacion')
+        }
         const privatePlates = await  getUserPlates()
         const otherPlates=await getPlatesNotUser() 
         const plates={mines: privatePlates, others:otherPlates}
@@ -323,8 +327,8 @@ function Home() {
             {loading ? <Loading />
             :
             <div className="flex flex-col lg:flex-row justify-between items-center w-full h-full lg:h-screen overflow-y-scroll md:overflow-y-hidden">
-                <div className="w-11/12 lg:w-9/12 sm:h-screen lg:h-full pt-8 sm:pt-24 flex flex-col sm:flex-row justify-start items-start px-1 sm:px-4 lg:px-8 pb-32 xs:pb-0">
-                    <div className="w-full sm:w-1/4 pb-4 sm:pb-12 flex flex-col h-full justify-start sm:justify-between items-center">
+                <div className="w-11/12 lg:w-9/12 sm:h-screen lg:h-full pt-8 sm:pt-24 flex flex-col sm:flex-row justify-start items-start px-1 sm:px-4 lg:px-8 pb-8 xs:pb-0">
+                    <div className="w-full sm:w-1/4 pb-4 sm:pb-12  flex flex-col h-full justify-start sm:justify-between items-center">
                         <div className="flex flex-col justify-center items-center md:items-start w-4/5  sm:w-full " >
                             <Calendar value={date} onChange={e => selectDate(e)} />
                             <Filter categories={categories} filterSelected={filterSelected} setFilterSelected={setFilterSelected} />
@@ -336,35 +340,34 @@ function Home() {
                                 <FontAwesomeIcon className="cursor-pointer px-1" icon={faAngleRight} onClick={()=>index===goalName.length ? setIndex(1) : setIndex(index+1) }/>
                             </div>
                             <div className="flex relative w-full justify-center items-center my-2">
-                            <PieChart
-                                series={[
-                                    {
-                                        data:[
-                                            {value:goalConsumed},
-                                            {value: user.goals[(goalName.find(goal=>goal.id===index)).name]-goalConsumed}
-                                        ],
-                                        innerRadius: 50,
-                                        outerRadius: 70,
-                                    }
-                                    
-                                ]}
-                                colors={['#FA9B6A','#c3c3c3']}
-                                width={5}
-                                height={150}
-                                slotProps={{
-                                    legend: { hidden: true },
-                                }}
-                            />
-                            <div className={`font-quicksand text center flex flex-col absolute  text center justify-center items-center ${goalConsumed> user.goals[(goalName.find(goal=>goal.id===index)).name] ? ' rounded-full sm:rounded-2xl bg-healthyOrange text-white shadow-md py-2 px-4 sm:px-2 md:px-1 ':'w-full text-healthyOrange h-full'}  `}>
-                                {goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="font-bold text-xl  text-center">{((goalConsumed*100)/(user.goals[(goalName.find(goal=>goal.id===index)).name])).toFixed(1)}%</p>}
-                                {goalConsumed>user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="text-xs font-bold text-center w-full pb-2 pl-2 ">You've already passed your&nbsp;goal!</p>}
-                                <p className="text-center text-xs font-bold ">{goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] ? 'completed' : `${goalConsumed}/${user.goals[(goalName.find(goal=>goal.id===index)).name]}`}</p>
+                                <PieChart
+                                    series={[
+                                        {
+                                            data:[
+                                                {value:goalConsumed},
+                                                {value: user.goals[(goalName.find(goal=>goal.id===index)).name]-goalConsumed}
+                                            ],
+                                            innerRadius: 50,
+                                            outerRadius: 70,
+                                        }
+                                        
+                                    ]}
+                                    colors={['#FA9B6A','#c3c3c3']}
+                                    width={5}
+                                    height={150}
+                                    slotProps={{
+                                        legend: { hidden: true },
+                                    }}
+                                />
+                                <div className={`font-quicksand text center flex flex-col absolute  text center justify-center items-center ${goalConsumed> user.goals[(goalName.find(goal=>goal.id===index)).name] ? ' rounded-full sm:rounded-2xl bg-healthyOrange text-white shadow-md py-2 px-4 sm:px-2 md:px-1 ':'w-full text-healthyOrange h-full'}  `}>
+                                    {goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="font-bold text-xl  text-center">{((goalConsumed*100)/(user.goals[(goalName.find(goal=>goal.id===index)).name])).toFixed(1)}%</p>}
+                                    {goalConsumed>user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="text-xs font-bold text-center w-full pb-2 pl-2 ">You've already passed your&nbsp;goal!</p>}
+                                    <p className="text-center text-xs font-bold ">{goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] ? 'completed' : `${goalConsumed}/${user.goals[(goalName.find(goal=>goal.id===index)).name]}`}</p>
+                                </div>
+                                
                             </div>
-                            </div>
-                        </div>
-                        <div className="flex flex-col items-center my-4">
                             <StreakCounter streakDays={streak} />
-                            </div>
+                        </div>
                         <Calories userFood={userFood} />
                     </div>
                     <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12 ">

@@ -3,7 +3,7 @@ import NavBar from '../../components/NavBar'
 import userImg from '../../assets/userImg.jpg'
 import { fetchUser } from '../../firebaseService'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenToSquare,faTrophy, faArrowDown, faKey, faTrash, faBullseye } from '@fortawesome/free-solid-svg-icons'; 
+import { faPenToSquare,faTrophy, faArrowDown, faKey, faTrash, faBullseye, faDisease } from '@fortawesome/free-solid-svg-icons'; 
 import Input from '../../components/Input'
 import DataUser from './components/DataUser'
 import {editUserData} from '../../firebaseService'
@@ -13,6 +13,7 @@ import PopUp from './components/PopUp'
 import {handleInputChange} from '../inputValidation';
 import Loading from '../../components/Loading'
 import Goals from '../../components/Goals'
+import AllergiePopUp from './components/AllergiePopUp'
 const achievements = {
     1: { 
         name: "Streak 3!", 
@@ -62,6 +63,8 @@ function UserProfile() {
     const [deleteAc, setDeleteAc]=useState(false)
     const [loading, setLoading]=useState(true)
     const [openGoals, setOpenGoals]=useState(false)
+    const [allergiePopUp,setAllergiePopUp]=useState(false)
+    const [allergies, setAllergies]=useState(null)
     const [myachievements, setMyAchievements] = useState([]);
     const handleWeightChange = (e) => {
         handleInputChange(e.target.value, 0, 500, setWeight);
@@ -94,6 +97,7 @@ function UserProfile() {
             setMyAchievements(userData.achievements || []);
             setWeight(userData.weight);
             setHeight(userData.height);
+            setAllergies(userData.allergies)
             // Store the date in ISO format
             const date = new Date(userData.birthDate);
             setLoading(false)
@@ -206,14 +210,15 @@ function UserProfile() {
     <div className={`w-full ${ loading ? 'bg-white' : 'bg-healthyBrown'} h-screen overflow-y-hidden`}>
         <NavBar/>
         {loading ? <Loading/> :
-        <div className='w-full h-full sm:h-screen flex flex-col lg:flex-row justify-start  items-start overflow-y-auto  '>
-            <div className='w-full z-10   md:w-10/12 lg:w-2/3 flex flex-col  items-center justify-start mt-8 md:mt-20 lg:mt-32'>
+        <div className='w-full l lg:h-screen flex flex-col lg:flex-row justify-start  items-start overflow-y-auto  '>
+            <div className='w-full z-10    lg:w-2/3 flex flex-col  items-center justify-start mt-8 md:mt-20 lg:mt-32'>
                 <div className=' w-11/12 lg:w-2/3 flex items-center justify-between mb-3'>
                     <h1 className='text-xl xs:text-2xl font-belleza text-darkGray'>User profile</h1>
                 </div>
                 <div className='flex w-11/12 lg:w-2/3 flex-row flex-wrap justify-center md:justify-around  items-center mb-3 font-quicksand text-white font-semibold text-sm '>
                     <button onClick={edit ? saveChanges : ()=>setEdit(true)} className={`py-1 px-3 mb-1 xs:px-5 mr-1 rounded-lg ${edit  ? 'bg-healthyGray1' : 'bg-healthyGreen'  }  ${ edit ?  'hover:bg-healthyDarkGray1' : 'hover:bg-healthyDarkGreen' }`}> <FontAwesomeIcon icon={edit  ?  faArrowDown : faPenToSquare} className='text-white text-md mr-2' />{edit ?  'Save changes' : 'Edit profile'}</button>
                     <button onClick={()=>setOpenGoals(true)} className='py-1 px-3  xs:px-5  rounded-lg text-white bg-healthyYellow hover:bg-healthyDarkYellow cursor-pointer mb-1 '><FontAwesomeIcon icon={faBullseye} className='mr-2 '  />My goals</button>
+                    <button onClick={()=>setAllergiePopUp(true)} className='py-1 px-3  xs:px-5  rounded-lg text-white bg-healthyBlue hover:bg-healthyDarkBlue cursor-pointer mb-1 '><FontAwesomeIcon icon={faDisease} className='mr-2 '  />My allergies</button>
                     {!edit && <><Link to={`/resetPassword/${auth.currentUser?.accessToken}`}  className='bg-healthyOrange hover:bg-healthyDarkOrange px-3 mb-1  py-1 rounded-lg '><FontAwesomeIcon icon={faKey}  className='pr-2'/>Edit password</Link>
                     <button onClick={()=>setDeleteAc(true)} className='bg-healthyGray1 hover:bg-healthyDarkGray1 px-3 mb-1 py-1 rounded-lg  ml-1 '><FontAwesomeIcon icon={faTrash} className='pr-2'/>Delete account</button></>}
                 </div>
@@ -268,6 +273,10 @@ function UserProfile() {
         {
             openGoals &&
             <Goals user={user} setUser={setUser} editGoals={editGoals}/>
+        }
+        {
+            allergiePopUp &&
+            <AllergiePopUp userData={user} setAllergies={setAllergies} allergiePopUp={allergiePopUp} setAllergiePopUp={setAllergiePopUp} allergies={allergies}/>
         }
     </div>
   )
