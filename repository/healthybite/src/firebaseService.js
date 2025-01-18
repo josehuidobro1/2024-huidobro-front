@@ -20,9 +20,8 @@ export const fetchUser=async()=>{
 
 export const editUserData=async(data)=>{
     try {
-        console.log("USERDATA",data)
+        console.log('user data ', data)
         const response = await axios.put(`${ruta}/update_user/${auth.currentUser.uid}`, data);
-        
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error editing user data by ID:', error);
@@ -503,7 +502,7 @@ export const resetPassword = async (oobCode, newPassword) => {
 // APP MESIIDEPAUL
 
 export const getProducts=async()=>{
-    const response = await axios.get('https://candv-back.onrender.com');
+    const response = await axios.get('https://candv-back.onrender.com/products');
     return response.data.products ? response.data.products : [];
 }
 

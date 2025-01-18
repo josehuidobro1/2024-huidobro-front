@@ -36,7 +36,7 @@ const AllergieItem = ({food, id,userdata, allergies, setAllergies, allergiesData
     }
 
   return (
-    <div className='flex flex-col w-full sm:w-48 md:w-52 py-2 px-2 m-1 rounded-md bg-healthyGray1/70 ' >
+    <div className='flex flex-col w-full sm:w-48  py-2 px-2 m-1 rounded-md bg-healthyGray1/70 ' >
         <div className='flex justify-between items-center pb-1'>
             <p className='text-md font-semibold text-white '>{allergiesData.find(e=>e.id===id).name}</p>
             <FontAwesomeIcon onClick={()=>setDetails(!details)} icon={details ? faAngleDown : faAngleRight} className='text-md font-semibold text-white cursor-pointer hover:mt-1 hover:shadow-sm' />

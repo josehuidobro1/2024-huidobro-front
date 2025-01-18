@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCirclePlus } from '@fortawesome/free-solid-svg-icons';
+import { faCirclePlus, faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 
-const FoodItem = ({ food, setSelection, publicPlates }) => {
+const FoodItem = ({ food, setSelection, publicPlates, allergie }) => {
     const [amount, setAmount] = useState('');
     const [errorMessage, setErrorMessage] = useState(''); // State to track error message
     const handleAmountChange = (e) => {
@@ -16,7 +16,11 @@ const FoodItem = ({ food, setSelection, publicPlates }) => {
 
     const handleAddFood = () => {
         if (amount > 0) { // Ensure amount is greater than 0
-            setSelection({ id_food: food.id, name: food.name, amount, measure: food.measure, carbohydrates_portion: food.carbohydrates_portion,fats_portion: food.fats_portion, protein_portion: food.protein_portion, sodium_portion: food.sodium_portion});
+            if(!allergie){
+                setSelection({ id_food: food.id, name: food.name, amount, measure: food.measure, carbohydrates_portion: food.carbohydrates_portion,fats_portion: food.fats_portion, protein_portion: food.protein_portion, sodium_portion: food.sodium_portion})
+            }else{
+                setErrorMessage("You are intolerant to this food");
+            }
         } else {
             setErrorMessage("Please enter a valid amount greater than 0.");
         }
@@ -35,7 +39,9 @@ const FoodItem = ({ food, setSelection, publicPlates }) => {
                     <p className="font-bold text-sm sm:text-lg text-darkGray px-2">{food.name}</p>
                 </div>
                 <div className="flex flex-row items-center justify-end">
+                    
                     <div className='flex items-center justify-end max-w-[40px]'>
+                    {allergie && <FontAwesomeIcon icon={faTriangleExclamation} className='text-healthyOrange text-lg mr-1 '/>}
                         <input 
                             className="font-quicksand text-xs sm:text-md w-16 text-right outline-none border-none px-1 py-1 rounded-md bg-white mr-2" 
                             placeholder="000" 

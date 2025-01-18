@@ -51,7 +51,7 @@ const achievements = {
 
 
 function UserProfile() {
-    const [user, setUser]=useState(null)
+    const [user, setUser]=useState()
     const [surname, setSurname] = useState('');
     const [weight, setWeight] = useState('');
     const [birthDate, setBirthDate] = useState();

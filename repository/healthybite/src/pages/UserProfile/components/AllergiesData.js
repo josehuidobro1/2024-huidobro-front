@@ -3,18 +3,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react'
 import { editUserData } from '../../../firebaseService';
 
-const AllergiesData = ({name,id, food,setAllergies, allergies,userdata}) => {
+const AllergiesData = ({name,id, food,setAllergies, allergies,userData}) => {
     const [details, setDetails]=useState(false)
 
     const handleAllergie=async ()=>{
         const newList=[...allergies, id]
-        await editUserData({...userdata,allergies:newList})
+        await editUserData({...userData,allergies:newList})
         setAllergies(newList)
 
 
     }
   return (
-    <div className='flex flex-col w-full sm:w-48 lg:w-52 py-2 px-2 m-1 rounded-md bg-healthyGray1/70 ' >
+    <div className='flex flex-col w-full sm:w-48 py-2 px-2 m-1 rounded-md bg-healthyGray1/70 ' >
         <div className='flex justify-between items-center pb-1'>
             <p className='text-md font-semibold text-white '>{name}</p>
             <div>

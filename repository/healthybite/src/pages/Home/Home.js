@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 import Calories from "./components/Calories";
 import FoodConsumed from "./components/FoodConsumed";
 import PopUp from "./components/PopUp";
-import { addGoal,getstreak,addNewFood,getPlatesNotUser, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlate_ByID, getGroupedDrinkTypes, getPublicPlates, fetchUser, editUserData} from "../../firebaseService";
+import { addGoal,getstreak,addNewFood,getPlatesNotUser, addUserFood, fetchAllFoods, fetchUserFoods, deleteUserFood , fetchFoodByID, editUserFood, getCategories, getDefaultCategories,getProdByID, getProducts,getBarCategory,updateCategoryDefault, getUserDrinks,getUserPlates, getDrinkByID, getPlate_ByID, getGroupedDrinkTypes, getPublicPlates, fetchUser, editUserData, getAllergies} from "../../firebaseService";
 import Filter from "./components/Filter";
 import StreakCounter from "./components/StreakCounter";
 import Loading from "../../components/Loading";
@@ -35,6 +35,7 @@ function Home() {
     const [index,setIndex]=useState(1)
     const [goalConsumed, setGoalConsumed]=useState(0)
     const [streak, setStreak] = useState(0);
+    const [allergiesData, setAllergiesData]=useState([])
 
     useEffect(()=>{
         let value=0
@@ -259,9 +260,15 @@ function Home() {
         fetchCategories();
     },[date])
 
+    const allergies=async()=>{
+        const allergiesData=await getAllergies()
+        setAllergiesData(allergiesData) 
+    }
+
     useEffect(() => {
         const fetchData = async () => {
             await getUserData();
+            await allergies()
         };
     
         fetchData();
@@ -397,7 +404,7 @@ function Home() {
                 )}
             </div>}
             {addMeal &&
-                <PopUp newFood={newFood} setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
+                <PopUp user={user} allergiesData={allergiesData} newFood={newFood} setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
             }
             {user && user.goals && Object.values(user.goals).some(goal => Number(goal) === 0) && <Goals user={user} setUser={setUser}/> }
         </div>

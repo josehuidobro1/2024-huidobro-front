@@ -10,7 +10,7 @@ import Menu from './Menu';
 import emptyPlate from '../../../assets/emptyPlate.png'
 import emptyGlass from '../../../assets/emptyGlass.png'
 
-const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, selection, setSelection, platesData, drinksData }) => {
+const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, selection, setSelection, platesData, drinksData,user,allergiesData }) => {
     const [searchFood, setSearchFood] = useState(foodData);
     const [addFood, setAddFood] = useState(false);
     const [openMenu, setOpenMenu]=useState(false)
@@ -20,17 +20,27 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
     const [message, setMessage] = useState(false);
     const [show, setShow] =useState(1);
     const [clickable, setClickable] = useState(true);
-
+    const foodAllergie=allergiesData.filter(e=> user.allergies.includes(e.id)).map(i=>i.foods_ids).flat();
+    
     const fetchMenu=async()=>{
         try{
             const data= await getProducts()
             setMenu(data)
+            console.log(data)
             setIdFoodMenu(data.map((item)=>item.id))
             setLoading(false)
         }catch(error){
             console.log("Error fetching products from Messi and DePaul APP")
         }
     }
+
+    useEffect(()=>{
+        console.log('show ', show)
+        console.log('user',user)
+        console.log('allergiesData',allergiesData)
+        show===2 && console.log('search Food', platesData.mines[0].ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e) ))
+        console.log('allergies food', foodAllergie)
+    },[show])
 
     const handleOpenMenu=()=>{
         if (openMenu){
@@ -114,15 +124,15 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
                                 <div className='flex flex-col w-full '>
                                     <p className='text-xs font-bold text-healthyGray1 font-quicksand  pb-1 border-b-2 border-healthyGray1 mb-1 w-full text-left'>My plates</p>
                                     {show===2 && searchFood.mines.map((food, index) => (
-                                        <FoodItem key={index} food={food} setSelection={setSelection} />
+                                        <FoodItem key={index} food={food} setSelection={setSelection} allergie={food.ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e) )} />
                                     ))}
                                     <p className='text-xs font-bold text-healthyGray1 font-quicksand pt-2 pb-1 border-b-2 border-healthyGray1 mb-1 w-full text-left'>Another plates</p>
                                     {show===2 && searchFood.others.map((food, index) => (
-                                        <FoodItem key={index} food={food} setSelection={setSelection} publicPlates={true}/>
+                                        <FoodItem key={index} food={food} setSelection={setSelection} publicPlates={true} allergie={food.ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e) )} />
                                     ))}
                                 </div>
                                 : searchFood.length > 0 && searchFood.map((food, index) => (
-                                    <FoodItem key={index} food={food} setSelection={setSelection} />
+                                    <FoodItem key={index} food={food} setSelection={setSelection} allergie={foodAllergie.includes(food.id)} />
                                 ))}
                             </div>
                         ) :
