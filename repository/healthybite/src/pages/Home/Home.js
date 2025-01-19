@@ -267,8 +267,10 @@ function Home() {
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true)
             await getUserData();
             await allergies()
+            setLoading(false)
         };
     
         fetchData();

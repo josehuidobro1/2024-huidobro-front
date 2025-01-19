@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faCheck, faXmark, faCircleXmark } from '@fortawesome/free-solid-svg-icons'; 
+import { faPlus, faCheck, faXmark, faCircleXmark, faAngleRight } from '@fortawesome/free-solid-svg-icons'; 
 import FoodItem from './FoodItem';
 import Search from './Search';
 import messidepaul from '../../../assets/messidepaul.png'
@@ -9,10 +9,12 @@ import { getProducts } from '../../../firebaseService';
 import Menu from './Menu';
 import emptyPlate from '../../../assets/emptyPlate.png'
 import emptyGlass from '../../../assets/emptyGlass.png'
+import Suggestions from './Suggestions';
 
 const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, selection, setSelection, platesData, drinksData,user,allergiesData }) => {
     const [searchFood, setSearchFood] = useState(foodData);
     const [addFood, setAddFood] = useState(false);
+    const [suggestion, setSuggestion] = useState(false);
     const [openMenu, setOpenMenu]=useState(false)
     const [menu, setMenu]=useState([])
     const [idFoodMenu, setIdFoodMenu]=useState([])
@@ -20,8 +22,8 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
     const [message, setMessage] = useState(false);
     const [show, setShow] =useState(1);
     const [clickable, setClickable] = useState(true);
-    const foodAllergie=allergiesData.filter(e=> user.allergies.includes(e.id)).map(i=>i.foods_ids).flat();
-    
+    const foodAllergie=allergiesData.filter(e=> user.allergies.includes(e.id)).map(i=>i.foods_ids).flat()
+
     const fetchMenu=async()=>{
         try{
             const data= await getProducts()
@@ -33,14 +35,6 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
             console.log("Error fetching products from Messi and DePaul APP")
         }
     }
-
-    useEffect(()=>{
-        console.log('show ', show)
-        console.log('user',user)
-        console.log('allergiesData',allergiesData)
-        show===2 && console.log('search Food', platesData.mines[0].ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e) ))
-        console.log('allergies food', foodAllergie)
-    },[show])
 
     const handleOpenMenu=()=>{
         if (openMenu){
@@ -68,11 +62,6 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
         newFood && setMessage('The food was added succesfully!')
     },[newFood])
 
-    useEffect(()=>{
-
-        setSearchFood(foodData)
-        
-    },[foodData])
 
     useEffect(()=>{
         show === 1 && searchFood!==foodData && setSearchFood(foodData)
@@ -105,21 +94,25 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
                     <>
                         <div className="flex flex-row w-full">
                             <Search foodData={show===1 ? foodData : null } platesData={show === 2 ? platesData : null}  drinksData={show === 3 ? drinksData : null}   setSearchFood={setSearchFood} />
+                            <div onClick={() => setSuggestion(!suggestion)}  className='p-1 w-2/12 px-2 sm:px-1 rounded-full bg-healthyDarkYellow font-quicksand font-semibold text-center  text-white mx-1 hover:border-2 hover:border-white cursor-pointer shadow-md '>
+                                <p>Ideas</p>
+                            </div>
                             <div 
                                 onClick={() => setAddFood(true)} 
-                                className="flex w-2/12 sm:w-4/12 flex-row ml-3 justify-center items-center py-2 px-4 rounded-2xl font-semibold text-md text-darkGray font-quicksand hover:cursor-pointer bg-white/70 hover:bg-white/90"
+                                className="flex w-2/12 sm:w-2/12 flex-row ml-3 justify-center items-center py-2 px-4 rounded-2xl font-semibold text-md text-darkGray font-quicksand hover:cursor-pointer bg-white/70 hover:bg-white/90"
                             >
                                 <FontAwesomeIcon icon={faPlus} className="text-darkGray text-lg sm:text-xl" />
                                 {window.innerWidth > '650' && <p className="ml-2 text-center"></p>}
                             </div>
                         </div>
-                        <div className='flex mt-3 justify-around w-full items-center  font-quicksand font-semibold text-sm text-healthyGray'> 
+                        {suggestion && <Suggestions suggestion={suggestion} setSuggestion={setSuggestion} foodData={foodData} foodAllergie={foodAllergie} plateData={platesData} drinkData={drinksData}/>}
+                        <div className='flex mt-2 justify-around w-full items-center  font-quicksand font-semibold text-sm text-healthyGray'> 
                             <button onClick={()=>setShow(1)} className={`${show===1 ? 'text-healthyDarkGray1  bg-white/40 rounded-t-md font-bold' : 'text-healthyGray1  '} w-1/3 py-2`}>Food</button>
                             <button onClick={()=>setShow(2)} className={`${show===2 ? 'text-healthyDarkGray1  bg-white/40 rounded-t-md font-bold' : 'text-healthyGray1  '} w-1/3 py-2`}>Plate</button>
                             <button onClick={()=>setShow(3)} className={`${show===3 ? 'text-healthyDarkGray1  bg-white/40 rounded-t-md font-bold' : 'text-healthyGray1  '} w-1/3 py-2`}>Drinks</button>
                         </div>
                         {!addFood && ( ((show===1 || show===3) && searchFood?.length > 0) || (show===2 && (searchFood?.mines?.length>0 || searchFood?.others?.length>0) ) ? (
-                            <div className="bg-white/40 p-2 rounded-b-lg w-full max-h-[350px] md:max-h-[500px] lg:max-h-[330px]  overflow-y-auto">
+                            <div className="bg-white/40 p-2 rounded-b-lg w-full max-h-[250px] md:max-h-[500px] lg:max-h-[330px]  overflow-y-auto">
                                 {show===2 && searchFood.mines && searchFood.others ?
                                 <div className='flex flex-col w-full '>
                                     <p className='text-xs font-bold text-healthyGray1 font-quicksand  pb-1 border-b-2 border-healthyGray1 mb-1 w-full text-left'>My plates</p>
