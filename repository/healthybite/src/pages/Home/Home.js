@@ -147,26 +147,18 @@ function Home() {
     const fetchFoods = async () => {
         const loadData = async () => {
             try {
-                // Validate the 'date' before using it
                 if (isNaN(new Date(date).getTime())) {
                     throw new Error('Invalid date value');
                 }
-    
-                console.log('Fetching user food for date:', date);
                 const userFood = await fetchUserFoods(date);
-                console.log('User food fetched:', userFood);
-    
                 const food = await fetchAllFoods();
-                console.log('All foods fetched:', food);
     
                 setFoodData(
                     food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1)
                 );
     
                 const userFoodDetails = await Promise.all(userFood.map(async (item) => {
-                    let foodDetails = await fetchFoodByID(item.id_Food);
-                console.log("Fetched foodDetails:", foodDetails);
-
+                let foodDetails = await fetchFoodByID(item.id_Food);
             if (!foodDetails || Object.keys(foodDetails).length === 0) {
                 console.log('No food found in food table, checking plates');
                 foodDetails = await getPlate_ByID(item.id_Food);
@@ -210,7 +202,7 @@ function Home() {
                 if (userFood && platesData && drinksData && categories) {
                     setLoading(false);
                 } else {
-                    console.warn("Some required data is missing:", { userFood, platesData, drinksData, categories });
+                    console.error("Some required data is missing:", { userFood, platesData, drinksData, categories });
                 }
     
                 // Set user food with the resolved details

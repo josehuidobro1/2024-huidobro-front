@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard/Dashboard';
 import { Plates } from './pages/Plates/Plates';
 import { Drinks } from './pages/Drinks/Drinks';
 import { Community } from './pages/Community/Community';
+import Schedule from './pages/Schedule/Schedule';
 
 function App() {
   const [user]= useAuthState(auth)
@@ -20,6 +21,7 @@ function App() {
           <Route path="/" element={ user ? <Home /> : <Login />} />
           <Route path="/plates" element={<Plates/>}/>
           <Route path="/drinks" element={<Drinks/>}/>
+          <Route path='/schedule' element={<Schedule/>}/>
           <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/resetPassword" element={<ResetPassword />} />
           <Route path="/category" element={<Category/>} />

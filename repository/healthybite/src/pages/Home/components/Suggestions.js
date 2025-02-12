@@ -30,8 +30,8 @@ const Suggestions = ({suggestion, setSuggestion, foodAllergie, foodData, plateDa
                 <p className='font-quicksand font-bold bg-healthyDarkYellow px-2 py-1 text-center rounded-full text-white text-md '>Suggestions</p>
             </div>
             <div className='flex justify-between mt-1 sm:mt-0  items-center flex-col sm:flex-row w-full lg:w-4/5'>
-                <div className='flex flex-col sm:flex-row justify-center sm:justify-start items-center '>
-                    {index.map(i=> (<p key={i} className='flex text-white bg-healthyDarkYellow/50 px-3 py-1 rounded-full mx-1 font-bold text-sm sm:max-w-40 mb-1 sm:mb-0 truncate overflow-hidden whitespace-nowrap'>{foodSuggested[i].name}</p>))}
+                <div className='flex flex-col sm:flex-row justify-center sm:justify-start items-center  max-w-4/5 overflow-x-auto scrollbar-thin'>
+                    {index.map(i=> (<p key={i} className='flex text-white bg-healthyDarkYellow/50 px-3 py-1 rounded-full mx-1 font-bold text-sm mb-1 sm:mb-0 whitespace-nowrap'>{foodSuggested[i].name}</p>))}
                 </div>
                 <div className='flex mt-1 sm:mt-0 items-center w-full sm:w-1/5 justify-center sm:justify-end '>
                     <FontAwesomeIcon onClick={()=>setIndex(getRandomIndices(foodSuggested.length, 3))} icon={faAngleRight} className='text-white bg-healthyDarkYellow shadow-md py-2 px-3 cursor-pointer text-lg rounded-full mx-1' />

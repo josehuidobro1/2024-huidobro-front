@@ -1,7 +1,7 @@
 import { auth } from "../firebaseConfig";
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHouse, faLayerGroup, faChartLine, faUser, faBars, faXmark , faUtensils, faMugHot, faStar, faComment} from '@fortawesome/free-solid-svg-icons'; 
+import { faHouse, faLayerGroup, faChartLine, faUser, faBars, faXmark , faUtensils, faMugHot, faStar, faComment, faCartShopping} from '@fortawesome/free-solid-svg-icons'; 
 import React, { useEffect, useState } from "react";
 import NavItem from "./NavItem";
 
@@ -26,6 +26,7 @@ function NavBar() {
                                 <NavItem route='/' name='Home' icon={faHouse}  />
                                 <NavItem route='/plates' name='Plates' icon={faUtensils}/>
                                 <NavItem route='/drinks' name='Drinks' icon={faMugHot}/>
+                                <NavItem route='/schedule' name='Schedule' icon={faCartShopping}/>
                                 <NavItem route='/dashboard' name='Dashboard' icon={faChartLine}  />
                                 <NavItem route='/category' name='Category' icon={faLayerGroup}  />
                                 <NavItem route='/community' name='Community' icon={faComment}  />
@@ -50,6 +51,7 @@ function NavBar() {
                                 <NavItem route='/' name='Home' icon={faHouse} setOpenBar={setOpenBar} />
                                 <NavItem route='/plates' name='Plates' icon={faUtensils} setOpenBar={setOpenBar}/>
                                 <NavItem route='/drinks' name='Drinks' icon={faMugHot}  setOpenBar={setOpenBar}/>
+                                <NavItem route='/schedule' name='Schedule' icon={faCartShopping} setOpenBar={setOpenBar}/>
                                 <NavItem route='/dashboard' name='Dashboard' icon={faChartLine} setOpenBar={setOpenBar} />
                                 <NavItem route='/category' name='Category' icon={faLayerGroup} setOpenBar={setOpenBar} />
                                 <NavItem route='/community' name='Community' icon={faComment}  setOpenBar={setOpenBar} />

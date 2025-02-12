@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import SelectItem from './SelectItem';
+import SelectItem from '../../../components/SelectItem';
 import { createAllergy } from '../../../firebaseService';
 
 const CreateAllergie = ({food,allergiesData, setAllergiesData}) => {

@@ -119,6 +119,7 @@ function UserProfile() {
             goals: user.goals,
             validation: user.validation,
             achivements: user.achievements,
+            schedule:user.schedule,
         };
         try {
             await editUserData(data);

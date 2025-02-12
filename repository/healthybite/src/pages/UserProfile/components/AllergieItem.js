@@ -2,7 +2,7 @@ import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react'
 import { editAllergie, editUserData } from '../../../firebaseService';
-import SelectItem from './SelectItem';
+import SelectItem from '../../../components/SelectItem';
 
 const AllergieItem = ({food, id,userdata, allergies, setAllergies, allergiesData,setAllergiesData}) => {
     const [details, setDetails]=useState(false)

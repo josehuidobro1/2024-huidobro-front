@@ -3,14 +3,35 @@ import { convertFieldResponseIntoMuiTextFieldProps } from "@mui/x-date-pickers/i
 import { auth, firestore } from "../src/firebaseConfig";
 import { getAuth, verifyPasswordResetCode, confirmPasswordReset } from 'firebase/auth';
 import axios from "axios"; // para hacer solicitudes HTTP al servidor externo
+import { onAuthStateChanged } from "firebase/auth";
+
 
 //const ruta='https://two024-huidobro-back.onrender.com'
 const ruta='http://127.0.0.1:8000'
 
+let userUidPromise;
+
+export const getUserUid = () => {
+    if (!userUidPromise) {
+        userUidPromise = new Promise((resolve, reject) => {
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    resolve(user.uid); 
+                } else {
+                    reject(new Error("No user is currently logged in.")); 
+                }
+            });
+        });
+    }
+    return userUidPromise; 
+};
+
+
+
 export const fetchUser=async()=>{
     try {
-        const response = await axios.get(`${ruta}/User/${auth.currentUser.uid}`);
-        
+        const user_id=await getUserUid();
+        const response = await axios.get(`${ruta}/User/${user_id}`);
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching user by ID:', error);
@@ -20,8 +41,9 @@ export const fetchUser=async()=>{
 
 export const editUserData=async(data)=>{
     try {
-        console.log('user data ', data)
-        const response = await axios.put(`${ruta}/update_user/${auth.currentUser.uid}`, data);
+
+        const user_id=await getUserUid();
+        const response = await axios.put(`${ruta}/update_user/${user_id}`, data);
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error editing user data by ID:', error);
@@ -31,7 +53,8 @@ export const editUserData=async(data)=>{
 
 export const deleteUserAc=async()=>{
     try {
-        await axios.delete(`${ruta}/delete-user/${auth.currentUser.uid}`); // Adjust this based on your backend response structure
+        const user_id=await getUserUid();
+        await axios.delete(`${ruta}/delete-user/${user_id}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error deleting user by ID:', error);
         return null; // Return null or handle the error as needed
@@ -75,7 +98,8 @@ export const fetchFoodByID = async (foodId) => {
 
 const userFoodMeals = async()=>{
     try {
-        const response = await axios.get(`${ruta}/mealUserDay/${auth.currentUser.uid}`);
+        const user_id=await getUserUid();
+        const response = await axios.get(`${ruta}/mealUserDay/${user_id}`);
         return response.data.message.foods; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
@@ -88,7 +112,6 @@ const userFoodMeals = async()=>{
 export const fetchAllFoods = async () => {
     try {
         const response = await axios.get(`${ruta}/Foods/`);
-        console.log(response.data.message.food)
         return response.data.message.food; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching foods:', error);
@@ -99,20 +122,21 @@ export const fetchAllFoods = async () => {
 
 export const addUserFood = async (selection, date, amount) => {
     try {
+        const user_id=await getUserUid();
         const response = await fetch(`${ruta}/UserFood_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify( {
-                "id_User": auth.currentUser.uid,
+                "id_User": user_id,
                 "id_Food": selection.id_food,
                 "date_ingested": date.toISOString(),
                 "amount_eaten": Number(selection.amount),
             }),
             
         });
-        console.log(auth.currentUser.uid,selection.id_food,date.toISOString(),Number(selection.amount))
+        console.log(user_id,selection.id_food,date.toISOString(),Number(selection.amount))
         const data = await response.json();
 
         if (!response.ok) {
@@ -179,9 +203,9 @@ export const editUserFood = async (doc_id,data) => {
 };
 
 export const getCategories = async()=>{
-    const uid=auth.currentUser.uid
+    const user_id=await getUserUid();
     try {
-        const response = await axios.get(`${ruta}/GetCategoryUser/${uid}`);
+        const response = await axios.get(`${ruta}/GetCategoryUser/${user_id}`);
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
@@ -190,7 +214,7 @@ export const getCategories = async()=>{
 }
 
 export const getDefaultCategories = async () => {
-    const uid = auth.currentUser.uid;
+    const user_id=await getUserUid();
     try {
         const response = await axios.get(`${ruta}/GetCategoryUser/default`);
         return response.data.message.categories; // Adjust this based on your backend response structure
@@ -220,9 +244,9 @@ export const getBarCategory = async () => {
 
 
 export const createCategory =async (data)=>{
-    const uid=auth.currentUser.uid
+    const user_id=await getUserUid();
     try{
-        const response = await axios.post(`${ruta}/CreateCategory/`, {...data,id_User: uid });
+        const response = await axios.post(`${ruta}/CreateCategory/`, {...data,id_User: user_id });
         return response.data
     }catch(error){
         console.error('Error adding new category: ', error);
@@ -232,7 +256,8 @@ export const createCategory =async (data)=>{
 
 export const updateCategory=async(data,category_id)=>{
     try{
-        const response = await axios.put(`${ruta}/UpdateCategory/${category_id}`,{...data,id_User: auth.currentUser.uid });
+        const user_id=await getUserUid();
+        const response = await axios.put(`${ruta}/UpdateCategory/${category_id}`,{...data,id_User: user_id });
         return response.data
     }catch(error){
         console.error('Error updating category by id: ', error);
@@ -261,14 +286,14 @@ export const deleteCategory=async(category_id)=>{
 export const createTotCal = async (data, date) => {
     try {
         const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
-        console.log("LO QUE LLEGA AL TOT CAL ", data)
+        const user_id=await getUserUid();
         const response = await fetch(`${ruta}/CreateTotCaloriesUser/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                "id_user": auth.currentUser.uid,
+                "id_user": user_id,
                 "day": validDate, // Using the valid date here
                 "totCal": data.calories,
                 "totProt": data.protein,
@@ -300,9 +325,9 @@ export const UpdateTotCal = async (totcal_id, data, date) => {
         // Ensure the date is in the correct format
         const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
 
-        // Prepare payload matching backend expectations
+        const user_id=await getUserUid();
         const payload = {
-            id_user: auth.currentUser.uid,
+            id_user: user_id,
             day: validDate,   // Using "day" instead of "date" to match the model
             totCal: data.calories,
             totProt: data.protein,
@@ -415,9 +440,9 @@ export const getCaloriesByCategories= ( userCalories, categories, foods, barFood
 }
 
 export const getTotCalUser=async()=>{
-    const uid=auth.currentUser.uid
-    if(uid){try {
-        const response = await axios.get(`${ruta}/GetTotCalUser/${uid}`);
+    const user_id=await getUserUid();
+    if(user_id){try {
+        const response = await axios.get(`${ruta}/GetTotCalUser/${user_id}`);
         return response.data.message.totCals; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
@@ -520,14 +545,14 @@ export const getProdByID= async(prod_id)=>{
 // things that need to be deployed
 export const createplate = async (selection) => {
     try {
-        console.log("PLATO", selection)
+        const user_id=await getUserUid();
         const response = await fetch("${ruta}/CreatePlate/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify( {
-                "id_User": auth.currentUser.uid,
+                "id_User": user_id,
                 "ingredients": selection.ingredients,
                 "name": selection.name,
                 "calories_portion": selection?.calories_portion || 0,
@@ -559,14 +584,9 @@ export const createplate = async (selection) => {
 };
 
 export const getUserPlates = async () => {
-    const user = auth.currentUser;
-    if (!user) {
-        console.error("User is not authenticated");
-        return null;
-    }
-    const uid = user.uid;
     try {
-        const response = await axios.get(`${ruta}/GetPlatesUser/${uid}`);
+        const user_id=await getUserUid();
+        const response = await axios.get(`${ruta}/GetPlatesUser/${user_id}`);
         return response.data.message.Plates; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching plates :', error);
@@ -575,8 +595,8 @@ export const getUserPlates = async () => {
 };
 export const updatePlate=async(data,plate_id)=>{
     try{
-        console.log("PLATO",data)
-        const response = await axios.put(`${ruta}/UpdatePlate/${plate_id}`,{...data,id_User: auth.currentUser.uid });
+        const user_id=await getUserUid();
+        const response = await axios.put(`${ruta}/UpdatePlate/${plate_id}`,{...data,id_User: user_id });
         return response.data
     }catch(error){
         console.error('Error updating plate by id: ', error);
@@ -608,6 +628,7 @@ export const fechDrinkTypes = async () =>{
 }
 export const createDrinkType = async (selection) => {
     try {
+        const user_id=await getUserUid();
         const response = await fetch('${ruta}/drinkType_log', {
             method: "POST",
             headers: {
@@ -615,7 +636,7 @@ export const createDrinkType = async (selection) => {
             },
             body: JSON.stringify( {
                 "name": selection.name,
-                "id_user": auth.currentUser.uid,
+                "id_user": user_id,
             }),
             
         });
@@ -652,7 +673,7 @@ export const getUserDrinks = async () =>{
 }
 export const createDrink = async (selection) => {
     try {
-        console.log(selection)
+        const user_id=await getUserUid();
         const response = await fetch('${ruta}/drink_log', {
             method: "POST",
             headers: {
@@ -666,7 +687,7 @@ export const createDrink = async (selection) => {
                 "measure": selection.measure,
                 "measure_portion": selection.measure_portion,
                 "typeOfDrink": selection.typeOfDrink,
-                "id_User": auth.currentUser.uid,
+                "id_User": user_id,
             }),
             
         });
@@ -698,8 +719,8 @@ export const deleteDrink=async(drink_id)=>{
 export const updateDrink = async (doc_id,data) => {
 
     try {
-        console.log(doc_id,data)
-        await axios.put(`${ruta}/UpdateDrink/${doc_id}`,{...data,id_User: auth.currentUser.uid }); // Adjust this based on your backend response structure
+        const user_id=await getUserUid();
+        await axios.put(`${ruta}/UpdateDrink/${doc_id}`,{...data,id_User: user_id }); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error updating drink by ID:', error);
         return null; // Return null or handle the error as needed
@@ -729,7 +750,8 @@ export const getPlate_ByID = async (plate_id) => {
 }
 
 export const getGroupedDrinkTypes = async () => {
-    const response = await axios.get(`${ruta}/getUserGroupDrinkType/${auth.currentUser.uid}`);
+    const user_id=await getUserUid();
+    const response = await axios.get(`${ruta}/getUserGroupDrinkType/${user_id}`);
     const drink=response.data.Drinks
     return drink
 
@@ -794,13 +816,13 @@ export const createReview = async (selection) => {
 };
 
 export const getstreak = async () => {
-    const user_id  = auth.currentUser.uid
+    const user_id=await getUserUid();
     const response = await axios.get(`${ruta}/Streak/${user_id}`,)
     const streak = response.data.message
     return streak
 }
 export const getUserNotification = async () => {
-    const user_id  = auth.currentUser.uid
+    const user_id=await getUserUid();
     const response = await axios.get(`${ruta}/getUserNotifications/${user_id}`,)
     const notifications = response.data.notifications
     return notifications
@@ -820,13 +842,17 @@ export const markNotificationAsRead = async (doc_id) => {
     }
 };
 export const getPlatesNotUser = async () => {
-    const user_id  = auth.currentUser.uid
-    const response = await axios.get(`${ruta}/PublicplatesNotFromUser/${user_id}`,)
-    const plates = response.data.Plates
-    return plates
+    try{
+        const user_id=await getUserUid();
+        const response = await axios.get(`${ruta}/PublicplatesNotFromUser/${user_id}`,)
+        const plates = response.data.Plates
+        return plates
+    }catch(error){
+        console.error("error getynd plates not User getPlatesNotUser() ", error)
+    }
 }
 export const addGoal = async (goal_id) => {
-    const user_id = auth.currentUser.uid;
+    const user_id=await getUserUid();
     const response = await axios.get(`${ruta}/addGoal/${user_id}`, {
         params: { goal_id }
     });
@@ -867,3 +893,46 @@ export const editAllergie=async(data)=>{
         return null; // Return null or handle the error as needed
     }
 }
+
+export const getSchedule=async()=>{
+    try {
+        const user_id=await getUserUid();
+        const response = await axios.get(`${ruta}/schedule/${user_id}`);
+        return response.data.schedules;
+    } catch (error) {
+        console.error('Error fetching schedule data:', error);
+        return []; 
+    }
+}
+
+export const editSchedule=async(id,data)=>{
+    try {
+        const user_id=await getUserUid();
+        const response = await axios.put(`${ruta}/schedule/${id}`, {...data, id_user: user_id});
+        return response.data; 
+    } catch (error) {
+        console.error('Error editing schedule by ID:', error);
+        return null;
+    }
+}
+
+export const createSchedule =async (data)=>{
+    try{
+        const user_id=await getUserUid();
+        const response = await axios.post(`${ruta}/schedule/`, {...data, id_user: user_id});
+        return response.data.schedules
+    }catch(error){
+        console.error('Error adding new schedule: ', error);
+        return null;
+    }
+}
+
+export const deleteSchedule = async () => {
+    try {
+        const user_id=await getUserUid();
+        await axios.delete(`${ruta}/schedule/${user_id}`); // Adjust this based on your backend response structure
+    } catch (error) {
+        console.error('Error deleting schedule by ID:', error);
+        return null; // Return null or handle the error as needed
+    }
+};
