@@ -381,7 +381,7 @@ function Home() {
                         <Calories userFood={userFood} />
                     </div>
                     <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12 ">
-                        <div className="flex flex-col w-full ">
+                        <div className="flex flex-col w-full pb-36 sm:pb-12 ">
                             {filteredFood.map((usfood) => (
                                 <FoodConsumed
                                     key={usfood.id}

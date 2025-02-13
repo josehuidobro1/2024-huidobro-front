@@ -387,7 +387,7 @@ export default function Dashboard() {
                         <div className=" w-full p-2 bg-healthyGreen rounded-t-xl">
                             <p className="font-belleza text-lg text-darkGray pl-3">Drink chart</p>
                         </div>
-                        <div className="bg-hbGreen p-2 rounded-b-xl flex flex-col justify-center items-center " >
+                        <div className="bg-hbGreen p-2 rounded-b-xl flex flex-col justify-center items-center w-full" >
                             <div className="flex justify-center items-center w-full flex-wrap">
                                 <div className="flex items-center justify-start font-quicksand py-1 px-2 ">
                                     <FontAwesomeIcon icon={faSquare}  style={{ color: '#FA9B6A' }} className={` mr-1`} />
@@ -402,6 +402,7 @@ export default function Dashboard() {
                                     <p className="text-xs text-darkGray ">Calories</p>
                                 </div>
                             </div>
+                            <div className="w-full flex justify-center items-center ">
                             {drinksDay && drinksDay.length>0 ? <BarChart
                                 xAxis={[{ scaleType: 'band', data: filterTypeDrinks().types }]}
                                 series={[      
@@ -442,7 +443,7 @@ export default function Dashboard() {
                                 width={window.innerWidth>'400' ? 700: 300}
                             />:
                             <EmptyChart/>
-                            }
+                            }</div>
                         </div>
                     </div>
                 </div>

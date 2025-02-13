@@ -14,7 +14,7 @@ const SelectItem = ({value,setSelectedFood, selectedFood, checkedNow}) => {
   return (
     <div className='flex justify-start items-center w-full pb-1'>
         <Checkbox checked={checked} onChange={handleChange}  inputProps={{ 'aria-label': 'controlled' }}  sx={{color: '#418FDE',margin: 0,padding: 0, '& .MuiSvgIcon-root': { fontSize: 20 } }} />
-        <p className='text-healthyDarkGray1 text-sm '>{value.name}</p>
+        <p className='text-healthyDarkGray1 text-sm ml-2 '>{value.name}</p>
     </div>
   )
 }
