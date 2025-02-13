@@ -72,11 +72,19 @@ const Calories = ({ userFood }) => {
         }
     }, [totals, userFood]);
     
+    const formatCalories = (calories) => {
+        if (calories >= 1_000_000) {
+            return `${(calories / 1_000_000).toFixed(1)}M`; 
+        } else if (calories >= 1_000) {
+            return `${(calories / 1_000).toFixed(1)}K`; 
+        }
+        return calories; 
+    };
 
     return (
         <div className="flex flex-row sm:flex-col justify-center items-center w-full">
             <p className="mr-4 sm:mr-0 font-quicksand text-darkGray text-md sm:text-xl text-center lg:text-left">Total calories</p>
-            <p className="mr-2 sm:mr-0 font-quicksand text-darkGray text-xl font-semibold sm:text-4xl lg:text-6xl">{totals.calories}</p>
+            <p className="mr-2 sm:mr-0 font-quicksand text-darkGray text-xl font-semibold sm:text-4xl lg:text-6xl">{formatCalories(totals.calories)}</p>
         </div>
     );
 };

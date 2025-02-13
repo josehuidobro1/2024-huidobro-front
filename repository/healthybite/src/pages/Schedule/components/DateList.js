@@ -15,9 +15,7 @@ const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksDat
             const data={day:day, foodList:selectedFood}
             schedule ? await editSchedule(schedule.id, data) : await createSchedule(data)
             setSched(data)
-            console.log('old schedule ', scheduleList)
             const schedulEdited= scheduleList.find(item=>item.id===schedule.id) ? scheduleList.map(item=>item.id===schedule.id ? {...item,foodList:selectedFood} : item) : [...scheduleList,{...data, id: schedule.id, id_user:schedule.id_user}]
-            console.log('new schedule ', schedulEdited)
             setSchedule(schedulEdited)
         }
         setEdit(!edit)

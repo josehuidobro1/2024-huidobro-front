@@ -12,11 +12,38 @@ import { Plates } from './pages/Plates/Plates';
 import { Drinks } from './pages/Drinks/Drinks';
 import { Community } from './pages/Community/Community';
 import Schedule from './pages/Schedule/Schedule';
+import { useEffect, useState } from 'react';
+import { getUserNotification, markNotificationAsRead } from './firebaseService';
+import NotificationPopup from './components/NotificationPopup';
 
 function App() {
   const [user]= useAuthState(auth)
+  const [notifications, setNotifications] = useState([]);
+
+  const fetchNotification=async()=>{
+    const fetchedNotifications = await getUserNotification();
+    console.log('notifications fetched: ',fetchedNotifications);
+    setNotifications(fetchedNotifications || []);
+  }
+
+  const handleDismissNotification = async (notificationId) => {
+      try {
+          await markNotificationAsRead(notificationId);
+          console.log('notificacion id ', notificationId)
+          setNotifications(notifications.filter(notif => notif.id !== notificationId));
+      } catch (err) {
+          console.error("Error dismissing notification:", err);
+      }
+  };
+
+  useEffect(()=>{
+    console.log('NOTIFICATION ', notifications)
+    fetchNotification()
+  },[])
+
   return (
     <Router>
+        {notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
         <Routes>
           <Route path="/" element={ user ? <Home /> : <Login />} />
           <Route path="/plates" element={<Plates/>}/>

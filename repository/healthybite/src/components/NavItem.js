@@ -12,8 +12,8 @@ const NavItem = ({route, name, icon, setOpenBar}) => {
             </Link>
         :
             <Link onClick={()=>setOpenBar(false)} to={route} className="text-white flex flex-col bg-white/20 hover:bg-white/30 w-full h-full shadow-sm rounded-lg  items-around justify-center  font-quicksand" > 
-                <FontAwesomeIcon className=" text-5xl " icon={icon} />
-                <p className=' text-center text-xl mt-6 font-semibold '>{name}</p>
+                <FontAwesomeIcon className=" text-3xl " icon={icon} />
+                <p className=' text-center text-lg mt-6 font-semibold '>{name}</p>
             </Link>
         }
 

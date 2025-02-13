@@ -11,15 +11,11 @@ export const Community = () => {
     const [plates, setPlates] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
-    const [notifications, setNotifications] = useState([]);
 
     const fetchPublicPlatesAndNotifications = async () => {
         try {
             const fetchedPlates = await getPublicPlates();
             setPlates(fetchedPlates || []);
-
-            const fetchedNotifications = await getUserNotification();
-            setNotifications(fetchedNotifications || []);
         } catch (err) {
             console.error("Error fetching plates or notifications:", err);
         } finally {
@@ -31,14 +27,6 @@ export const Community = () => {
         fetchPublicPlatesAndNotifications();
     }, []);
 
-    const handleDismissNotification = async (notificationId) => {
-        try {
-            await markNotificationAsRead(notificationId);
-            setNotifications(notifications.filter(notif => notif.id !== notificationId));
-        } catch (err) {
-            console.error("Error dismissing notification:", err);
-        }
-    };
 
     const filteredPlates = plates.filter(plate =>
         plate.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -60,14 +48,6 @@ export const Community = () => {
                             className="w-2/3 p-2 border border-gray-300 font-quicksand rounded mb-4"
                         />
                     </div>
-                    {/* Notification Popup */}
-                    {notifications.length > 0 && (
-                        <NotificationPopup
-                            notifications={notifications}
-                            onDismiss={handleDismissNotification}
-                        />
-                    )}
-                    
                     <div className="w-full flex flex-wrap justify-center">
                         {filteredPlates.length > 0 ? (
                             filteredPlates.map((item, index) => (

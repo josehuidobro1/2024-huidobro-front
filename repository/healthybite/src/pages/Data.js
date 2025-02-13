@@ -7,6 +7,47 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const Data={
+    achievements: {
+        1: { 
+            name: "Streak Starter", 
+            subtitle:"3-Day Log",
+            description: "Log your meals for 3 consecutive days to earn this trophy!" 
+        },
+        2: {
+            name: "Healthy Habit",
+            subtitle:"10-Day Log",
+            description: "Stay consistent! Log your meals for 10 consecutive days to achieve this milestone.",
+        },
+        3: {
+            name: "First Plate Logged!",
+            description: "Congratulations! Add your very first plate to unlock this achievement.",
+        },
+        4: {
+            name: "Aspiring Chef",
+            subtitle:"5 Plates Logged",
+            description: "Log 5 plates to show your culinary skills and earn this trophy!",
+        },
+        5: {
+            name: "Master Chef",
+            subtitle:"10 Plates Logged",
+            description: "Prove your dedication by logging 10 plates to become a master chef!",
+        },
+        6: {
+            name: "First Drink Logged!",
+            description: "Start hydrating! Log your first drink to claim this achievement.",
+        },
+        7: {
+            name: "Bartender in Training",
+            subtitle:"5 Drinks Logged",
+            description: "Mix it up! Log 5 drinks to show your bartending skills and earn this trophy.",
+        },
+        8: {
+            name: "Master Bartender",
+            subtitle: "10 Drinks Logged",
+            description: "Cheers to progress! Log 10 drinks to prove you're a master at tracking beverages.",
+        },
+    },
+
     iconOptions : [
         { icon: faAppleAlt, name: 'Apple' },
         { icon: faCarrot, name: 'Carrot' },

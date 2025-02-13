@@ -322,6 +322,15 @@ function Home() {
         setDate(new Date(date))
     }
 
+    const formatNumber = (num) => {
+        if (num >= 1_000_000) {
+          return `${(num / 1_000_000).toFixed(1)}M`; 
+        } else if (num >= 1_000) {
+          return `${(num / 1_000).toFixed(1)}K`; 
+        }
+        return num; 
+    };
+
     return (
         <div className="h-screen w-full overflow-y-hidden">
             <NavBar />
@@ -363,7 +372,7 @@ function Home() {
                                 <div className={`font-quicksand text center flex flex-col absolute  text center justify-center items-center ${goalConsumed> user.goals[(goalName.find(goal=>goal.id===index)).name] ? ' rounded-full sm:rounded-2xl bg-healthyOrange text-white shadow-md py-2 px-4 sm:px-2 md:px-1 ':'w-full text-healthyOrange h-full'}  `}>
                                     {goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="font-bold text-xl  text-center">{((goalConsumed*100)/(user.goals[(goalName.find(goal=>goal.id===index)).name])).toFixed(1)}%</p>}
                                     {goalConsumed>user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="text-xs font-bold text-center w-full pb-2 pl-2 ">You've already passed your&nbsp;goal!</p>}
-                                    <p className="text-center text-xs font-bold ">{goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] ? 'completed' : `${goalConsumed}/${user.goals[(goalName.find(goal=>goal.id===index)).name]}`}</p>
+                                    <p className="text-center text-xs font-bold ">{goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] ? 'completed' : `${formatNumber(goalConsumed)} / ${formatNumber(user.goals[(goalName.find(goal=>goal.id===index)).name])}`}</p>
                                 </div>
                                 
                             </div>
