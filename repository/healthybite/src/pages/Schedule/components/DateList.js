@@ -24,12 +24,12 @@ const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksDat
     }
 
   return (
-    <div className='flex flex-row   sm:flex-col w-full md:w-48 lg:w-56 sm:mx-1 mt-1 sm:mt-2 sm:items-center  sm:justify-start sm:p-1 rounded-md bg-white/70 sm:bg-healthyGreen/20'>
+    <div className='flex flex-row font-quicksand   sm:flex-col w-full md:w-48 lg:w-52 xl:w-56 sm:mx-1 mt-1 sm:mt-2 sm:items-center  sm:justify-start sm:p-1 rounded-md bg-white/70 sm:bg-healthyGreen/20'>
         <div className='flex flex-col items-stretch justify-around bg-healthyGreen/40 sm:bg-healthyGreen/20 sm:justify-center sm:flex-col w-1/3 sm:w-full '>
             <div className='w-full flex justify-center items-center sm:bg-healthyGreen/40 p-1 sm:p-0'>
                 <p className='font-bold w-full text-center text-md  px-2 py-1 rounded-md mb-0 sm:mb-1 text-white '>{day.charAt(0).toUpperCase() + day.slice(1)}</p>
             </div>
-            <div className='flex justify-around items-center pb-2 sm:mb-0 w-full sm:bg-healthyGreen/20 '>
+            <div className='flex justify-around items-center pb-2  sm:py-1 w-full sm:bg-healthyGreen/20 '>
                 <button onClick={handleEdit} className='px-2 rounded-full text-xs font-bold text-white bg-healthyGray1 hover:bg-healthyDarkGray1 shadow-sm'>{edit ? 'Save' : schedule ? 'Edit' : 'Add'}</button>
             </div>
         </div>

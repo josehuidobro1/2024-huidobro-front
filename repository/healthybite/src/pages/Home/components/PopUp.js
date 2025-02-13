@@ -105,7 +105,7 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
                                 {window.innerWidth > '650' && <p className="ml-2 text-center"></p>}
                             </div>
                         </div>
-                        {suggestion && <Suggestions suggestion={suggestion} setSuggestion={setSuggestion} foodData={foodData} foodAllergie={foodAllergie} plateData={platesData} drinkData={drinksData}/>}
+                        {suggestion && foodData && foodAllergie  && <Suggestions suggestion={suggestion} setSuggestion={setSuggestion} foodData={foodData} foodAllergie={foodAllergie} plateData={platesData} drinkData={drinksData}/>}
                         <div className='flex mt-2 justify-around w-full items-center  font-quicksand font-semibold text-sm text-healthyGray'> 
                             <button onClick={()=>setShow(1)} className={`${show===1 ? 'text-healthyDarkGray1  bg-white/40 rounded-t-md font-bold' : 'text-healthyGray1  '} w-1/3 py-2`}>Food</button>
                             <button onClick={()=>setShow(2)} className={`${show===2 ? 'text-healthyDarkGray1  bg-white/40 rounded-t-md font-bold' : 'text-healthyGray1  '} w-1/3 py-2`}>Plate</button>

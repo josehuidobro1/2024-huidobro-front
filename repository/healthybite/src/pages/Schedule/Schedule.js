@@ -60,10 +60,10 @@ const Schedule = () => {
                 <img src={bgImage} alt="Background image" className=' w-full object-cover h-full' />
             </div>
             }
-            <div className='w-full h-full md:h-screen flex flex-col justify-start items-center px-2 sm:px-8 overflow-y-auto pb-0 sm:pb-8 '>
+            <div className='w-full h-full md:h-screen flex flex-col justify-start items-center px-2 sm:px-8 lg:px-3 overflow-y-auto pb-0 sm:pb-8 '>
                 <div className='flex flex-col lg:flex-row bg-healthyGray2 justify-between items-center sticky top-0 w-full pt-4 md:pt-24  pb-4 z-5 '>
-                    <h1 className='font-belleza text-3xl sm:text-2xl text-left font-semibold text-healthyGreen'>Food Schedule</h1>
-                    <div className='flex items-center justify-around lg:justify-end  w-full mt-2  sm:mt-4 lg:mt-0  '>
+                    <h1 className='font-quicksand text-3xl sm:text-2xl text-left font-semibold text-healthyGreen w-fit'>Food Schedule</h1>
+                    <div className='flex font-quicksand items-center justify-around lg:justify-end  w-full sm:w-fit mt-2  sm:mt-4 lg:mt-0  '>
                         <div  onClick={()=>setClean(true)}  className='mr-3 flex w-1/3 lg:w-fit  items-center cursor-pointer justify-center px-3 sm:px-4 py-2 sm:py-3 rounded-sm  bg-healthyGray1 hover:bg-healthyDarkGray1 font-bold text-white  shadow-md'>
                             <FontAwesomeIcon icon={faTrash} className='mr-2' />
                             <p>Clear all</p>

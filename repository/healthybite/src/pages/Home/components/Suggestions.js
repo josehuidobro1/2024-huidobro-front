@@ -5,16 +5,38 @@ import React, { useEffect, useState } from 'react'
 
 const Suggestions = ({suggestion, setSuggestion, foodAllergie, foodData, plateData, drinkData}) => {
     const [index, setIndex]=useState([])
-    const [foodSuggested, setFoodSuggested]=useState(foodData.filter(i=>!foodAllergie.includes(i.id)).concat(plateData.mines.filter(plate=>!plate.ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e)))).concat(plateData.others.filter(plate=>!plate.ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e)))).concat(drinkData))
+    const [foodSuggested, setFoodSuggested]=useState(foodData?.filter(i=>!foodAllergie.includes(i.id)).concat(plateData?.mines?.filter(plate=>!plate.ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e)))).concat(plateData.others?.filter(plate=>!plate.ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e)))).concat(drinkData))
 
+    const getFoodSuggested=()=>{
+        const safeFoodAllergie = Array.isArray(foodAllergie) ? foodAllergie : [];
+        const safeFoodData = Array.isArray(foodData) ? foodData : [];
+        const safePlateDataMines = plateData?.mines && Array.isArray(plateData.mines) ? plateData.mines : [];
+        const safePlateDataOthers = plateData?.others && Array.isArray(plateData.others) ? plateData.others : [];
+        const safeDrinkData = Array.isArray(drinkData) ? drinkData : [];
+        const data = safeFoodData.filter(i => !safeFoodAllergie.includes(i.id))
+            .concat(
+                safePlateDataMines.filter(plate => 
+                    !plate.ingredients?.map(i => i.ingredientId).some(e => safeFoodAllergie.includes(e))
+                )
+            )
+            .concat(
+                safePlateDataOthers.filter(plate => 
+                    !plate.ingredients?.map(i => i.ingredientId).some(e => safeFoodAllergie.includes(e))
+                )
+            )
+            .concat(safeDrinkData);
+
+        return data;
+    }
 
     useEffect(()=>{
         if(suggestion){
-            const data=foodData.filter(i=>!foodAllergie.includes(i.id)).concat(plateData.mines.filter(plate=>!plate.ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e)))).concat(plateData.others.filter(plate=>!plate.ingredients.map(i=>i.ingredientId).some(e=>foodAllergie.includes(e)))).concat(drinkData)
+            const data=getFoodSuggested()
+            console.log('fata de sugeestions ',data)
             setFoodSuggested(data)
-            setIndex(getRandomIndices(foodSuggested.length, 3))
+            setIndex(getRandomIndices(data.length, 3))
         }
-    },[suggestion])
+    },[suggestion, foodAllergie, foodData, plateData, drinkData])
 
     const getRandomIndices = (max, count) => {
         const indices = new Set(); // Usamos un Set para evitar duplicados
