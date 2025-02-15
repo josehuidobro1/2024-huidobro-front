@@ -21,14 +21,13 @@ function App() {
   const [notifications, setNotifications] = useState([]);
 
   const fetchNotification=async()=>{
-    const fetchedNotifications = await getUserNotification();
-    console.log('notifications fetched: ',fetchedNotifications);
+    const fetchedNotifications = await getUserNotification(user.uid);
     setNotifications(fetchedNotifications || []);
   }
 
   const handleDismissNotification = async (notificationId) => {
       try {
-          await markNotificationAsRead(notificationId);
+          await markNotificationAsRead(user.uid, notificationId);
           console.log('notificacion id ', notificationId)
           setNotifications(notifications.filter(notif => notif.id !== notificationId));
       } catch (err) {
@@ -37,23 +36,22 @@ function App() {
   };
 
   useEffect(()=>{
-    console.log('NOTIFICATION ', notifications)
-    fetchNotification()
+    user && fetchNotification(user.uid)
   },[])
 
   return (
     <Router>
-        {notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
+        {user && notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
         <Routes>
-          <Route path="/" element={ user ? <Home /> : <Login />} />
-          <Route path="/plates" element={<Plates/>}/>
-          <Route path="/drinks" element={<Drinks/>}/>
-          <Route path='/schedule' element={<Schedule/>}/>
-          <Route path="/user-profile" element={<UserProfile />} />
-          <Route path="/resetPassword" element={<ResetPassword />} />
-          <Route path="/category" element={<Category/>} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/community" element={<Community />} />
+          <Route path="/" element={ user ? <Home userId={user.uid} /> : <Login />} />
+          <Route path="/plates" element={<Plates userId={user.uid} />}/>
+          <Route path="/drinks" element={<Drinks userId={user.uid} />}/>
+          <Route path='/schedule' element={<Schedule userId={user.uid} />}/>
+          <Route path="/user-profile" element={<UserProfile  userId={user.uid} />} />
+          <Route path="/resetPassword" element={<ResetPassword  userId={user.uid} />} />
+          <Route path="/category" element={<Category userId={user.uid} />} />
+          <Route path="/dashboard" element={<Dashboard  userId={user.uid} />} />
+          <Route path="/community" element={<Community  userId={user.uid} />} />
         </Routes>
       </Router>
 

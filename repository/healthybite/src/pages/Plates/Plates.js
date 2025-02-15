@@ -71,6 +71,12 @@ export const Plates = () => {
         fetchFood()
     },[])
 
+    useEffect(()=>{
+        setTimeout(() => {
+            setSuccessMessage('')
+        }, 2500); 
+    },[successMessage])
+
   return (
     <div className='h-screen sm:h-full  overflow-y-hidden'>
         <NavBar/>
@@ -112,7 +118,7 @@ export const Plates = () => {
                         </div>
                         <div className='flex flex-col items-start justify-start w-10/12 my-4  md:my-0 md:w-2/5 md:mr-2'>
                             <button onClick={()=>setNewPlate(!newPlate)} className={`text-white text-md font-bold px-4 py-1 ${ newPlate ? 'rounded-t-lg' :'rounded-lg'} bg-healthyGray1 hover:bg-healthyDarkGray1 w-full `}><FontAwesomeIcon icon={faPlus} className='mr-2 '/>New plate</button>
-                            {newPlate && <NewPlate foodData={foodData} setPlates={setPlates} plates={plates}/>}
+                            {newPlate && <NewPlate foodData={foodData} setPlates={setPlates} plates={plates} setNewPlate={setNewPlate} setSuccessMessage={setSuccessMessage} setLoading={setLoading}/>}
                         </div>
                     </div>
                 </div>

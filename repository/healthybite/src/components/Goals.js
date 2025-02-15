@@ -14,13 +14,13 @@ function Goals({user, setUser, editGoals}) {
     const [sugar, setSugar]=useState(user.goals.sugar ? user.goals.sugar : 0)
 
     const saveChanges=()=>{
-        setUser({...user, goals: {calories:calories, fats:fat, carbohydrates:carbohydrate, protein:protein, sodium:sodium, sugar:sugar, caffeine:caffeine},})
+        setUser({...user, goals: {calories:calories, fats:fat, carbohydrates:carbohydrate, protein:protein, sodium:sodium, sugar:sugar, caffeine:caffeine}})
         editGoals && editGoals()
     }
     return (
-        <div className="w-full absolute z-50 top-0 left-0 h-screen bg-black/40">
+        <div className="w-full absolute z-50 top-0 left-0 h-screen bg-black/40 ">
             <div className="w-full flex items-center justify-center h-full">
-                <div className=" w-11/12 md:w-3/4 lg:w-1/2 flex flex-col justify-center items-center shadow-lg bg-white rounded-lg py-3 px-6">
+                <div className=" w-11/12 md:w-3/4 lg:w-1/2 flex flex-col justify-center items-center shadow-lg bg-white rounded-lg py-3 px-6 ">
                     <div className='w-full flex flex-col sm:flex-row justify-between items-center  py-2  '>
                         <p className=" font-belleza font-bold text-2xl text-healthyOrange text-left mb-2 sm:mb-0">SET YOUR DAILY GOALS</p>
                         {calories>0 && sodium>0 && carbohydrate>0 && fat>0 && protein>0 &&  <button  onClick={saveChanges} className='bg-healthyDarkOrange/70 text-white px-3 py-1 text-sm rounded-lg font-quicksand font-semibold hover:bg-healthyDarkOrange flex items-center justify-around '><FontAwesomeIcon icon={faBookmark} className='mr-2'/><p>Save goals</p></button>}

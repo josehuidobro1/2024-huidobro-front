@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import FoodItem from './FoodItem';
 import {createplate,createReview, fetchUser} from '../../../firebaseService'
-import { uploadImageToStorage, } from "../../../firebaseConfig";
+import { auth, uploadImageToStorage, } from "../../../firebaseConfig";
 import { faEye, faEyeSlash, faImage, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Visibility } from './Visibility';
 import { plateAchivements } from '../../../components/AchivementsValidation'
+import { useAuthState } from 'react-firebase-hooks/auth';
 
 
-const NewPlate = ({ foodData, setPlates, plates }) => {
+const NewPlate = ({ foodData, setPlates, plates, setNewPlate, setSuccessMessage, setLoading }) => {
   const [plateName, setPlateName] = useState('');
   const [search, setSearch]=useState('')
   const [foods, setFoods]=useState(foodData)
@@ -19,6 +20,7 @@ const NewPlate = ({ foodData, setPlates, plates }) => {
   const [image, setImage] = useState(null);
   const fileInputRef = useRef(null);
   const [publicPlate, setPublicPlate]=useState(false)
+  const [user]= useAuthState(auth)
 
   // Function to handle adding/removing food items
   const handleImageChange = (e) => {
@@ -59,76 +61,70 @@ const NewPlate = ({ foodData, setPlates, plates }) => {
       { calories: 0, sodium: 0, fats: 0, carbohydrates: 0, protein: 0 }
     );
   };
-
-  const ingredientsArray = selectedFoods.map(food => ({
-    ingredientId: food.id,
-    quantity: food.quantity
-}));
   
-const createPlate = async () => {
-  if (!plateName) {
-    setMessage("The plate name is missing");
-    return;
-  }
-  if (selectedFoods.length === 0) {
-    setMessage("Please select the food you want to include");
-    return;
-  }
+  const createPlate = async () => {
+    
+    if (!plateName) {
+      setMessage("The plate name is missing");
+      return;
+    }else if (selectedFoods.length === 0) {
+      setMessage("Please select the food you want to include");
+      return;
+    }else{
+      
+      try {
+        setNewPlate(false)
+        const totals = calculateTotalNutrients();
+        const ingredientsArray = selectedFoods.map((food) => ({
+          ingredientId: food.id,
+          quantity: food.quantity,
+        }));
 
-  try {
-    const user= await fetchUser()
-    console.log("LEVEL", user.validation)
-    let imageUrl = "";
-    if (image) {
-      // Upload the image and get the URL
-      imageUrl = await uploadImageToStorage(image);
-    }
-    const totals = calculateTotalNutrients();
-    const ingredientsArray = selectedFoods.map((food) => ({
-      ingredientId: food.id,
-      quantity: food.quantity,
-    }));
+        let imageUrl = "";
+        if (image) {
+          imageUrl = await uploadImageToStorage(image);
+        }
 
-    const data = {
-      name: plateName,
-      ingredients: ingredientsArray,
-      calories_portion: totals.calories,
-      image: imageUrl,
-      public: publicPlate,
-      sodium_portion: totals.sodium,
-      fats_portion: totals.fats,
-      carbohydrates_portion: totals.carbohydrates,
-      protein_portion: totals.protein,
-      verified: user.validation,
-    };
+        const data = {
+          name: plateName,
+          ingredients: ingredientsArray,
+          calories_portion: totals.calories,
+          image: imageUrl,
+          public: publicPlate,
+          sodium_portion: totals.sodium,
+          fats_portion: totals.fats,
+          carbohydrates_portion: totals.carbohydrates,
+          protein_portion: totals.protein,
+          verified: user.validation,
+        };
 
-    // Update the UI without refreshing the page
-    const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totals.calories, sodium_portion: totals.sodium, carbohydrates_portion: totals.carbohydrates, protein_portion: totals.protein, fats_portion:  totals.fats, image: imageUrl,public:publicPlate,verified: user.validation  })
-    plateAchivements(newPlates.length)
-    setPlates(newPlates);
+        
+        const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totals.calories, sodium_portion: totals.sodium, carbohydrates_portion: totals.carbohydrates, protein_portion: totals.protein, fats_portion:  totals.fats, image: imageUrl,public:publicPlate,verified: user.validation  })
+        plateAchivements(newPlates.length)
+        setPlates(newPlates);
 
-    const plate_id= await createplate(data);
-    if(data.public == true){
-      await createReviewForPublicPlate(plate_id)
-    }
+        const plate_id= await createplate(data);
+        if(data.public == true){
+          await createReviewForPublicPlate(plate_id)
+        }
 
+        // Clear form inputs and display success message
+        setSuccessMessage("Your Plate is created!");
+        setPlateName("");
+        setPublicPlate(false)
+        setSearch('')
+        setSelectedFoods([]);
+        setImage(null); // Clear the selected image
+        setReset(true);
 
-    // Clear form inputs and display success message
-    setMessage("Your Plate is created!");
-    setPlateName("");
-    setPublicPlate(false)
-    setSearch('')
-    setSelectedFoods([]);
-    setImage(null); // Clear the selected image
-    setReset(true);
+        console.log("LEVEL", user.validation)
+      } catch (error) {
+        console.error("Error creating plate:", error);
+        setMessage("An error occurred while creating the plate.");
+      }
+    }   
+  };
 
-    // Reset message after 3 seconds
-    setTimeout(() => setMessage(""), 3000);
-  } catch (error) {
-    console.error("Error creating plate:", error);
-    setMessage("An error occurred while creating the plate.");
-  }
-};
 const createReviewForPublicPlate = async (plate_id) => {
   const review = {
       id_plate: plate_id,
@@ -145,8 +141,10 @@ const createReviewForPublicPlate = async (plate_id) => {
 };
 
 
-const savePlate = async () => {
-  await createPlate();
+
+
+const savePlate = () => {
+  createPlate();
   setReset(true); // Reset the form
 };
 
@@ -202,10 +200,10 @@ const savePlate = async () => {
           />
         ))}
       </div>
-      <div className="flex justify-center items-center sticky mt-2 bottom-0 w-full py-2 cursor-pointer bg-healthyGreen">
+      <div onClick={savePlate} className="flex justify-center items-center sticky mt-2 bottom-0 w-full py-2 cursor-pointer bg-healthyGreen">
         <button
           className="font-quicksand text-white font-bold text-sm"
-          onClick={savePlate}
+          
         >
           Save changes
         </button>

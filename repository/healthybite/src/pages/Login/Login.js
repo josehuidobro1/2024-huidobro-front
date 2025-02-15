@@ -94,7 +94,6 @@ function Login() {
             // 1. Registrar al usuario en Firebase Authentication
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
             const user = userCredential.user;
-            console.log(userCredential.user)
     
             // 2. Agregar el nuevo usuario a la colección "User" en Firestore
             await addDoc(collection(firestore, 'User'), {
@@ -115,12 +114,17 @@ function Login() {
             },
             validation: 0,
             achievements: [],
-
+            allergies:[]
             });
     
             console.log('Usuario registrado y agregado a Firestore:', user.uid);
         } catch (error) {
-            console.error('Error al registrar usuario o agregar a Firestore:', error);
+            if (error.code==="auth/email-already-in-use"){
+                setMessage("That email is already in use, please try another one.");
+            }else{
+                console.error('Error al registrar usuario o agregar a Firestore:', error);
+            }
+            
         }
 
     };
@@ -161,13 +165,13 @@ function Login() {
             :
             <img src={loginImg} alt="Login" className="w-full h-full z-0 relative object-cover" />
             }
-            <div className={`bg-healthyGray w-full sm:w-2/5 lg:w-2/5 xl:w-5/12 absolute flex  sm:left-20 lg:left-40 top-64 flex-col  ${signUp ? ' sm:top-12 md:top-20 xl:top-12':'  sm:top-40'} `} >
-                <div className={`flex  h-full  sm:mt-0 w-3/5 px-12 xs:px-16 sm:px-0   w-full flex-col `}>
+            <div className={`bg-healthyGray w-full sm:w-2/5 lg:w-2/5 xl:w-5/12 absolute flex  sm:left-20 lg:left-40 top-64 flex-col ${signUp ? ' sm:top-12 md:top-20 xl:top-10':'  sm:top-40'} `} >
+                <div className={`flex  h-full  sm:mt-0  px-12 xs:px-16 sm:px-0   w-full flex-col `}>
                     <h1 className= {`font-belleza text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-darkGray ${forgot ? 'text-center':'text-left'}`}>Healthy Bite</h1>
                     
                     {signUp ? (
-                        <div classname='  w-full '>
-                            <div className="sm:mt-6 flex flex-col bg-healthyGray w-full sm:max-h-[580px] md:max-h-[550px]    lg:max-h-[500px] xl:max-h-[430px] 2xl:max-h-[500px]  sm:overflow-y-auto  lg:max-w-[400px] ">
+                        <div classname='  w-full h-screen bg-red-500 '>
+                            <div className="sm:mt-6 flex flex-col bg-healthyGray w-full sm:max-h-[580px] md:max-h-[1000px]   lg:max-h-[480px] xl:max-h-[430px] 2xl:max-h-[500px]  sm:overflow-y-auto  lg:max-w-[400px] ">
                                 <div className="flex w-full bg-healthyGray sm:sticky sm:top-0">
                                     <button onClick={()=>{setSignUp(false); setPassword('')} } className="font-quicksand  bg-healthyGreen p-2   w-full rounded-xl  text-white font-semibold my-4 hover:bg-healthyDarkGreen">Go Back to Login</button>
                                 </div>
@@ -185,9 +189,9 @@ function Login() {
                                     <Input required={inValidation && password===''} label="Password" inputType="password" inputValue={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
                                     <Input required={inValidation && confirmPw===''} label="Confirm password" inputType="password" inputValue={confirmPw} placeholder="Password" onChange={(e) => setConfirmPw(e.target.value)} />
                                 </div>
-                                <div className="flex sm:sticky sm:bottom-0 bg-healthyGray flex-col-reverse sm:flex-row justify-between items-center">
+                                <div className="flex sm:sticky sm:bottom-0 bg-healthyGray flex-col-reverse justify-between items-center pt-2">
                                     <button onClick={handleSubmit} className="font-quicksand bg-healthyOrange p-2 w-full  rounded-xl  text-white font-semibold mb-12 sm:my-4 hover:bg-healthyDarkOrange">Submit</button>
-                                    {message && <p className="font-quicksand underline underline-offset-4 text-sm font-semibold p-1 rounded-md text-healthyOrange">{message}</p>}
+                                    {message && <p className="font-quicksand text-sm font-bold py-1 rounded-md text-white bg-healthyBlue px-3 mb-1">{message}</p>}
                                 </div>
                             </div>
                         </div>)

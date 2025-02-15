@@ -44,9 +44,9 @@ function NavBar() {
                 </div>}
             </div>
             { openBar &&
-                    <div className="w-full xs:w-11/12  xs:mt-2  z-10 right-0 bg-healthyGreen xs:bg-none  xs:rounded-3xl  h-full flex items-center justify-center overflow-y-hidden">
-                        <div className="   xs:shadow-sm w-full h-screen  pb-12 xs:pb-2 py-2  px-2  flex flex-col xs:flex-row  items-center justify-around ">
-                            <div className=" h-full grid grid-cols-2 gap-1 justify-around  xs:items-center w-full ">
+                    <div className="w-full   z-10 right-0 bg-healthyGreen  h-full flex items-center justify-center overflow-y-hidden">
+                        <div className="   w-full h-screen  pb-12 py-2  px-2  flex flex-col items-center justify-around ">
+                            <div className=" h-full grid grid-cols-2 gap-1 justify-around   w-full ">
                                 <NavItem route='/' name='Home' icon={faHouse} setOpenBar={setOpenBar} />
                                 <NavItem route='/plates' name='Plates' icon={faUtensils} setOpenBar={setOpenBar}/>
                                 <NavItem route='/drinks' name='Drinks' icon={faMugHot}  setOpenBar={setOpenBar}/>
@@ -57,7 +57,7 @@ function NavBar() {
                                 <NavItem route='/user-profile' name='User Profile' icon={faUser} setOpenBar={setOpenBar} />
                                 
                             </div>
-                            <Link to="/" onClick={handleLogOut} className="font-quicksand text-center relative bottom-2 my-5  font-semibold max-h-12 text-xl xs:text-xs sm:text-sm text-healthyGreen hover:mt-1  px-4 py-2  xs:px-1 sm:px-3 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>
+                            <Link to="/" onClick={handleLogOut} className="font-quicksand text-center relative bottom-2 my-5 font-semibold max-h-12 text-xl  text-healthyGreen hover:mt-1  w-1/5 py-2  xs:px-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>
                         </div>
                     </div>
 

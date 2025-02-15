@@ -18,7 +18,6 @@ const StreakCounter = ({ streakDays }) => {
 
   return (
     <div className="flex justify-center items-center pt-2">
-      {/* Streak display */}
       <div className="flex flex-row items-center">
         <p className="text-2xl font-bold font-quicksand text-healthyOrange">{streakDays} days</p>
         <FontAwesomeIcon
@@ -27,12 +26,10 @@ const StreakCounter = ({ streakDays }) => {
           icon={faFire}
         />
       </div>
-
-      {/* Tooltip */}
       {showTooltip && (
         <div
         className="flex justify-center items-center font-semibold transform -translate-x-1/2 bg-healthyOrange text-white font-quicksand text-sm rounded-lg p-3 w-full pb-2 pl-2  z-10 text-center"        >
-          This is the number of consecutive days you've logged your food. Keep going!
+          <p>This is the number of consecutive days you've logged your food. Keep going!</p>
         </div>
       )}
     </div>

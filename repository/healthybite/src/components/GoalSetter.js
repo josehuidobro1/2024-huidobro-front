@@ -3,7 +3,7 @@ import { Slider } from '@mui/material'
 
 function GoalSetter({label, measure, value, setValue, max}) {
 return (
-    <div className='flex flex-col sm:flex-row w-full justify-start items-center py-3 text-darkGray'>
+    <div className='flex flex-col sm:flex-row w-full justify-start items-center py-1 text-darkGray'>
         <div className='w-full  sm:w-3/12 flex flex-row sm:flex-col items-center justify-between  sm:justify-center'>
             <p className='sm:w-full text-left font-semibold text-md'>{label}</p>
             <p className='sm:w-full text-left text-sm '>{value} {measure}</p>
