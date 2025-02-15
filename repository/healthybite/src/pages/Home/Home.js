@@ -380,7 +380,7 @@ function Home() {
                                 </div>
                                 
                             </div>
-                            <StreakCounter streakDays={streak} />
+                            {streak>0 && <StreakCounter streakDays={streak} />}
                         </div>
                         <Calories userFood={userFood} />
                     </div>
@@ -404,8 +404,8 @@ function Home() {
                     </div>
                 </div>
                 
-                {(window.innerWidth > '1024') && (
-                    <div className="w-full lg:w-4/12 lg:h-screen flex justify-start">
+                {(window.innerWidth >= '1024') && (
+                    <div className="w-full lg:w-3/12 lg:h-screen flex justify-start">
                         <img src={bgImage} alt='Bakground image' className="w-full h-full object-cover" />
                     </div>
                 )}

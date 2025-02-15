@@ -8,8 +8,10 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 const Calendar = ({value, onChange}) => {
     const dayjsValue = dayjs(value);
     return (
+      <div className='flex w-full justify-center items-center'>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer  components={['DatePicker', 'DatePicker']}>
+        <div className='flex w-full justify-center items-center'>
           <DatePicker
             value={dayjsValue}
             onChange={onChange}
@@ -27,9 +29,10 @@ const Calendar = ({value, onChange}) => {
               },
               zIndex: 0
             }}
-          />
+          /></div>
         </DemoContainer>
       </LocalizationProvider>
+      </div>
     )
 }
 
