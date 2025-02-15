@@ -22,7 +22,9 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
         const data={
             name:name, 
             icon:iconSelected.name,
-            foods: catFoods.map((items)=>items.id)
+            foods: catFoods.filter(item=> food.find(i=>i.id===item.id && !i.bar && !i.plate && !i.drink )).map(e=>e.id),
+            plates:catFoods.filter(item=> food.find(i=>i.id===item.id && i.plate )).map(e=>e.id),
+            drinks: catFoods.filter(item=> food.find(i=>i.id===item.id && i.drink )).map(e=>e.id)
         }
         if(data !== category) {
             try{
@@ -67,9 +69,9 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
                     <input onChange={(e)=>setName(e.target.value)} value={name} className=' rounded-sm p-1  bg-white text-sm w-3/4 ' type='text' placeholder={category.name} ></input>
                 </div>
                 <div className='flex flex-row items-center justify-between w-1/3 '>
-                    <p className='font-semibold text-sm text-white  text-center w-1/2 lg:w-2/3'>Icon</p>
-                    <div className='flex flex-row bg-white items-center justify-between rounded-sm py-1 px-2 w-1/2 lg:w-1/3'>
-                        <FontAwesomeIcon className='text-healthyGray1 text-lg' icon={iconSelected.icon} />
+                    <p className='font-semibold text-sm text-white  text-center w-1/2 lg:w-1/3'>Icon</p>
+                    <div className='flex flex-row bg-white items-center justify-between rounded-sm py-1 px-2 w-1/2 lg:w-2/3'>
+                        <div className='flex w-3/4 items-center justify-center'><FontAwesomeIcon className='text-healthyGray1 text-lg' icon={iconSelected.icon} /></div>
                         <FontAwesomeIcon onClick={()=>setDropIcons(!dropIcons)} className='text-healthyGray1 text-lg hover:cursor-pointer hover:text-healthyDarkGray1' icon={faCaretDown} />
                     </div>
                 </div>
@@ -83,7 +85,7 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
                         <FontAwesomeIcon icon={faSquarePlus} className='text-xl text-white ' />
                     </div>
                 </div>
-                <div className='flex flex-col bg-white rounded-sm mt-2 sm:mt-0 w-full sm:w-2/3 lg:w-3/4 items-start justify-start p-1 max-h-32 overflow-y-auto'>
+                <div className='flex flex-wrap gap-1 bg-white rounded-sm mt-2 sm:mt-0 w-full sm:w-2/3 lg:w-3/4 items-start justify-start p-1 max-h-32 overflow-y-auto'>
                     {catFoods.map((item, index)=>(<FoodItem key={index} food={item} setCatFoods={setCatFoods} catFoods={catFoods}/>))}
                 </div>
             </div>

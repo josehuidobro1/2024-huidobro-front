@@ -43,15 +43,15 @@ function App() {
     <Router>
         {user && notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
         <Routes>
-          <Route path="/" element={ user ? <Home userId={user.uid} /> : <Login />} />
-          <Route path="/plates" element={<Plates userId={user.uid} />}/>
-          <Route path="/drinks" element={<Drinks userId={user.uid} />}/>
-          <Route path='/schedule' element={<Schedule userId={user.uid} />}/>
-          <Route path="/user-profile" element={<UserProfile  userId={user.uid} />} />
-          <Route path="/resetPassword" element={<ResetPassword  userId={user.uid} />} />
-          <Route path="/category" element={<Category userId={user.uid} />} />
-          <Route path="/dashboard" element={<Dashboard  userId={user.uid} />} />
-          <Route path="/community" element={<Community  userId={user.uid} />} />
+          <Route path="/" element={ user ? <Home userId={user?.uid} /> : <Login />} />
+          <Route path="/plates" element={<Plates userId={user?.uid} />}/>
+          <Route path="/drinks" element={<Drinks userId={user?.uid} />}/>
+          <Route path='/schedule' element={<Schedule userId={user?.uid} />}/>
+          <Route path="/user-profile" element={<UserProfile  userId={user?.uid} />} />
+          <Route path="/resetPassword" element={<ResetPassword  userId={user?.uid} />} />
+          <Route path="/category" element={<Category userId={user?.uid} />} />
+          <Route path="/dashboard" element={<Dashboard  userId={user?.uid} />} />
+          <Route path="/community" element={<Community  userId={user?.uid} />} />
         </Routes>
       </Router>
 

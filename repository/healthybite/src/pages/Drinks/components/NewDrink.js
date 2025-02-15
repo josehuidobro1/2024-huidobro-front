@@ -126,9 +126,9 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
                         </div>
                         {typeOptions && (
                             <div className='w-11/12 flex flex-col justify-end'>
-                                {drinktypes.map((drinkType) => (
+                                {drinktypes.map((drinkType, index) => (
                                     <DrinkType
-                                        key={drinkType.id}
+                                        key={index}
                                         drinkType={drinkType}
                                         setTypeSelected={setTypeSelected}
                                         setTypeId = {setTypeId}
@@ -181,8 +181,8 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
                 </div>
             </div>
 
-            <div className='flex justify-center items-center sticky mt-2 bottom-0 w-full py-2 cursor-pointer bg-healthyGreen'>
-                <button onClick={handleNewDrink} className='font-quicksand text-white font-bold text-sm'>Save changes</button>
+            <div onClick={handleNewDrink} className='flex justify-center items-center sticky mt-2 bottom-0 w-full py-2 cursor-pointer bg-healthyGreen'>
+                <button className='font-quicksand text-white font-bold text-sm'>Save changes</button>
             </div>
         </div>
     );

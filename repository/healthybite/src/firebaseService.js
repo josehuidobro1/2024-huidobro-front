@@ -8,25 +8,23 @@ import { onAuthStateChanged } from "firebase/auth";
 
 //const ruta='https://two024-huidobro-back.onrender.com'
 const ruta='http://127.0.0.1:8000'
+let cachedUserUid = null;
 
-let userUidPromise;
-
-export const getUserUid = () => {
-    if (!userUidPromise) {
-        userUidPromise = new Promise((resolve, reject) => {
-            onAuthStateChanged(auth, (user) => {
-                if (user) {
-                    resolve(user.uid); 
-                } else {
-                    reject(new Error("No user is currently logged in.")); 
-                }
-            });
-        });
+export const getUserUid = async () => {
+    if (cachedUserUid) {
+        return cachedUserUid;
     }
-    return userUidPromise; 
+    return new Promise((resolve, reject) => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                cachedUserUid = user.uid; // Cache the UID
+                resolve(user.uid);
+            } else {
+                reject(new Error("No user is currently logged in."));
+            }
+        });
+    });
 };
-
-
 
 export const fetchUser=async()=>{
     try {
@@ -41,7 +39,6 @@ export const fetchUser=async()=>{
 
 export const editUserData=async(data)=>{
     try {
-
         const user_id=await getUserUid();
         const response = await axios.put(`${ruta}/update_user/${user_id}`, data);
         return response.data; // Adjust this based on your backend response structure
@@ -546,7 +543,7 @@ export const getProdByID= async(prod_id)=>{
 export const createplate = async (selection) => {
     try {
         const user_id=await getUserUid();
-        const response = await fetch("${ruta}/CreatePlate/", {
+        const response = await fetch(`${ruta}/CreatePlate/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -629,7 +626,7 @@ export const fechDrinkTypes = async () =>{
 export const createDrinkType = async (selection) => {
     try {
         const user_id=await getUserUid();
-        const response = await fetch('${ruta}/drinkType_log', {
+        const response = await fetch(`${ruta}/drinkType_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -674,7 +671,7 @@ export const getUserDrinks = async () =>{
 export const createDrink = async (selection) => {
     try {
         const user_id=await getUserUid();
-        const response = await fetch('${ruta}/drink_log', {
+        const response = await fetch(`${ruta}/drink_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -698,10 +695,10 @@ export const createDrink = async (selection) => {
             throw new Error(data.detail || "Something went wrong");
             
         }
-        
 
-        console.log("drink entry added successfully:", data);
-        return response.data.message.drinkType_id;
+        console.log('RESPONSEEEE , ', response)
+        
+        return response;
     } catch (error) {
         console.error("Error adding drink entry:", error);
         return null;
@@ -786,7 +783,7 @@ export const updateComments = async (doc_id, data) => {
 export const createReview = async (selection) => {
     try {
         console.log(selection)
-        const response = await fetch('${ruta}/newReview', {
+        const response = await fetch(`${ruta}/newReview`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

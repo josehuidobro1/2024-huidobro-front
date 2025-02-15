@@ -54,10 +54,14 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods, platesDat
         }
         if (name && iconSelected &&  selectedFoods.length>0){
             try{
+                console.log('food for category ' , selectedFoods)
+                console.log('fooooods ', foods)
                 const data={
                     name: name,
                     icon: iconSelected.name,
-                    foods: selectedFoods
+                    foods: selectedFoods.filter(item=> foods.find(i=>i.id===item && !i.bar && !i.plate && !i.drink )),
+                    plates:selectedFoods.filter(item=> foods.find(i=>i.id===item && i.plate )),
+                    drinks: selectedFoods.filter(item=> foods.find(i=>i.id===item && i.drink )),
                 }
                 await createCategory(data)
                 setName('')
@@ -100,9 +104,9 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods, platesDat
         <div className='flex flex-col w-full mt-3 '>
             <div className='flex flex-col w-full p-2 bg-white rounded-md max-h-44 overflow-y-auto'>
                 {foods.map((food, index)=>(<div key={index} className='flex flex-row items-center w-full justify-start mb-2'>
-                    <input type="checkbox" checked={selectedFoods.includes(food.id)}  className='text-xl text-darkGray ' value={food.id} onChange={() => handleFoodSelection(food.id)} />
+                    <input type="checkbox" checked={selectedFoods.includes(food.id)}  className='text-xl text-healthyDarkGray1 ' value={food.id} onChange={() => handleFoodSelection(food.id)} />
                     <div className='flex flex-col items-start ml-2'>
-                        <p className='text-sm lg:text-md font-semibold text-darkGray'>{food.name}</p>
+                        <p className='text-sm lg:text-md font-semibold text-healthyDarkGray1'>{food.name}</p>
                         {food.bar && <p className='text-xs text-messidepaul  '>by C&V menu</p>}
                         {food.drink && <p className='text-xs text-messidepaul  '>Drink</p>}
                         {food.plate &&  <p className='text-xs text-messidepaul  '>{food.private ? 'My plate' : 'Public plate' }</p>}

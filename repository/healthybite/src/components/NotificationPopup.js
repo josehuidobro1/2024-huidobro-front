@@ -2,13 +2,14 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faXmark } from '@fortawesome/free-solid-svg-icons';
 import alert from '../assets/celebrate.gif'
+import { Link } from 'react-router-dom';
 
 const NotificationPopup = ({ notifications, onDismiss }) => {
     if (notifications?.length === 0){ 
         return null
     }else{
         return (
-            <div className="fixed bottom-0 sm:top-4 right-0 w-11/12   md:w-2/5 font-quicksand  text-white  z-50 flex flex-col ">
+            <div to='/user-profile' className="fixed bottom-0 sm:top-4 right-0 w-11/12   md:w-2/5 font-quicksand  text-white  z-50 flex flex-col ">
                 {notifications.map((notification) => (
                     <div key={notification.id} className='flex flex-row bg-healthyYellow rounded-l-full shadow-lg  w-full mb-2 items-center'>
                         <div  className='flex w-1/5 md:w-3/12 lg:w-2/12 items-center justify-center rounded-full p-3  '>

@@ -10,9 +10,9 @@ function FoodItem({food, setCatFoods,catFoods}) {
   }
 
   return (
-    <div className='flex flex-row items-center justify-between p-2 w-full border-2 border-healthyGray rounded-sm'>
-        <p className='text-healthyDarkGray1 text-sm text-left '>{food.name}</p>
-        <FontAwesomeIcon onClick={handleDeleteFood} icon={faCircleMinus} className='text-healthyDarkGray text-xl text-healthyDarkGray1 hover:cursor-pointer  hover:text-darkGray ' />
+    <div className='flex flex-row items-center justify-between  border-2 px-2 border-healthyGray rounded-full'>
+        <p className='text-healthyGray1 text-sm text-left text-semibold pr-1  '>{food.name}</p>
+        <FontAwesomeIcon onClick={handleDeleteFood} icon={faCircleMinus} className='text-healthyDarkGray text-md text-healthyGray hover:cursor-pointer  hover:text-healthyGray1 ' />
     </div>
   )
 }

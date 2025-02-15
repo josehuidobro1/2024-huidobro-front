@@ -23,7 +23,7 @@ const DrinkType = ({ drinkType, setTypeSelected, setTypeId,setTypeOptions, handl
     }
 
     return (
-        <div className='flex justify-between items-center mt-1 bg-hbGreen rounded-sm hover:border-healthyGreen border-2 border-hbGreen'>
+        <div className='flex justify-between font-quicksand items-center mt-1 bg-hbGreen rounded-sm hover:border-healthyGreen border-2 border-hbGreen'>
             <button
                 onClick={typeselected}
                 className='w-11/12 text-sm text-left bg-hbGreen  text-healthyDarkGreen px-2 rounded-sm'
@@ -31,7 +31,7 @@ const DrinkType = ({ drinkType, setTypeSelected, setTypeId,setTypeOptions, handl
                 {drinkType.name}
             </button>
             {drinkType.id_user !== 'default' && (
-                <button onClick={() => handleDelete(drinkType.id)} className='ml-2 border-hbGreen border-2'>
+                <button onClick={() => handleDelete(drinkType.id)} className='ml-2 border-hbGreen pr-1'>
                     <FontAwesomeIcon icon={faTimes} className='text-red-500' />
                 </button>
             )}

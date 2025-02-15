@@ -78,18 +78,17 @@ function Category() {
             <Loading />
         :<div className='w-full flex flex-row items-start justify-between h-screen overflow-y-auto md:overflow-y-hidden'>
             {window.innerWidth > 768  && 
-            <div className='w-1/4 lg:w-1/3 overflow-hidden  h-screen  flex items-center justify-start'>
+            <div className='w-1/4  overflow-hidden  h-screen  flex items-center justify-start'>
                 <img src={categoryImg} alt="Category image background"  className=' w-full h-full object-cover'/>
             </div>
             }
-            <div className=' w-full md:w-3/4 lg:w-2/3 bg-white flex flex-col items-start justify-start mt-0 sm:mt-16 p-2 sm:p-6 '>
+            <div className=' w-full md:w-3/4  flex flex-col items-start justify-start mt-0 sm:mt-16 lg:mt-20 p-2 sm:p-6 mb-8 h-full overflow-y-auto'>
                 <h2 className='font-belleza bg-white w-full text-2xl  text-left text-healthyDarkOrange '>Categories</h2>
-                <div className='flex flex-col-reverse sm:flex-row justify-center sm:justify-between items-center sm:items-start mt-6 w-full'>
-                    <div className='flex flex-col w-full sm:w-2/3 justify-start items-start '>
-
+                <div className='flex flex-col-reverse  sm:flex-row justify-center sm:justify-between items-center sm:items-start mt-6 w-full mb-12 '>
+                    <div className='flex flex-col w-full sm:w-2/3  lg:w-3/5 justify-start items-start mb-8 '>
                         {categories.map((item, index)=>(<CategoryItem key={index} handleUpdate={handleUpdate} category={item}  setAddFood={setAddFood} food={foodData} selection={selection} />) )}
                     </div>
-                    <div className=' w-full  mb-3 sm:mb-0 sm:w-1/3 flex flex-col mx-4 bg-white py-3 sm:py-0 '>
+                    <div className=' w-full  mb-3 sm:mb-0 sm:w-1/3 lg:w-2/5 flex flex-col mx-4 bg-white py-3 sm:py-0 '>
                         <div onClick={()=>setAddCategory(!addCategory)} className='flex  items-center justify-center font-quicksand rounded-md border-2 border-healthyGreen shadow-sm p-1 lg:p-2 hover:cursor-pointer '>
                             <FontAwesomeIcon icon={faPlus} className='text-xl text-healthyGreen mr-2'/>
                             <p className='font-quicksand  text-md lg:text-lg text-healthyGreen  font-semibold'>Add cattegory</p>

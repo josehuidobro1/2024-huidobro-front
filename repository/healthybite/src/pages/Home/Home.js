@@ -67,11 +67,13 @@ function Home() {
         }
         setGoalConsumed(value)
     },[index, userFood])
+
+
     useEffect(() => {
         const fetchStreak = async () => {
             try {
                 const streakValue = await getstreak();
-                setStreak(streakValue);
+                setStreak(streakValue.consecutive_days);
                 if (streakValue>3){
                     addGoal(1)
                 }
@@ -131,9 +133,10 @@ function Home() {
             // Prepare the data for the update
             const data = {
                 name: BarCat.name,
-                id_User: 'default', 
                 icon: BarCat.icon, // Fixed this to use BarCat.icon (instead of BarCat.name for both)
-                foods: [...BarCat.foods, ...filteredFoods.map(food => food.id)] // Combine existing foods and new filtered foods
+                plates:[...BarCat.foods, ...filteredFoods.map(food => food.id)],
+                foods: [],
+                drinks: []
             };
 
             await updateCategoryDefault(data, BarCat.id);    
@@ -239,10 +242,11 @@ function Home() {
     };
 
     useEffect(()=>{
-        const updateGoals= async()=>{
-            
-            await editUserData(user)}
-        updateGoals()
+        if(user){
+            const updateGoals= async()=>{
+                await editUserData(user)}
+            updateGoals()
+    }
     },[user])
     
 
