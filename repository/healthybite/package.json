@@ -14,7 +14,6 @@
     "@mui/x-charts": "^7.18.0",
     "@mui/x-date-pickers": "^7.16.0",
     "@nextui-org/calendar": "^2.0.11",
-    "@tailwindcss/postcss": "^4.0.6",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -61,10 +60,11 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.5.2",
-    "tailwindcss": "^4.0.6"
-  }
+"devDependencies": {
+  "autoprefixer": "^10.4.20",
+  "postcss": "^8.5.2",
+  "tailwindcss": "^4.0.0", 
+  "tailwind-scrollbar": "^4.0.0",
+  "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+}
 }
