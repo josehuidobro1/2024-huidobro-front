@@ -32,13 +32,9 @@ export const Plates = () => {
                     setPlates(plates);
                     plateAchivements(plates.length)
                     setLoading(false)
-                    
-
                 } catch (err) {
                     console.log('Error al obtener las platos: ' + err);
                 }
-            
-            
         })
         return () => unsubscribe();
     };

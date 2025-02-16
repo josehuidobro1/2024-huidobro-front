@@ -383,14 +383,15 @@ function Home() {
                         </div>
                         <Calories userFood={userFood} />
                     </div>
-                    <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12 ">
-                        <div className="flex flex-col w-full pb-36 sm:pb-12 ">
+                    <div className="w-full sm:w-3/4 flex flex-col items-center justify-start pl-0 sm:pl-12 h-full mb-36 sm:mb-12 ">
+                        <div className="flex flex-col w-full overflow-y-auto ">
                             {filteredFood.map((usfood) => (
                                 <FoodConsumed
                                     key={usfood.id}
                                     usfood={usfood}
                                     handleDeleteMeal={handleDeleteMeal} // Pass the delete function here
                                     handleEditFoodConsumed={handleEditFoodConsumed}
+                                    drink={drinksData.find(item=>item.id===usfood.id_Food)}
                                 />
                             ))}
                             
