@@ -1,28 +1,37 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SelectItem from '../../../components/SelectItem'
 import { createSchedule, editSchedule, editUserData } from '../../../firebaseService'
 import Item from './Item'
 
 const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksData}) => {
-    const [schedule, setSched]=useState(scheduleList.length>0 ? scheduleList.find(item=>item.day==day):null)
+    if(day==='monday'){
+        console.log('schedule list ', scheduleList)
+    }
+    const [schedule, setSched]=useState((scheduleList.length>0 && scheduleList.find(item=>item.day==day)) || null)
     const [edit,setEdit]=useState(false)
     const [selectedFood, setSelectedFood]=useState(scheduleList.length>0 && scheduleList.find(item=>item.day==day) ? scheduleList.find(item=>item.day==day).foodList: [])
     const [view, setView]=useState(0)
 
+    useEffect(()=>{
+        setSched((scheduleList.length>0 && scheduleList.find(item=>item.day==day)) || null)
+    },[scheduleList])
 
     const handleEdit=async()=>{
         if(edit && selectedFood.length>0){
             const data={day:day, foodList:selectedFood}
             schedule ? await editSchedule(schedule.id, data) : await createSchedule(data)
             setSched(data)
-            const schedulEdited= scheduleList.find(item=>item.id===schedule.id) ? scheduleList.map(item=>item.id===schedule.id ? {...item,foodList:selectedFood} : item) : [...scheduleList,{...data, id: schedule.id, id_user:schedule.id_user}]
+            console.log('Scheduleee ', schedule)
+            console.log('Scheduleee now ', data)
+            const schedulEdited= scheduleList.includes(item=>item.day==day) && schedule ? scheduleList.map(item=>item.day===schedule.day ? {...item,foodList:selectedFood} : item) : [...scheduleList,{...data}]
+            console.log('ScheduleEdited ', schedulEdited)
             setSchedule(schedulEdited)
         }
         setEdit(!edit)
     }
 
   return (
-    <div className='flex flex-row font-quicksand   sm:flex-col w-full md:w-48 lg:w-52 xl:w-56 sm:mx-1 mt-1 sm:mt-2 sm:items-center  sm:justify-start sm:p-1 rounded-md bg-white/70 sm:bg-healthyGreen/20'>
+    <div className='flex flex-row font-quicksand   sm:flex-col w-full md:w-48 lg:w-44 sm:mx-1 mt-1  sm:mt-2 sm:items-center  sm:justify-start sm:p-1 rounded-md bg-white/70 sm:bg-healthyGreen/20'>
         <div className='flex flex-col items-stretch justify-around bg-healthyGreen/40 sm:bg-healthyGreen/20 sm:justify-center sm:flex-col w-1/3 sm:w-full '>
             <div className='w-full flex justify-center items-center sm:bg-healthyGreen/40 p-1 sm:p-0'>
                 <p className='font-bold w-full text-center text-md  px-2 py-1 rounded-md mb-0 sm:mb-1 text-white '>{day.charAt(0).toUpperCase() + day.slice(1)}</p>
@@ -31,24 +40,24 @@ const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksDat
                 <button onClick={handleEdit} className='px-2 rounded-full text-xs font-bold text-white bg-healthyGray1 hover:bg-healthyDarkGray1 shadow-sm'>{edit ? 'Save' : schedule ? 'Edit' : 'Add'}</button>
             </div>
         </div>
-        <div className='flex flex-col overflow-y-auto scrollbar-thin w-2/3  sm:w-full h-full sm:max-h-56 md:max-h-72  justify-start sm:bg-white/70 p-1 rounded-sm  sm:mt-1 flex-wrap sm:flex-nowrap'>
+        <div className='flex flex-col overflow-y-auto scrollbar-thin w-2/3  sm:w-full h-full sm:max-h-56 md:max-h-72  justify-start sm:bg-white/70 p-1  rounded-sm  sm:mt-1 flex-wrap sm:flex-nowrap'>
             {edit ?
                 <div className='flex flex-col w-full '>
-                    <button onClick={()=>setView( view===1 ? 0 : 1)} className='bg-healthyGray1 rounded-sm font-semibold text-sm text-white hover:bg-healthyDarkGray1 text-center py-1 mt-1 '>Food</button>
-                    <div className='max-h-24 sm:h-full overflow-y-auto'>
-                    {view===1 && foodData && foodData.length>0 && foodData.map((item,index)=>
+                    <button onClick={()=>setView( view===1 ? 0 : 1)} className='bg-healthyGray1 rounded-sm font-semibold text-sm text-white hover:bg-healthyDarkGray1 ext-center py-1 mt-1 '>Food</button>
+                    
+                    {view===1 && foodData && foodData.length>0 && <div className='max-h-24 sm:h-full overflow-y-auto'> {foodData.map((item,index)=>
                         <Item key={index} selectedFood={selectedFood} item={item} setSelectedFood={setSelectedFood} schedule={schedule}/>
-                    )}</div>
+                    )}</div>}
                     <button onClick={()=>setView( view===2 ? 0 : 2)} className='bg-healthyGray1 rounded-sm font-semibold text-sm text-white hover:bg-healthyDarkGray1 text-center py-1 mt-1'>Plates</button>
-                    <div className='max-h-24 sm:h-full overflow-y-auto'>
-                    {view===2 && platesData && platesData.length>0 && platesData.map((item,index)=>
+                    
+                    {view===2 && platesData && platesData.length>0 && <div className='max-h-24 sm:h-full overflow-y-auto'>{ platesData.map((item,index)=>
                         <Item key={index} selectedFood={selectedFood} item={item} setSelectedFood={setSelectedFood} schedule={schedule}/>
-                    )}</div>
+                    )}</div>}
                     <button onClick={()=>setView( view===3 ? 0 : 3)} className='bg-healthyGray1 rounded-sm font-semibold text-sm text-white hover:bg-healthyDarkGray1 text-center py-1 mt-1'>Drinks</button>
-                    <div className='max-h-24 sm:h-full overflow-y-auto'>
-                    {view===3 && drinksData && drinksData.length>0 && drinksData.map((item,index)=>
+                    
+                    {view===3 && drinksData && drinksData.length>0 && <div className='max-h-24 sm:h-full overflow-y-auto'>{ drinksData.map((item,index)=>
                         <Item key={index} selectedFood={selectedFood} item={item} setSelectedFood={setSelectedFood} schedule={schedule}/>
-                    )}</div>
+                    )}</div>}
                 </div>
                 :
                 schedule ?

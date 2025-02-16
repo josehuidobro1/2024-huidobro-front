@@ -2,37 +2,85 @@ import { faCartShopping, faCopy, faXmark } from '@fortawesome/free-solid-svg-ico
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useState } from 'react'
 import ListItem from './ListItem'
+import { data } from 'autoprefixer'
 
 const PopUp = ({schedule,setList, foodData, platesData, drinksData}) => {
     const [copy,setCopy]=useState(false)
     const [message, setMessage]=useState('')
 
-    const [foodList, setFoodList ] = useState(()=>schedule.reduce((acc, curr) => {
-        console.log('schedule list pop up ',schedule)
-        curr.foodList.forEach(food => {
+    const prueba=()=>{
+        let shoppingList=[]
+        if(schedule.length>0 ){
+            schedule.forEach(day=>
+                day.foodList.forEach(food=>{
+                    const plate = platesData.find(plate => plate.id === food.food_id)
+                    if (plate) {
+                        plate.ingredients.forEach(ingredient => {
+                        const existingIngredient = shoppingList.find(item => item?.food_id === ingredient.ingredientId);
+                        const requiredQuantity = ingredient.quantity * food.quantity; // Calcular cantidad necesaria
+                        if (existingIngredient) {
+                            existingIngredient.quantity += requiredQuantity;
+                        } else {
+                            shoppingList.push({ food_id: ingredient.ingredientId, quantity: requiredQuantity  });
+                        }
+                        });
+                    }else{
+                        const existingFood = shoppingList.find(item => item?.food_id === food.food_id)
+                        if (existingFood) {
+                            existingFood.quantity += food.quantity; // si en los dias ya habia existido esa comida se suma
+                        } else {
+                            shoppingList.push({ food_id: food.food_id, quantity: food.quantity }); 
+                        }
+                    }
+                })
+            )
+        }
+        return shoppingList
+    }
 
-            const plate = platesData.find(plate => plate.id === food.food_id);
-            if (plate) {
-                plate.ingredients.forEach(ingredient => {
-                const existingIngredient = acc.find(item => item.food_id === ingredient.ingredientId);
-                const requiredQuantity = ingredient.quantity * food.quantity; // Calcular cantidad necesaria
-                if (existingIngredient) {
-                    existingIngredient.quantity += requiredQuantity;
-                } else {
-                    acc.push({ food_id: ingredient.ingredientId, quantity: requiredQuantity  });
-                }
-                });
-            }else{
-                const existingFood = acc.find(item => item.food_id === food.food_id); //recorre una or una la food de cada dia
-                if (existingFood) {
-                    existingFood.quantity += food.quantity; // si en los dias ya habia existido esa comida se suma
-                } else {
-                    acc.push({ food_id: food.food_id, quantity: food.quantity }); 
-                }
-            }
-        });
-        return acc;
-    }, []))
+    const getList=()=>{
+        console.log('SCHEDULE', schedule)
+        if(schedule.length>0 ){
+
+           const lista= schedule.reduce((acc, curr) => {
+            console.log('Accc ', acc)
+            console.log('curr', curr)
+                curr.foodList.forEach(food => { // por cada dia que se registro la comida se registra cada comida ej: bread 
+
+                    const plate = platesData.find(plate => plate.id === food.food_id); // si bread es un plato...
+                    if (plate) {
+                        plate.ingredients.forEach(ingredient => {
+                        const existingIngredient = acc.find(item => item.food_id === ingredient.ingredientId);
+                        const requiredQuantity = ingredient.quantity * food.quantity; // Calcular cantidad necesaria
+                        if (existingIngredient) {
+                            existingIngredient.quantity += requiredQuantity;
+                        } else {
+                            acc.push({ food_id: ingredient.ingredientId, quantity: requiredQuantity  });
+                        }
+                        });
+                    }else{
+                        const existingFood = acc.length>0  && acc.find(item => item?.food_id === food.food_id) //si bread no es un plato pero ya se registro antes?
+                        if (existingFood) {
+                            existingFood.quantity += food.quantity; // si en los dias ya habia existido esa comida se suma
+                        } else {
+                            acc.push({ food_id: food.food_id, quantity: food.quantity }); 
+                        }
+                    }
+                })
+                return acc
+            })
+            return lista
+        }else{
+            return []
+        }
+    }
+
+    const [foodList, setFoodList ] = useState([])
+
+    useEffect(()=>{
+        const listUpdated=prueba()
+        setFoodList(listUpdated)
+    },[schedule])
 
     useEffect(()=>{
         if(copy && foodList){
@@ -68,10 +116,10 @@ const PopUp = ({schedule,setList, foodData, platesData, drinksData}) => {
             </div>
             <div className='w-full flex flex-col items-center justify-start mt-2 max-h-[300px] overflow-y-auto'>
                 {message && <p className='px-2 bg-healthyGreen/70 font-semibold text-left text-xs text-white rounded-full py-1'>{message}</p>}
-                {foodList.length>0 ? 
+                {foodList.length>0 ?
                 foodList.map((item,index)=>(<ListItem key={index} name={foodData.find(i=>i.id===item.food_id)?.name || drinksData.find(i=>i.id===item.food_id)?.name} quantity={item.quantity} measure={foodData.find(i=>i.id===item.food_id)?.measure || drinksData.find(i=>i.id===item.food_id)?.measure}/>))
                 :
-                <p className='font-quicksand font-semibold text-healthyGray2 text-sm text-center py-2 px-1'>Meals are not&nbsp;planned</p>
+                <p className='font-quicksand font-semibold text-healthyGray1 text-sm text-center py-2 px-1'>Meals are not&nbsp;planned</p>
                 }
             </div>
         </div>

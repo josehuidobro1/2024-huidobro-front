@@ -31,20 +31,23 @@ const Schedule = () => {
         const otherPlates= await getPlatesNotUser()
         const myPlates=await getUserPlates()
         const [schedule, drinksData, foodData ]=await Promise.all([getSchedule(),   getUserDrinks(), fetchAllFoods()])
-        console.log('scheduleeeee ', schedule)
         foodData && otherPlates && setter(foodData, myPlates.concat(otherPlates),drinksData,schedule || [])
-        
     }
 
     useEffect(()=>{
-        setLoading(true)
-        !schedule && getData()
+        if(!schedule || !food){
+            setLoading(true)
+            getData()
+        }
     },[])
 
     const handleClean=async ()=>{
+        setLoading(true)
+        setSchedule([])
         if(schedule.length>0){
-            setSchedule([])
-            await deleteSchedule()}
+            await deleteSchedule()
+        }
+        setLoading(false)
         setClean(false)
     }
 
@@ -74,7 +77,7 @@ const Schedule = () => {
                         </div>
                     </div>
                 </div>
-                <div className='flex w-full justify-start items-start sm:justify-center sm:items-stretch sm:align-middle  py-2  flex-wrap h-full pb-20 sm:pb-2 z-2 '>
+                <div className='flex w-full justify-start items-start sm:justify-center sm:items-stretch sm:align-middle  py-2  flex-wrap h-full pb-20 sm:pb-2 z-2  '>
                     { food && dates.map((day)=><DateList key={day} day={day} scheduleList={schedule || []} setSchedule={setSchedule} foodData={food} platesData={plates} drinksData={drinks} />)}
                 </div>
             </div>
