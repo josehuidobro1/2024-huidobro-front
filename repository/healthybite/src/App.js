@@ -22,12 +22,13 @@ function App() {
 
   const fetchNotification=async()=>{
     const fetchedNotifications = await getUserNotification(user.uid);
+    console.log('NOTIFICATIOOOOOOOOOOOOOONS', fetchedNotifications)
     setNotifications(fetchedNotifications || []);
   }
 
   const handleDismissNotification = async (notificationId) => {
       try {
-          await markNotificationAsRead(user.uid, notificationId);
+          await markNotificationAsRead(notificationId);
           console.log('notificacion id ', notificationId)
           setNotifications(notifications.filter(notif => notif.id !== notificationId));
       } catch (err) {

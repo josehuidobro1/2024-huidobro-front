@@ -13,11 +13,6 @@ const FoodConsumed = ({ usfood, handleDeleteMeal , handleEditFoodConsumed}) => {
     const [clickable, setClickable] = useState(true);
     const [details, setDetails]=useState(false)
 
-    useEffect(()=>{
-        console.log('USFOOD >>>>>>>>>>>>>> ', usfood)
-    },[])
-
-
     const handleChange=()=>{
         if(amount >0 )
         {const updatedUsfood = {

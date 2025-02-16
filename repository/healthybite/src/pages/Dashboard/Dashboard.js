@@ -311,7 +311,7 @@ export default function Dashboard() {
                             <h1 className="text-darkGray  font-belleza text-xl">{charts[index].label} charts</h1>
                             <FontAwesomeIcon onClick={()=>nextChart()} icon={faAngleRight} className="text-darkGray hover:cursor-pointer text-xl px-2 hover:text-healthyDarkGray1"/>
                         </div>
-                        <div className="flex flex-col w-full rounded-xl pt-2 ">
+                        <div className="flex flex-col w-full rounded-xl pt-2 justify-center items-center ">
                             <div className=" w-full p-2 bg-healthyGreen rounded-t-xl">
                                 <p className="font-belleza text-lg text-darkGray pl-3">Category chart</p>
                             </div>
@@ -321,8 +321,8 @@ export default function Dashboard() {
                             :
                             <div className="w-full flex flex-col justify-center items-center">
                             <div className="flex justify-center items-center w-full  flex-wrap">
-                                {lineLeyend.map((item)=>
-                                <div className="flex items-center justify-start font-quicksand py-1 px-2 ">
+                                {lineLeyend.map((item, index)=>
+                                <div key={index} className="flex items-center justify-start font-quicksand py-1 px-2 ">
                                     <FontAwesomeIcon icon={faSquare}  style={{ color: item.color }} className={` mr-1`} />
                                     <p className="text-xs text-darkGray ">{item.label}</p>
                                 </div>)}

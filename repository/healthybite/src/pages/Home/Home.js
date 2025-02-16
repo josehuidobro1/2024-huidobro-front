@@ -73,11 +73,12 @@ function Home() {
         const fetchStreak = async () => {
             try {
                 const streakValue = await getstreak();
-                setStreak(streakValue.consecutive_days);
-                if (streakValue>3){
+                console.log('sreak Value ', streakValue)
+                setStreak(streakValue && streakValue.length>0 ? streakValue[0] : 0 );
+                if (streakValue?.length>0 && streakValue>2){
                     addGoal(1)
                 }
-                else if (streakValue>=10){
+                else if (streakValue?.length>0 &&  streakValue>=10){
                     addGoal(2)
                 }
             } catch (error) {
@@ -147,13 +148,13 @@ function Home() {
     };
     
 
-    const fetchFoods = async () => {
+    const fetchFoods = async (daySelected) => {
         const loadData = async () => {
             try {
                 if (isNaN(new Date(date).getTime())) {
                     throw new Error('Invalid date value');
                 }
-                const userFood = await fetchUserFoods(date);
+                const userFood = await fetchUserFoods(daySelected ? daySelected:  date );
                 const food = await fetchAllFoods();
     
                 setFoodData(
@@ -249,13 +250,6 @@ function Home() {
     }
     },[user])
     
-
-    useEffect(()=>{
-        setLoading(true)
-        fetchFoods();
-        fetchCategories();
-    },[date])
-
     const allergies=async()=>{
         const allergiesData=await getAllergies()
         setAllergiesData(allergiesData) 
@@ -313,6 +307,7 @@ function Home() {
     const handleEditFoodConsumed = async  (idDoc_user_food, data) => {
         try {
             await editUserFood(idDoc_user_food, data); 
+            setLoading(true)
             fetchFoods()
             console.log('Comida editada de UserFood > Firestore con éxito');
         } catch (err) {
@@ -320,9 +315,13 @@ function Home() {
         }
     };
 
-    const selectDate=(date)=>{
+    useEffect(()=>{
         setLoading(true)
-        fetchFoods()
+        fetchFoods(date)
+        fetchCategories();
+    },[date])
+
+    const selectDate=(date)=>{
         setDate(new Date(date))
     }
 
