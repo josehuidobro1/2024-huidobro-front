@@ -40,7 +40,7 @@ const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksDat
                 <button onClick={handleEdit} className='px-2 rounded-full text-xs font-bold text-white bg-healthyGray1 hover:bg-healthyDarkGray1 shadow-sm'>{edit ? 'Save' : schedule ? 'Edit' : 'Add'}</button>
             </div>
         </div>
-        <div className='flex flex-col overflow-y-auto scrollbar-thin w-2/3  sm:w-full h-full sm:max-h-56 md:max-h-72  justify-start sm:bg-white/70 p-1  rounded-sm  sm:mt-1 flex-wrap sm:flex-nowrap'>
+        <div className='flex flex-col overflow-y-auto w-2/3  sm:w-full h-full sm:max-h-56 md:max-h-72  justify-start sm:bg-white/70 p-1  rounded-sm  sm:mt-1 flex-wrap sm:flex-nowrap'>
             {edit ?
                 <div className='flex flex-col w-full '>
                     <button onClick={()=>setView( view===1 ? 0 : 1)} className='bg-healthyGray1 rounded-sm font-semibold text-sm text-white hover:bg-healthyDarkGray1 ext-center py-1 mt-1 '>Food</button>
