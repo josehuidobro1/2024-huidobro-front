@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import bgImage from '../../assets/bgImage.jpg';
 import bgImageMobile from "../../assets/bgImageMobile.jpg";
 import Input from "../../components/Input";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { resetPassword } from "../../firebaseService"; // Ensure firebaseService is configured correctly
 import { confirmPasswordReset, getAuth } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
@@ -16,17 +16,19 @@ function ResetPassword() {
     const [message, setMessage] = useState("");
     const location = useLocation();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams()
     
     const resetPass=async()=>{
         const queryParams = new URLSearchParams(location.search);
         console.log("queryParams ", queryParams )
-        const oobCode = queryParams.get('oobCode'); 
+        const oobCode = searchParams.get('oobCode')
         console.log("oobCode ", oobCode )
         if (!oobCode) {
             setMessage("Invalid or expired reset link");
             return;
         }
         try {
+            const auth = getAuth()
             const rta=await confirmPasswordReset(auth, oobCode, password);
             console.log('respuestaaa' , rta)
             navigate("/");
