@@ -2,7 +2,7 @@ import React, {useState,useEffect} from "react";
 import loginImg from '../../assets/login.jpg'
 import loginMobile from '../../assets/loginMobile.png'
 import Input from "../../components/Input";
-import { createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordResetEmail ,fetchSignInMethodsForEmail, getAuth} from 'firebase/auth';
+import { createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordResetEmail ,fetchSignInMethodsForEmail} from 'firebase/auth';
 import { collection, addDoc } from 'firebase/firestore';
 import { auth,firestore } from '../../firebaseConfig';
 import {handleInputChange} from '../inputValidation';
@@ -51,8 +51,11 @@ function Login() {
     const handleResetPassword = async (e) => {
         e.preventDefault();
         try {
-            const auth=getAuth()
-            await sendPasswordResetEmail(auth, email);
+            const actionCodeSettings = {
+                url: "https://2024-huidobro-front.vercel.app", 
+                handleCodeInApp: true, 
+            };
+            await sendPasswordResetEmail(auth, email, actionCodeSettings);
             setResetPasswordMessage('Password reset email sent!, please check your inbox');
             setTimeout(() => {
                 setResetPasswordMessage('');
