@@ -52,7 +52,7 @@ function Login() {
         e.preventDefault();
         try {
             const actionCodeSettings = {
-                url: "https://2024-huidobro-front.vercel.app/resetPassword", 
+                url: "https://2024-huidobro-front.vercel.app/resetPassword/", 
                 handleCodeInApp: true, 
             };
             await sendPasswordResetEmail(auth, email, actionCodeSettings);

@@ -18,7 +18,11 @@ function ResetPassword() {
     
     const resetPass=async()=>{
         const queryParams = new URLSearchParams(location.search);
-        const oobCode = queryParams.get('oobCode'); // Get oobCode from query
+        const oobCode = queryParams.get('oobCode'); 
+        if (!oobCode) {
+            setMessage("Invalid or expired reset link");
+            return;
+        }
         const auth = getAuth();
         console.log('oobcode ' , oobCode);
         try {
