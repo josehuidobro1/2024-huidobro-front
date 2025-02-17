@@ -78,7 +78,7 @@ const Schedule = () => {
                     </div>
                 </div>
                 <div className='flex w-full justify-start items-start sm:justify-center sm:items-stretch sm:align-middle  py-2  flex-wrap h-full pb-20 sm:pb-2 z-2  '>
-                    { food && dates.map((day)=><DateList key={day} day={day} scheduleList={schedule || []} setSchedule={setSchedule} foodData={food} platesData={plates} drinksData={drinks} />)}
+                    { food && dates.map((day)=><DateList setLoading={setLoading} key={day} day={day} scheduleList={schedule || []} setSchedule={setSchedule} foodData={food} platesData={plates} drinksData={drinks} />)}
                 </div>
             </div>
         </div>

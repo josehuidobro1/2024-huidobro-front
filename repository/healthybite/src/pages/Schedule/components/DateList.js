@@ -3,29 +3,31 @@ import SelectItem from '../../../components/SelectItem'
 import { createSchedule, editSchedule, editUserData } from '../../../firebaseService'
 import Item from './Item'
 
-const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksData}) => {
-    if(day==='monday'){
-        console.log('schedule list ', scheduleList)
-    }
+const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksData, setLoading}) => {
+
     const [schedule, setSched]=useState((scheduleList.length>0 && scheduleList.find(item=>item.day==day)) || null)
     const [edit,setEdit]=useState(false)
     const [selectedFood, setSelectedFood]=useState(scheduleList.length>0 && scheduleList.find(item=>item.day==day) ? scheduleList.find(item=>item.day==day).foodList: [])
     const [view, setView]=useState(0)
 
+
     useEffect(()=>{
         setSched((scheduleList.length>0 && scheduleList.find(item=>item.day==day)) || null)
     },[scheduleList])
 
+
     const handleEdit=async()=>{
-        if(edit && selectedFood.length>0){
-            const data={day:day, foodList:selectedFood}
-            schedule ? await editSchedule(schedule.id, data) : await createSchedule(data)
+        if(edit){
+            const data={day:day, foodList:selectedFood.filter(item=>item.quantity>0)}
             setSched(data)
+            setLoading(true)
+            schedule ? await editSchedule(schedule.id, data) : await createSchedule(data)
             console.log('Scheduleee ', schedule)
             console.log('Scheduleee now ', data)
-            const schedulEdited= scheduleList.includes(item=>item.day==day) && schedule ? scheduleList.map(item=>item.day===schedule.day ? {...item,foodList:selectedFood} : item) : [...scheduleList,{...data}]
+            const schedulEdited= scheduleList.find(item=>item.day===day) ? scheduleList.map(item=>item.day===schedule.day ? {...item,foodList:data.foodList} : item) : [...scheduleList,{...data}]
             console.log('ScheduleEdited ', schedulEdited)
             setSchedule(schedulEdited)
+            setLoading(false)
         }
         setEdit(!edit)
     }
@@ -40,7 +42,7 @@ const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksDat
                 <button onClick={handleEdit} className='px-2 rounded-full text-xs font-bold text-white bg-healthyGray1 hover:bg-healthyDarkGray1 shadow-sm'>{edit ? 'Save' : schedule ? 'Edit' : 'Add'}</button>
             </div>
         </div>
-        <div className='flex flex-col overflow-y-auto scrollbar-thin w-2/3  sm:w-full h-full sm:max-h-56 md:max-h-72  justify-start sm:bg-white/70 p-1  rounded-sm  sm:mt-1 flex-wrap sm:flex-nowrap'>
+        <div className='flex flex-col overflow-y-auto  w-2/3  sm:w-full h-full sm:max-h-56 md:max-h-72  justify-start sm:bg-white/70 p-1  rounded-sm  sm:mt-1 flex-wrap sm:flex-nowrap'>
             {edit ?
                 <div className='flex flex-col w-full '>
                     <button onClick={()=>setView( view===1 ? 0 : 1)} className='bg-healthyGray1 rounded-sm font-semibold text-sm text-white hover:bg-healthyDarkGray1 ext-center py-1 mt-1 '>Food</button>
