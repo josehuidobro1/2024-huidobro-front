@@ -54,8 +54,8 @@ function Login() {
             const actionCodeSettings = {
                 url: "https://2024-huidobro-front.vercel.app/",
                 handleCodeInApp: true,
-              };
-            await sendPasswordResetEmail(auth, email);
+            };
+            await sendPasswordResetEmail(auth, email, actionCodeSettings);
             setResetPasswordMessage('Password reset email sent!, please check your inbox');
             setTimeout(() => {
                 setResetPasswordMessage('');
