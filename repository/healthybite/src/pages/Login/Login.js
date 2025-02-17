@@ -51,7 +51,7 @@ function Login() {
     const handleResetPassword = async (e) => {
         e.preventDefault();
         try {
-            await sendPasswordResetEmail(auth, email, {url: "https://2024-huidobro-front.vercel.app/"});
+            await sendPasswordResetEmail(auth, email);
             setResetPasswordMessage('Password reset email sent!, please check your inbox');
             setTimeout(() => {
                 setResetPasswordMessage('');
