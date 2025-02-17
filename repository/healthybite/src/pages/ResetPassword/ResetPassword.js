@@ -5,6 +5,7 @@ import Input from "../../components/Input";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { resetPassword } from "../../firebaseService"; // Ensure firebaseService is configured correctly
 import { confirmPasswordReset, getAuth } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
 
 
 function ResetPassword() {
@@ -18,13 +19,13 @@ function ResetPassword() {
     
     const resetPass=async()=>{
         const queryParams = new URLSearchParams(location.search);
+        console.log("queryParams ", queryParams )
         const oobCode = queryParams.get('oobCode'); 
+        console.log("oobCode ", oobCode )
         if (!oobCode) {
             setMessage("Invalid or expired reset link");
             return;
         }
-        const auth = getAuth();
-        console.log('oobcode ' , oobCode);
         try {
             const rta=await confirmPasswordReset(auth, oobCode, password);
             console.log('respuestaaa' , rta)
@@ -45,9 +46,9 @@ function ResetPassword() {
         }else if (password !== confirmPw) {
             setMessage("Passwords do not match");
             setLoading(false);
-        }else{
-            resetPass()
         }
+        console.log('se ejecuta esta parte?')
+        resetPass()
         
     };
 
