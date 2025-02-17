@@ -4,6 +4,7 @@ import bgImageMobile from "../../assets/bgImageMobile.jpg";
 import Input from "../../components/Input";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { resetPassword } from "../../firebaseService"; // Ensure firebaseService is configured correctly
+import { confirmPasswordReset, getAuth } from "firebase/auth";
 
 
 function ResetPassword() {
@@ -15,36 +16,35 @@ function ResetPassword() {
     const location = useLocation();
     const navigate = useNavigate();
     
-    const queryParams = new URLSearchParams(location.search);
-    const oobCode = queryParams.get('oobCode'); // Get oobCode from query
+    const resetPass=async()=>{
+        const queryParams = new URLSearchParams(location.search);
+        const oobCode = queryParams.get('oobCode'); // Get oobCode from query
+        const auth = getAuth();
+        console.log('oobcode ' , oobCode);
+        try {
+            const rta=await confirmPasswordReset(auth, oobCode, password);
+            console.log('respuestaaa' , rta)
+            navigate("/");
+            setLoading(false);
+        } catch (error) {
+            setMessage(`Error: ${error.message}`);
+            setLoading(false);
+        } 
+    }
 
-    const handleResetPassword = async () => {
-        setValidation(true); // Trigger validation to show required fields if empty
+    const handleResetPassword = () => {
+        setLoading(true);
+        setValidation(true)
         if (!password || !confirmPw) {
             setMessage("Password fields cannot be empty");
-            return;
-        }
-
-        if (password !== confirmPw) {
+            setLoading(false);
+        }else if (password !== confirmPw) {
             setMessage("Passwords do not match");
-            return;
+            setLoading(false);
+        }else{
+            resetPass()
         }
-
-        setLoading(true); // Start loading
-
-        try {
-            const result = await resetPassword(oobCode, password);
-            if (result) {
-                setMessage("Password reset successful");
-                navigate("/");
-            } else {
-                setMessage("Error resetting password. Please try again.");
-            }
-        } catch (error) {
-            setMessage("An unexpected error occurred");
-        } finally {
-            setLoading(false); // End loading
-        }
+        
     };
 
     return (
