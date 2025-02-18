@@ -46,13 +46,16 @@ function ResetPassword() {
     }
 
     const handleResetPassword = async () => {
-        try {
-            await verifyPasswordResetCode(auth, oobCode); // Verificar el código
-            await confirmPasswordReset(auth, oobCode, password); // Establecer nueva contraseña
-            console.log('exitoooo reemplazando contraseña')
-            setMessage('The password was correctly reseted')
-        } catch (err) {
-            console.error("El enlace es inválido o ha expirado.");
+        if(password && confirmPw && password===confirmPw){
+            try {
+                await verifyPasswordResetCode(auth, oobCode); // Verificar el código
+                await confirmPasswordReset(auth, oobCode, password); // Establecer nueva contraseña
+                navigate("/");
+            } catch (err) {
+                setMessage("The link is invalid or has expired.");
+            }
+        }else{
+            setMessage("Check that the passwords are the same");
         }
     };
 
