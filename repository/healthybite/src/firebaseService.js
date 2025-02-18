@@ -1,7 +1,7 @@
 
 import { convertFieldResponseIntoMuiTextFieldProps } from "@mui/x-date-pickers/internals";
 import { auth, firestore } from "../src/firebaseConfig";
-import { getAuth, verifyPasswordResetCode, confirmPasswordReset } from 'firebase/auth';
+import { getAuth, verifyPasswordResetCode, confirmPasswordReset, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from 'firebase/auth';
 import axios from "axios"; // para hacer solicitudes HTTP al servidor externo
 import { onAuthStateChanged } from "firebase/auth";
 
@@ -9,6 +9,61 @@ import { onAuthStateChanged } from "firebase/auth";
 const ruta='https://two024-huidobro-back.onrender.com'
 //const ruta='http://127.0.0.1:8000'
 let cachedUserUid = null;
+
+export const registerUser = async (email, password, name, surname, weight, height, birthDate )=>{
+    try{
+        const userCredential=await createUserWithEmailAndPassword(auth, email, password)
+        await addDoc(collection(firestore, 'User'), {
+            id_user: user.uid,  // ID único del usuario generado por Firebase Auth
+            name: name,
+            surname: surname,
+            weight: parseInt(weight),
+            height: parseInt(height),
+            birthDate: birthDate,
+            goals:{
+                calories:0,
+                sodium:0,
+                protein:0,
+                carbohydrates:0,
+                fats:0,
+                sugar:0,
+                caffeine:0,
+            },
+            validation: 0,
+            achievements: [],
+            allergies:[]
+        });
+        return userCredential.user;
+    }catch(error){
+        throw error.message
+    }
+}
+
+export const loginUser = async (email, password) => {
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        return userCredential.user;
+    } catch (error) {
+        throw error.message;
+    }
+};
+
+export const forgotPassword = async (email) => {
+    try {
+        await sendPasswordResetEmail(auth, email);
+        return "Reset email sent";
+    } catch (error) {
+        throw error.message;
+    }
+}
+
+export const logoutUser = async () => {
+    try {
+        await signOut(auth);
+    } catch (error) {
+        throw error.message;
+    }
+};
 
 export const getUserUid = async () => {
     if (cachedUserUid) {

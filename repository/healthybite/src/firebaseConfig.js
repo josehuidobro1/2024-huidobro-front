@@ -17,8 +17,6 @@ const firebaseConfig = {
   databaseURL: "https://healthy-bite-cb732-default-rtdb.firebaseio.com",
 };
 
-console.log(firebaseConfig)
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
