@@ -4,6 +4,7 @@ import { auth, firestore } from "../src/firebaseConfig";
 import { getAuth, verifyPasswordResetCode, confirmPasswordReset, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from 'firebase/auth';
 import axios from "axios"; // para hacer solicitudes HTTP al servidor externo
 import { onAuthStateChanged } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
 
 
 const ruta='https://two024-huidobro-back.onrender.com'
@@ -14,7 +15,7 @@ export const registerUser = async (email, password, name, surname, weight, heigh
     try{
         const userCredential=await createUserWithEmailAndPassword(auth, email, password)
         await addDoc(collection(firestore, 'User'), {
-            id_user: user.uid,  // ID único del usuario generado por Firebase Auth
+            id_user: userCredential.uid,  // ID único del usuario generado por Firebase Auth
             name: name,
             surname: surname,
             weight: parseInt(weight),

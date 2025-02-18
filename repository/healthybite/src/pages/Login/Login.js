@@ -6,7 +6,8 @@ import { createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordR
 import { collection, addDoc } from 'firebase/firestore';
 import { auth,firestore } from '../../firebaseConfig';
 import {handleInputChange} from '../inputValidation';
-import { forgotPassword, loginUser } from "../../firebaseService";
+import { forgotPassword, loginUser, registerUser } from "../../firebaseService";
+import { Navigate } from "react-router-dom";
 function Login() {
     const [inValidation,setInValidation]=useState(false)
     const [signUp, setSignUp]=useState(false)
@@ -58,7 +59,6 @@ function Login() {
                 setResetPasswordMessage('');
             }, 5000); 
             console.log(msg)
-            setTimeout(() => navigate("/"), 3000);
         } catch (error) {
             console.error('Error during password reset:', error);
             setResetPasswordMessage('Error: ' + error.message);
@@ -114,28 +114,12 @@ function Login() {
         e.preventDefault();
         try {
             const userCredential = await loginUser(email,password)
-            const token = await userCredential.user.getIdToken();
             console.log('Inicio de sesión exitoso:', userCredential.user);
-            const userData = await getUserData(token);
-            console.log('Fetched user data from backend:', userData);
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
             setLoginError('Invalid Email or Password, please try again')
         }
     }
-
-    const getUserData = async (token) => {
-        const response = await fetch("https://two024-huidobro-back.onrender.com/api/user", {
-            method: "GET",
-            headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json"  
-            }
-        });
-        
-        const data = await response.json();
-        return data;
-    };
 
     return (
         <div className="  bg-healthyGray h-screen flex justify-center items-center  ">
