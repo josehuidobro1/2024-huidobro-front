@@ -52,7 +52,7 @@ function ResetPassword() {
             console.log('exitoooo reemplazando contraseña')
             setMessage('The password was correctly reseted')
         } catch (err) {
-        setError("El enlace es inválido o ha expirado.");
+            console.error("El enlace es inválido o ha expirado.");
         }
     };
 
