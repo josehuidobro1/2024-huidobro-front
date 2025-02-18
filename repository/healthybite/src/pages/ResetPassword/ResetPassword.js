@@ -4,7 +4,7 @@ import bgImageMobile from "../../assets/bgImageMobile.jpg";
 import Input from "../../components/Input";
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { resetPassword } from "../../firebaseService"; // Ensure firebaseService is configured correctly
-import { confirmPasswordReset, getAuth } from "firebase/auth";
+import { confirmPasswordReset, getAuth, verifyPasswordResetCode } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
 
 
@@ -17,6 +17,12 @@ function ResetPassword() {
     const location = useLocation();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams()
+    const mode = searchParams.get("mode");
+    const oobCode = searchParams.get("oobCode");
+
+    console.log("Mode:", mode);
+    console.log("OOB Code:", oobCode);
+
     
     const resetPass=async()=>{
         const queryParams = new URLSearchParams(location.search);
@@ -39,19 +45,15 @@ function ResetPassword() {
         } 
     }
 
-    const handleResetPassword = () => {
-        setLoading(true);
-        setValidation(true)
-        if (!password || !confirmPw) {
-            setMessage("Password fields cannot be empty");
-            setLoading(false);
-        }else if (password !== confirmPw) {
-            setMessage("Passwords do not match");
-            setLoading(false);
+    const handleResetPassword = async () => {
+        try {
+            await verifyPasswordResetCode(auth, oobCode); // Verificar el código
+            await confirmPasswordReset(auth, oobCode, password); // Establecer nueva contraseña
+            console.log('exitoooo reemplazando contraseña')
+            setMessage('The password was correctly reseted')
+        } catch (err) {
+        setError("El enlace es inválido o ha expirado.");
         }
-        console.log('se ejecuta esta parte?')
-        resetPass()
-        
     };
 
     return (
