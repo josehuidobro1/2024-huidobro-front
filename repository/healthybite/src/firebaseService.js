@@ -4,17 +4,16 @@ import { auth, firestore } from "../src/firebaseConfig";
 import { getAuth, verifyPasswordResetCode, confirmPasswordReset, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, signOut } from 'firebase/auth';
 import axios from "axios"; // para hacer solicitudes HTTP al servidor externo
 import { onAuthStateChanged } from "firebase/auth";
-import { addDoc, collection } from "firebase/firestore";
 
 
 const ruta='https://two024-huidobro-back.onrender.com'
 //const ruta='http://127.0.0.1:8000'
 let cachedUserUid = null;
 
-export const registerUser = async (email, password, name, surname, weight, height, birthDate )=>{
+export const registerUser = async (email, password, name, weight, height, birthDate, surname)=>{
     try{
         const userCredential=await createUserWithEmailAndPassword(auth, email, password)
-        await addDoc(collection(firestore, 'User'), {
+        const data= {
             id_user: userCredential.uid,  // ID único del usuario generado por Firebase Auth
             name: name,
             surname: surname,
@@ -33,8 +32,9 @@ export const registerUser = async (email, password, name, surname, weight, heigh
             validation: 0,
             achievements: [],
             allergies:[]
-        });
-        return userCredential.user;
+        }
+        const response = await axios.post(`${ruta}/User/${data}`);
+        return response.message;
     }catch(error){
         throw error.message
     }
