@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import InputDrink from './InputDrink';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { createDrink,createDrinkType } from '../../../firebaseService';
 import DrinkType from './DrinkType';
+import { UserContext } from '../../../App';
 
 export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes,handleDrinkTypeUpdate, setDrinksData }) => {
     const [name, setName] = useState('');
@@ -18,6 +19,7 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
     const [newType, setNewType] = useState([])
     const [message, setMessage] = useState('');
     const [type,setTypeId] = useState('');
+    const {user_id}=useContext(UserContext)
 
     const handleNewType = async () => {
         const data = {
@@ -26,7 +28,7 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
     
         try {
             // Create new drink type in the backend
-            const newTypeId = await createDrinkType(data);
+            const newTypeId = await createDrinkType(user_id, data);
             setTypeId(newTypeId);
             setTypePersonalize('');
     
@@ -76,7 +78,7 @@ export const NewDrink = ({ setNewDrink, handleUpdate, categorydrinks, drinktypes
                     typeOfDrink: type,
                 };
                 console.log(data);
-                await createDrink(data);
+                await createDrink(user_id, data);
                 setName('');
                 setCaffeine('');
                 setSugar('');

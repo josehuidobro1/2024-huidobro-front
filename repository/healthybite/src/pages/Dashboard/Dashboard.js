@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import NavBar from '../../components/NavBar'
 import Calendar from "../../components/Calendar";
 import {  PieChart, LineChart, BarChart } from "@mui/x-charts";
@@ -12,6 +12,7 @@ import GoalPie from "./components/GoalPie";
 import DrinksTable from "./components/DrinksTable";
 import CategoryChart from "./components/CategoryChart";
 import Goals from "./components/Goals";
+import { UserContext } from "../../App";
   
 
 
@@ -52,7 +53,7 @@ export default function Dashboard() {
     const [dataReady, setDataReady]=useState(false)
     const [goals, setGoals]=useState()
     const lineLeyend=[{label:'Fats',color:palette[0]}, {label:'Carbohydrates',color:palette[1]}, {label:'Protein',color:palette[2]}, {label:'Sodium',color:palette[3]}, {label:'Filter',color:palette[4]}, {label:'Calories', color:palette[5] }]
-    
+    const {user_id}=useContext(UserContext)
 
     const getWeeklyDates = (selectedDate) => {
         let dayOfStart = new Date(selectedDate);
@@ -203,9 +204,9 @@ export default function Dashboard() {
 
     const fetchData= async ()=>{
         try{
-            const categoriesData = await getCategoriesAndDefaults()
+            const categoriesData = await getCategoriesAndDefaults(user_id)
             setCategories(categoriesData)
-            const data = await getFilterData()
+            const data = await getFilterData(user_id)
             data.goals && setGoals(data.goals)
             data.calories && setUserCalories(data.calories)
             data.calories && fetchDailyData(data.calories)

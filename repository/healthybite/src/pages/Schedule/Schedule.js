@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import bgImage from '../../assets/schedule1.jpg'
 import NavBar from '../../components/NavBar'
 import Loading from '../../components/Loading'
@@ -8,6 +8,7 @@ import { faCartShopping, faTrash } from '@fortawesome/free-solid-svg-icons'
 import DateList from './components/DateList'
 import PopUp from './components/PopUp'
 import DeletePopUp from '../../components/DeletePopUp'
+import { UserContext } from '../../App'
 
 const Schedule = () => {
     const [loading, setLoading]=useState(true)
@@ -17,6 +18,7 @@ const Schedule = () => {
     const [plates, setPlates]=useState([])
     const [drinks, setDrinks]=useState([])
     const [list, setList]=useState(false)
+    const {user_id}=useContext(UserContext)
     const dates=['monday', 'tuesday', 'wednesday','thursday','friday', 'saturday','sunday']
 
     const setter=(foodData, plates, drinksData, scheduleData )=>{
@@ -28,9 +30,9 @@ const Schedule = () => {
     }
 
     const getData=async()=>{
-        const otherPlates= await getPlatesNotUser()
+        const otherPlates= await getPlatesNotUser(user_id)
         const myPlates=await getUserPlates()
-        const [schedule, drinksData, foodData ]=await Promise.all([getSchedule(),   getUserDrinks(), fetchAllFoods()])
+        const [schedule, drinksData, foodData ]=await Promise.all([getSchedule(user_id),   getUserDrinks(user_id), fetchAllFoods()])
         foodData && otherPlates && setter(foodData, myPlates.concat(otherPlates),drinksData,schedule || [])
     }
 
@@ -45,7 +47,7 @@ const Schedule = () => {
         setLoading(true)
         setSchedule([])
         if(schedule.length>0){
-            await deleteSchedule()
+            await deleteSchedule(user_id)
         }
         setLoading(false)
         setClean(false)

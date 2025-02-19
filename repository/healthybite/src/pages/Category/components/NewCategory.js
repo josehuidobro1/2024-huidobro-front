@@ -1,10 +1,11 @@
-import React, { useEffect, useState }  from 'react'
+import React, { useContext, useEffect, useState }  from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBowlFood, faPlus, faUpRightAndDownLeftFromCenter} from '@fortawesome/free-solid-svg-icons'; 
 import SaveButton from './SaveButton';
 import Data from '../../Data';
 import noodle from '../../../assets/icon.png'
 import { createCategory, fetchAllFoods } from '../../../firebaseService';
+import { UserContext } from '../../../App';
 
 function NewCategory({handleUpdate, setAddCategory, setAddFood, foods, platesData}) {
     const [name, setName]=useState('')
@@ -14,6 +15,7 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods, platesDat
     const [message, setMessage]=useState('')
     const [addIcon, setAddIcon]=useState(false)
     const [clickable, setClickable] = useState(true);
+    const {user_id}=useContext(UserContext)
 
     const handleIcon=(icon)=>{
         setIconSelected(icon)
@@ -54,8 +56,6 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods, platesDat
         }
         if (name && iconSelected &&  selectedFoods.length>0){
             try{
-                console.log('food for category ' , selectedFoods)
-                console.log('fooooods ', foods)
                 const data={
                     name: name,
                     icon: iconSelected.name,
@@ -63,7 +63,7 @@ function NewCategory({handleUpdate, setAddCategory, setAddFood, foods, platesDat
                     plates:selectedFoods.filter(item=> foods.find(i=>i.id===item && i.plate )),
                     drinks: selectedFoods.filter(item=> foods.find(i=>i.id===item && i.drink )),
                 }
-                await createCategory(data)
+                await createCategory(user_id, data)
                 setName('')
                 setIconSelected(null)
                 setSelectedFoods([])

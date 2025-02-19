@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import NavBar from '../../components/NavBar'
 import Loading from '../../components/Loading'
 import bgDrinks from '../../assets/bgDrinks.jpg'
@@ -10,6 +10,7 @@ import DrinkItem from './components/DrinkItem'
 import {fechDrinkTypes, getUserDrinks,getUserNotification,markNotificationAsRead} from '../../firebaseService'
 import { drinkAchievments } from '../../components/AchivementsValidation'
 import NotificationPopup from '../../components/NotificationPopup';
+import { UserContext } from '../../App'
 
 const drinks=[
     {
@@ -28,12 +29,12 @@ export const Drinks = () => {
     const [drinksData, setDrinksData]=useState([])
     const [newDrink,setNewDrink]=useState(false)
     const [drinktypes, setDrinktypes] = useState([]);
-
+    const {user_id}=useContext(UserContext)
 
     const fetchUserDrinks= async () => {
-        const drinks = await getUserDrinks();
+        const drinks = await getUserDrinks(user_id);
         if(drinks){
-            drinkAchievments(drinks.length)
+            drinkAchievments(user_id, drinks.length)
             setDrinksData(drinks);
             setLoading(false);
         }
@@ -41,7 +42,7 @@ export const Drinks = () => {
     }
 
     const fetchUserDrinkTypes = async () => {
-        const types = await fechDrinkTypes();
+        const types = await fechDrinkTypes(user_id);
         fetchUserDrinks();
         setDrinktypes(types);
         return types
@@ -49,7 +50,7 @@ export const Drinks = () => {
     const handleUpdate=()=>{
         setLoading(true)
         const drink=fetchUserDrinks()
-        drinkAchievments(drinks.length)
+        drinkAchievments(user_id, drinks.length)
 
         drink && setLoading(false)
 

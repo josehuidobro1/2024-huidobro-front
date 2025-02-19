@@ -38,43 +38,6 @@ const PopUp = ({schedule,setList, foodData, platesData, drinksData}) => {
         return shoppingList
     }
 
-    const getList=()=>{
-        console.log('SCHEDULE', schedule)
-        if(schedule.length>0 ){
-
-           const lista= schedule.reduce((acc, curr) => {
-            console.log('Accc ', acc)
-            console.log('curr', curr)
-                curr.foodList.forEach(food => { // por cada dia que se registro la comida se registra cada comida ej: bread 
-
-                    const plate = platesData.find(plate => plate.id === food.food_id); // si bread es un plato...
-                    if (plate) {
-                        plate.ingredients.forEach(ingredient => {
-                        const existingIngredient = acc.find(item => item.food_id === ingredient.ingredientId);
-                        const requiredQuantity = ingredient.quantity * food.quantity; // Calcular cantidad necesaria
-                        if (existingIngredient) {
-                            existingIngredient.quantity += requiredQuantity;
-                        } else {
-                            acc.push({ food_id: ingredient.ingredientId, quantity: requiredQuantity  });
-                        }
-                        });
-                    }else{
-                        const existingFood = acc.length>0  && acc.find(item => item?.food_id === food.food_id) //si bread no es un plato pero ya se registro antes?
-                        if (existingFood) {
-                            existingFood.quantity += food.quantity; // si en los dias ya habia existido esa comida se suma
-                        } else {
-                            acc.push({ food_id: food.food_id, quantity: food.quantity }); 
-                        }
-                    }
-                })
-                return acc
-            })
-            return lista
-        }else{
-            return []
-        }
-    }
-
     const [foodList, setFoodList ] = useState([])
 
     useEffect(()=>{

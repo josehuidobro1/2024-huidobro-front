@@ -1,14 +1,16 @@
 import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { editAllergie, editUserData } from '../../../firebaseService';
 import SelectItem from '../../../components/SelectItem';
+import { UserContext } from '../../../App';
 
 const AllergieItem = ({food, id,userdata, allergies, setAllergies, allergiesData,setAllergiesData}) => {
     const [details, setDetails]=useState(false)
     const [edit, setEdit]=useState(false)
     const [message, setMessage]=useState('')
     const [selectedFood, setSelectedFood]=useState(allergiesData.find(i=>i.id===id).foods_ids)
+    const {user_id}=useContext(UserContext)
 
     const handleEdit=async()=>{
         if (edit ){
@@ -32,7 +34,7 @@ const AllergieItem = ({food, id,userdata, allergies, setAllergies, allergiesData
     const deleteAllergie=async ()=>{
         const newList=allergies.filter(e=>e!==id)
         setAllergies(newList)
-        await editUserData({...userdata,allergies:newList})
+        await editUserData(user_id, {...userdata,allergies:newList})
     }
 
   return (

@@ -1,14 +1,15 @@
 import { faBookmark, faCaretRight, faEllipsisVertical, faWineBottle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import DeletePopUp from '../../../components/DeletePopUp';
 import { deleteDrink, updateDrink } from '../../../firebaseService';
+import { UserContext } from '../../../App';
 
 const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
     const [deleteItem, setDeleteItem] = useState(false);
     const [edit, setEdit] = useState(false);
     const [caretClicked, setCaretClicked] = useState(false);
-
+    const {user_id}=useContext(UserContext)
     const [options, setOption] = useState(false);
     const [message, setMessage] = useState('');
     const [typeSelected, setTypeSelected] = useState(drink.type);
@@ -74,7 +75,7 @@ const DrinkItem = ({ drink, typeOfDrinks, handleUpdate }) => {
         };
     
         try {
-            await updateDrink(drink.id, data);
+            await updateDrink(user_id, drink.id, data);
             console.log("Data to update:", data);  // Check the data object structure
     
             setMessage('Drink updated successfully'); // Success message

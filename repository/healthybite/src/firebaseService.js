@@ -10,16 +10,16 @@ const ruta='https://two024-huidobro-back.onrender.com'
 //const ruta='http://127.0.0.1:8000'
 let cachedUserUid = null;
 
-export const registerUser = async (email, password, name, weight, height, birthDate, surname)=>{
+export const registerUser = async (email, password, name, surname, weight, height, birthDate)=>{
     try{
         const userCredential=await createUserWithEmailAndPassword(auth, email, password)
         const data= {
-            id_user: userCredential.uid,  // ID único del usuario generado por Firebase Auth
+            id_user: userCredential.user.uid,  // ID único del usuario generado por Firebase Auth
             name: name,
             surname: surname,
-            weight: parseInt(weight),
-            height: parseInt(height),
-            birthDate: birthDate,
+            weight: weight ? parseFloat(weight) : 0,
+            height: height ? parseFloat(height) : 0,
+            birthDate: new Date(birthDate),
             goals:{
                 calories:0,
                 sodium:0,
@@ -33,17 +33,18 @@ export const registerUser = async (email, password, name, weight, height, birthD
             achievements: [],
             allergies:[]
         }
-        const response = await axios.post(`${ruta}/User/${data}`);
-        return response.message;
+        await axios.post(`${ruta}/user/`, data);
+        return userCredential.user.uid;
     }catch(error){
-        throw error.message
+        console.error("Error al registrar el usuario:", error);
+        throw new Error(error.message || "Error al registrar el usuario.");
     }
 }
 
 export const loginUser = async (email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        return userCredential.user;
+        return userCredential.user.uid;
     } catch (error) {
         throw error.message;
     }
@@ -82,9 +83,8 @@ export const getUserUid = async () => {
     });
 };
 
-export const fetchUser=async()=>{
+export const fetchUser=async(user_id)=>{
     try {
-        const user_id=await getUserUid();
         const response = await axios.get(`${ruta}/User/${user_id}`);
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
@@ -93,9 +93,9 @@ export const fetchUser=async()=>{
     }
 }
 
-export const editUserData=async(data)=>{
+export const editUserData=async(user_id, data)=>{
     try {
-        const user_id=await getUserUid();
+        console.log('Data que se envia para editar usuario: ', data)
         const response = await axios.put(`${ruta}/update_user/${user_id}`, data);
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
@@ -104,9 +104,8 @@ export const editUserData=async(data)=>{
     }
 }
 
-export const deleteUserAc=async()=>{
+export const deleteUserAc=async(user_id)=>{
     try {
-        const user_id=await getUserUid();
         await axios.delete(`${ruta}/delete-user/${user_id}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error deleting user by ID:', error);
@@ -114,8 +113,8 @@ export const deleteUserAc=async()=>{
     }
 }
 
-export const fetchUserFoods = async (date) => {
-    const userFood = await userFoodMeals(); // Wait for the promise to resolve
+export const fetchUserFoods = async (user_id, date) => {
+    const userFood = await userFoodMeals(user_id); // Wait for the promise to resolve
     if (!userFood) return []; // Handle if there's no data
 
     // Filter the food based on the provided date
@@ -149,9 +148,8 @@ export const fetchFoodByID = async (foodId) => {
     }
 };
 
-const userFoodMeals = async()=>{
+const userFoodMeals = async(user_id)=>{
     try {
-        const user_id=await getUserUid();
         const response = await axios.get(`${ruta}/mealUserDay/${user_id}`);
         return response.data.message.foods; // Adjust this based on your backend response structure
     } catch (error) {
@@ -173,9 +171,8 @@ export const fetchAllFoods = async () => {
 };
 
 
-export const addUserFood = async (selection, date, amount) => {
+export const addUserFood = async (user_id,selection, date, amount) => {
     try {
-        const user_id=await getUserUid();
         const response = await fetch(`${ruta}/UserFood_log`, {
             method: "POST",
             headers: {
@@ -255,8 +252,7 @@ export const editUserFood = async (doc_id,data) => {
     }
 };
 
-export const getCategories = async()=>{
-    const user_id=await getUserUid();
+export const getCategories = async(user_id)=>{
     try {
         const response = await axios.get(`${ruta}/GetCategoryUser/${user_id}`);
         return response.data.message.categories; // Adjust this based on your backend response structure
@@ -267,7 +263,6 @@ export const getCategories = async()=>{
 }
 
 export const getDefaultCategories = async () => {
-    const user_id=await getUserUid();
     try {
         const response = await axios.get(`${ruta}/GetCategoryUser/default`);
         return response.data.message.categories; // Adjust this based on your backend response structure
@@ -296,8 +291,7 @@ export const getBarCategory = async () => {
 
 
 
-export const createCategory =async (data)=>{
-    const user_id=await getUserUid();
+export const createCategory =async (user_id, data)=>{
     try{
         const response = await axios.post(`${ruta}/CreateCategory/`, {...data,id_User: user_id });
         return response.data
@@ -307,9 +301,8 @@ export const createCategory =async (data)=>{
     }
 }
 
-export const updateCategory=async(data,category_id)=>{
+export const updateCategory=async(user_id, data,category_id)=>{
     try{
-        const user_id=await getUserUid();
         const response = await axios.put(`${ruta}/UpdateCategory/${category_id}`,{...data,id_User: user_id });
         return response.data
     }catch(error){
@@ -336,10 +329,9 @@ export const deleteCategory=async(category_id)=>{
     }
 }
 
-export const createTotCal = async (data, date) => {
+export const createTotCal = async (user_id, data, date) => {
     try {
         const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
-        const user_id=await getUserUid();
         const response = await fetch(`${ruta}/CreateTotCaloriesUser/`, {
             method: "POST",
             headers: {
@@ -373,12 +365,10 @@ export const createTotCal = async (data, date) => {
 
 
 
-export const UpdateTotCal = async (totcal_id, data, date) => {
+export const UpdateTotCal = async (user_id, totcal_id, data, date) => {
     try {
         // Ensure the date is in the correct format
         const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
-
-        const user_id=await getUserUid();
         const payload = {
             id_user: user_id,
             day: validDate,   // Using "day" instead of "date" to match the model
@@ -399,8 +389,8 @@ export const UpdateTotCal = async (totcal_id, data, date) => {
     }
 };
 
-export const fetchTotCalByDay = async (date) => {
-    const userTotCal = await getTotCalUser(); // Wait for the promise to resolve
+export const fetchTotCalByDay = async (user_id, date) => {
+    const userTotCal = await getTotCalUser(user_id); // Wait for the promise to resolve
     
     if (!userTotCal) return []; // Handle if there's no data
 
@@ -424,10 +414,10 @@ export const fetchTotCalByDay = async (date) => {
     return filteredTotcal;
 };
 
-export const getCategoriesAndDefaults = async () => {
+export const getCategoriesAndDefaults = async (user_id) => {
     try {
         const categories = await Promise.all([
-            getCategories(),
+            getCategories(user_id),
             getDefaultCategories()
         ]);
         return categories.flat();
@@ -492,8 +482,7 @@ export const getCaloriesByCategories= ( userCalories, categories, foods, barFood
     }
 }
 
-export const getTotCalUser=async()=>{
-    const user_id=await getUserUid();
+export const getTotCalUser=async(user_id)=>{
     if(user_id){try {
         const response = await axios.get(`${ruta}/GetTotCalUser/${user_id}`);
         return response.data.message.totCals; // Adjust this based on your backend response structure
@@ -513,9 +502,9 @@ export const formatDate = (date) => {
     return `${day}/${month}/${year}`; // Retorna la fecha en formato dd/mm/yyyy
 };
 
-export const getFilterData = async () => {
+export const getFilterData = async (user_id) => {
     try{
-        const [userCalories,foods, barFoods, categories, drinksType,drinks, plates, user ] = await Promise.all([ userFoodMeals(), fetchAllFoods(), getProducts(), getCategoriesAndDefaults(), await fechDrinkTypes(), getUserDrinks(), getUserPlates(), fetchUser()])
+        const [userCalories,foods, barFoods, categories, drinksType,drinks, plates, user ] = await Promise.all([ userFoodMeals(user_id), fetchAllFoods(), getProducts(), getCategoriesAndDefaults(user_id), await fechDrinkTypes(user_id), getUserDrinks(user_id), getUserPlates(user_id), fetchUser(user_id)])
         userCalories.sort((a, b) => new Date(a.date_ingested) - new Date(b.date_ingested));
         const groupedByDate = userCalories.reduce((acc, current) => {
             const date = formatDate(new Date(current.date_ingested)); // Solo tomar la fecha sin la hora
@@ -596,9 +585,8 @@ export const getProdByID= async(prod_id)=>{
 
 
 // things that need to be deployed
-export const createplate = async (selection) => {
+export const createplate = async (user_id, selection) => {
     try {
-        const user_id=await getUserUid();
         const response = await fetch(`${ruta}/CreatePlate/`, {
             method: "POST",
             headers: {
@@ -636,9 +624,8 @@ export const createplate = async (selection) => {
     }
 };
 
-export const getUserPlates = async () => {
+export const getUserPlates = async (user_id) => {
     try {
-        const user_id=await getUserUid();
         const response = await axios.get(`${ruta}/GetPlatesUser/${user_id}`);
         return response.data.message.Plates; // Adjust this based on your backend response structure
     } catch (error) {
@@ -648,8 +635,7 @@ export const getUserPlates = async () => {
 };
 export const updatePlate=async(data,plate_id)=>{
     try{
-        const user_id=await getUserUid();
-        const response = await axios.put(`${ruta}/UpdatePlate/${plate_id}`,{...data,id_User: user_id });
+        const response = await axios.put(`${ruta}/UpdatePlate/${plate_id}`,data);
         return response.data
     }catch(error){
         console.error('Error updating plate by id: ', error);
@@ -664,24 +650,17 @@ export const deleteplate=async(plate_id)=>{
         return null; 
     }
 }
-export const fechDrinkTypes = async () =>{
-    const user = auth.currentUser;
-    if (!user) {
-        console.error("User is not authenticated");
-        return null;
-    }
-    const uid = user.uid;
+export const fechDrinkTypes = async (user_id) =>{
     try {
-        const response = await axios.get(`${ruta}/getUserDrinkType/${uid}`);
+        const response = await axios.get(`${ruta}/getUserDrinkType/${user_id}`);
         return response.data.message.drinkType; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching typedrinks :', error);
         return null; // Return null or handle the error as needed
     }
 }
-export const createDrinkType = async (selection) => {
+export const createDrinkType = async (user_id, selection) => {
     try {
-        const user_id=await getUserUid();
         const response = await fetch(`${ruta}/drinkType_log`, {
             method: "POST",
             headers: {
@@ -709,24 +688,17 @@ export const createDrinkType = async (selection) => {
         return null;
     }
 };
-export const getUserDrinks = async () =>{
-    const user = auth.currentUser;
-    if (!user) {
-        console.error("User is not authenticated");
-        return null;
-    }
-    const uid = user.uid;
+export const getUserDrinks = async (user_id) =>{
     try {
-        const response = await axios.get(`${ruta}/GetDrinks/${uid}`);
+        const response = await axios.get(`${ruta}/GetDrinks/${user_id}`);
         return response.data.message.Drinks; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching typedrinks :', error);
         return null; // Return null or handle the error as needed
     }
 }
-export const createDrink = async (selection) => {
+export const createDrink = async (user_id, selection) => {
     try {
-        const user_id=await getUserUid();
         const response = await fetch(`${ruta}/drink_log`, {
             method: "POST",
             headers: {
@@ -762,17 +734,15 @@ export const createDrink = async (selection) => {
 };
 export const deleteDrink=async(drink_id)=>{
     try {
-        console.log(drink_id)
         await axios.delete(`${ruta}/DeleteDrink/${drink_id}`); 
     } catch (error) {
         console.error('Error deleting plateFood by ID:', error);
         return null; 
     }
 }
-export const updateDrink = async (doc_id,data) => {
+export const updateDrink = async (user_id, doc_id,data) => {
 
     try {
-        const user_id=await getUserUid();
         await axios.put(`${ruta}/UpdateDrink/${doc_id}`,{...data,id_User: user_id }); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error updating drink by ID:', error);
@@ -797,13 +767,11 @@ export const getDrinkByID = async (drink_id) => {
 export const getPlate_ByID = async (plate_id) => {
     const response = await axios.get(`${ruta}/GetPlateByID/${plate_id}`);
     const drink=response.data.message.plate
-    console.log("PLATOOOOOOOOOO", drink)
     return drink
 
 }
 
-export const getGroupedDrinkTypes = async () => {
-    const user_id=await getUserUid();
+export const getGroupedDrinkTypes = async (user_id) => {
     const response = await axios.get(`${ruta}/getUserGroupDrinkType/${user_id}`);
     const drink=response.data.Drinks
     return drink
@@ -868,14 +836,12 @@ export const createReview = async (selection) => {
     }
 };
 
-export const getstreak = async () => {
-    const user_id=await getUserUid();
+export const getstreak = async (user_id) => {
     const response = await axios.get(`${ruta}/Streak/${user_id}`,)
     const streak = response.data.message
     return streak
 }
-export const getUserNotification = async () => {
-    const user_id=await getUserUid();
+export const getUserNotification = async (user_id) => {
     const response = await axios.get(`${ruta}/getUserNotifications/${user_id}`,)
     const notifications = response.data.notifications
     return notifications
@@ -894,9 +860,8 @@ export const markNotificationAsRead = async (doc_id) => {
         return null; // Return null or handle the error as needed
     }
 };
-export const getPlatesNotUser = async () => {
+export const getPlatesNotUser = async (user_id) => {
     try{
-        const user_id=await getUserUid();
         const response = await axios.get(`${ruta}/PublicplatesNotFromUser/${user_id}`,)
         const plates = response.data.Plates
         return plates
@@ -904,8 +869,7 @@ export const getPlatesNotUser = async () => {
         console.error("error getynd plates not User getPlatesNotUser() ", error)
     }
 }
-export const addGoal = async (goal_id) => {
-    const user_id=await getUserUid();
+export const addGoal = async (user_id,goal_id) => {
     const response = await axios.get(`${ruta}/addGoal/${user_id}`, {
         params: { goal_id }
     });
@@ -947,9 +911,8 @@ export const editAllergie=async(data)=>{
     }
 }
 
-export const getSchedule=async()=>{
+export const getSchedule=async(user_id)=>{
     try {
-        const user_id=await getUserUid();
         const response = await axios.get(`${ruta}/schedule/${user_id}`);
         return response.data.schedules;
     } catch (error) {
@@ -960,8 +923,7 @@ export const getSchedule=async()=>{
 
 export const editSchedule=async(id,data)=>{
     try {
-        const user_id=await getUserUid();
-        const response = await axios.put(`${ruta}/schedule/${id}`, {...data, id_user: user_id});
+        const response = await axios.put(`${ruta}/schedule/${id}`,data);
         return response.data; 
     } catch (error) {
         console.error('Error editing schedule by ID:', error);
@@ -971,8 +933,7 @@ export const editSchedule=async(id,data)=>{
 
 export const createSchedule =async (data)=>{
     try{
-        const user_id=await getUserUid();
-        const response = await axios.post(`${ruta}/schedule/`, {...data, id_user: user_id});
+        const response = await axios.post(`${ruta}/schedule/`, data);
         return response.data.schedules
     }catch(error){
         console.error('Error adding new schedule: ', error);
@@ -980,9 +941,8 @@ export const createSchedule =async (data)=>{
     }
 }
 
-export const deleteSchedule = async () => {
+export const deleteSchedule = async (user_id) => {
     try {
-        const user_id=await getUserUid();
         await axios.delete(`${ruta}/schedule/${user_id}`); // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error deleting schedule by ID:', error);

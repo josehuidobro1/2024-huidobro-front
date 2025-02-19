@@ -12,16 +12,18 @@ import { Plates } from './pages/Plates/Plates';
 import { Drinks } from './pages/Drinks/Drinks';
 import { Community } from './pages/Community/Community';
 import Schedule from './pages/Schedule/Schedule';
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { getUserNotification, markNotificationAsRead } from './firebaseService';
 import NotificationPopup from './components/NotificationPopup';
 
-function App() {
-  const [user]= useAuthState(auth)
-  const [notifications, setNotifications] = useState([]);
+export const UserContext = createContext(null);
 
+function App() {
+  const [user] = useAuthState(auth);
+  const [user_id, setUser_id]= useState(useAuthState(auth))
+  const [notifications, setNotifications] = useState([]);
   const fetchNotification=async()=>{
-    const fetchedNotifications = await getUserNotification(user.uid);
+    const fetchedNotifications = await getUserNotification(user_id);
     setNotifications(fetchedNotifications || []);
   }
 
@@ -35,25 +37,35 @@ function App() {
   };
 
   useEffect(()=>{
-    user && fetchNotification(user.uid)
-  },[])
+    user_id && fetchNotification(user_id)
+  },[user_id])
+  
+  useEffect(()=>{
+    if(user){
+      setUser_id(user.uid);
+    }else{
+      setUser_id(null);
+    }
+  },[user])
 
   return (
-    <Router>
-        {user && notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
+    <UserContext.Provider value={{user_id, setUser_id}} >
+      <Router>
+        {user_id && notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
         <Routes>
-          <Route path="/" element={ user ? <Home userId={user?.uid} /> : <Login />} />
-          <Route path="/plates" element={<Plates userId={user?.uid} />}/>
-          <Route path="/drinks" element={<Drinks userId={user?.uid} />}/>
-          <Route path='/schedule' element={<Schedule userId={user?.uid} />}/>
-          <Route path="/user-profile" element={<UserProfile  userId={user?.uid} />} />
-          <Route path="/resetPassword" element={<ResetPassword  userId={user?.uid} />} />
-          <Route path="/category" element={<Category userId={user?.uid} />} />
-          <Route path="/dashboard" element={<Dashboard  userId={user?.uid} />} />
-          <Route path="/community" element={<Community  userId={user?.uid} />} />
+          <Route path="/healthyBite" element={<Login />}/>
+          <Route path="/" element={<Home />}/>
+          <Route path="/plates" element={<Plates/>}/>
+          <Route path="/drinks" element={<Drinks/>}/>
+          <Route path='/schedule' element={<Schedule/>}/>
+          <Route path="/user-profile" element={<UserProfile />} />
+          <Route path="/resetPassword" element={<ResetPassword />} />
+          <Route path="/category" element={<Category/>} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/community" element={<Community />} />
         </Routes>
       </Router>
-
+    </UserContext.Provider>
   );
 }
 

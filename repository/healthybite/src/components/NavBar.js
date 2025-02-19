@@ -2,15 +2,18 @@ import { auth } from "../firebaseConfig";
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHouse, faLayerGroup, faChartLine, faUser, faBars, faXmark , faUtensils, faMugHot, faStar, faComment, faCartShopping} from '@fortawesome/free-solid-svg-icons'; 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import NavItem from "./NavItem";
+import { UserContext } from "../App";
 
 function NavBar() {
+    const {setUser_id}=useContext(UserContext)
     const [openBar, setOpenBar]=useState(false)
 
     const handleLogOut=()=>{
         auth.signOut()
         setOpenBar(false)
+        setUser_id(null)
 
     }
     return (
@@ -22,7 +25,7 @@ function NavBar() {
                     <h1 className="font-belleza text-3xl  w-3/4 lg:text-2xl text-white  md:w-full ml-4  ">Healthy Bite</h1>
                     {window.innerWidth > '768' ? 
                         <div className="flex justify-end items-center w-full mr-2 ">
-                            <Link  to="/"  onClick={()=>auth.signOut()} className="font-quicksand font-semibold text-sm text-healthyGreen hover:mt-1  px-3 py-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>
+                            <Link  to="/healthyBite" onClick={handleLogOut}className="font-quicksand font-semibold text-sm text-healthyGreen hover:mt-1  px-3 py-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>
                         </div>
                         :
                         <div>
@@ -57,7 +60,7 @@ function NavBar() {
                                 <NavItem route='/user-profile' name='User Profile' icon={faUser} setOpenBar={setOpenBar} />
                                 
                             </div>
-                            <Link to="/" onClick={handleLogOut} className="font-quicksand text-center relative bottom-2 my-5 font-semibold max-h-12 text-xl  text-healthyGreen hover:mt-1  w-1/5 py-2  xs:px-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>
+                            <Link to="/healthyBite" onClick={handleLogOut} className="font-quicksand text-center relative bottom-2 my-5 font-semibold max-h-12 text-xl  text-healthyGreen hover:mt-1  w-1/5 py-2  xs:px-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>
                         </div>
                     </div>
 

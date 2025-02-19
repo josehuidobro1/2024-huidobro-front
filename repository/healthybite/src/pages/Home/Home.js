@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight, faPlus } from '@fortawesome/free-solid-svg-icons'; 
 import bgImage from '../../assets/imgHome.jpg'
@@ -15,8 +15,10 @@ import Data from "../Data";
 import { CircularProgressbar } from 'react-circular-progressbar';
 import { PieChart } from "@mui/x-charts";
 import Goals from "../../components/Goals";
+import { UserContext } from "../../App";
 
 function Home() {
+    const {user_id} = useContext(UserContext);
     const [foodData, setFoodData] = useState([]); // datos de tabla Food
     const [platesData, setPlatesData] = useState([]); // datos de tabla Plates
     const [drinksData, setDrinksData] = useState([]); // datos de tabla Drinks
@@ -72,14 +74,13 @@ function Home() {
     useEffect(() => {
         const fetchStreak = async () => {
             try {
-                const streakValue = await getstreak();
-                console.log('sreak Value ', streakValue)
+                const streakValue = await getstreak(user_id);
                 setStreak(streakValue && streakValue.length>0 ? streakValue[0] : 0 );
                 if (streakValue?.length>0 && streakValue>2){
-                    addGoal(1)
+                    addGoal(user_id, 1)
                 }
                 else if (streakValue?.length>0 &&  streakValue>=10){
-                    addGoal(2)
+                    addGoal(user_id, 2)
                 }
             } catch (error) {
                 console.error("Error fetching streak:", error);
@@ -101,20 +102,24 @@ function Home() {
 
     const getUserData = async()=> {
         setLoading(true)
-        const userInfo = await fetchUser()
-        if(userInfo){
-            const { email, ...filteredUserData } = userInfo;
-            setUser(filteredUserData)
-        }else{
-            console.error('no esta conectando con el user id del usuario, por eso no consigue informacion')
+        try{
+            const userInfo = await fetchUser(user_id)
+            if(userInfo){
+                const { email, ...filteredUserData } = userInfo;
+                setUser(filteredUserData)
+            }else{
+                console.error('Error in fetchUser() in userData ', userInfo)
+            }
+            const privatePlates = await  getUserPlates(user_id)
+            const otherPlates=await getPlatesNotUser(user_id) 
+            const plates={mines: privatePlates, others:otherPlates}
+            setPlatesData(plates)
+            const drinks=await getUserDrinks(user_id)
+            setDrinksData (drinks)
+            setLoading(false);
+        }catch(error){
+            console.log('Error in getUserData() Home')
         }
-        const privatePlates = await  getUserPlates()
-        const otherPlates=await getPlatesNotUser() 
-        const plates={mines: privatePlates, others:otherPlates}
-        setPlatesData(plates)
-        const drinks=await getUserDrinks()
-        setDrinksData (drinks)
-        setLoading(false);
 
     }
     
@@ -154,7 +159,7 @@ function Home() {
                 if (isNaN(new Date(date).getTime())) {
                     throw new Error('Invalid date value');
                 }
-                const userFood = await fetchUserFoods(daySelected ? daySelected:  date );
+                const userFood = await fetchUserFoods(user_id, daySelected ? daySelected:  date );
                 const food = await fetchAllFoods();
     
                 setFoodData(
@@ -226,9 +231,9 @@ function Home() {
 
     const fetchCategories = async () => {
         try {
-            const cats = await getCategories();
+            const cats = await getCategories(user_id);
             const defaultCats= await getDefaultCategories();
-            const drinkCats = await getGroupedDrinkTypes();
+            const drinkCats = await getGroupedDrinkTypes(user_id);
             await handleChangesCat()
             const combinedCats = [
                 ...cats, 
@@ -245,9 +250,9 @@ function Home() {
     useEffect(()=>{
         if(user){
             const updateGoals= async()=>{
-                await editUserData(user)}
+                await editUserData(user_id, user)}
             updateGoals()
-    }
+        }
     },[user])
     
     const allergies=async()=>{
@@ -263,12 +268,12 @@ function Home() {
             setLoading(false)
         };
     
-        fetchData();
+        user_id && fetchData();
     }, []);
 
     const handleAddMeal = async () => {
         try {
-            await addUserFood(selection, date, amount);
+            await addUserFood(user_id, selection, date, amount);
             setAmount(null);
             setSelection(null);
             setAddMeal(false);
@@ -353,7 +358,7 @@ function Home() {
                                 <FontAwesomeIcon className="cursor-pointer px-1" icon={faAngleRight} onClick={()=>index===goalName.length ? setIndex(1) : setIndex(index+1) }/>
                             </div>
                             <div className="flex relative w-full justify-center items-center my-2">
-                                <PieChart
+                                {user && <PieChart
                                     series={[
                                         {
                                             data:[
@@ -371,12 +376,12 @@ function Home() {
                                     slotProps={{
                                         legend: { hidden: true },
                                     }}
-                                />
-                                <div className={`font-quicksand text center flex flex-col absolute  text center justify-center items-center ${goalConsumed> user.goals[(goalName.find(goal=>goal.id===index)).name] ? ' rounded-full sm:rounded-2xl bg-healthyOrange text-white shadow-md py-2 px-4 sm:px-2 md:px-1 ':'w-full text-healthyOrange h-full'}  `}>
+                                />}
+                                {user && <div className={`font-quicksand text center flex flex-col absolute  text center justify-center items-center ${goalConsumed> user.goals[(goalName.find(goal=>goal.id===index)).name] ? ' rounded-full sm:rounded-2xl bg-healthyOrange text-white shadow-md py-2 px-4 sm:px-2 md:px-1 ':'w-full text-healthyOrange h-full'}  `}>
                                     {goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="font-bold text-xl  text-center">{((goalConsumed*100)/(user.goals[(goalName.find(goal=>goal.id===index)).name])).toFixed(1)}%</p>}
                                     {goalConsumed>user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="text-xs font-bold text-center w-full pb-2 pl-2 ">You've already passed your&nbsp;goal!</p>}
                                     <p className="text-center text-xs font-bold ">{goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] ? 'completed' : `${formatNumber(goalConsumed)} / ${formatNumber(user.goals[(goalName.find(goal=>goal.id===index)).name])}`}</p>
-                                </div>
+                                </div>}
                                 
                             </div>
                             {streak>0 && <StreakCounter streakDays={streak} />}
@@ -413,7 +418,7 @@ function Home() {
             {addMeal &&
                 <PopUp user={user} allergiesData={allergiesData} newFood={newFood} setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
             }
-            {user && user.goals && Object.values(user.goals).some(goal => Number(goal) === 0) && <Goals user={user} setUser={setUser}/> }
+            {user_id && user?.goals && Object.values(user.goals).some(goal => Number(goal) === 0) && <Goals user={user} setUser={setUser}/> }
         </div>
         
     );

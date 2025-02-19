@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { faBookmark, faCirclePlus, faEllipsisVertical, faEye, faEyeSlash, faUtensils } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Counter from '../../../components/Counter'
@@ -7,6 +7,7 @@ import DeletePopUp from '../../../components/DeletePopUp'
 import {deleteplate,updatePlate,createReview} from '../../../firebaseService'
 import { Visibility } from './Visibility'
 import { uploadImageToStorage } from '../../../firebaseConfig'
+import { UserContext } from '../../../App'
 
 export const PlateItem = ({ plateDetail, foodData, handleupdatePlates,setSuccessMessage , setAddFood,selection, setPlate}) => {
     const [plate, setPlateDetail]=useState(plateDetail)
@@ -16,9 +17,8 @@ export const PlateItem = ({ plateDetail, foodData, handleupdatePlates,setSuccess
     const [clickable, setClickable] = useState(true);
     const [publicPlate, setPublicPlate]=useState(plateDetail.public)
     const fileInputRef = useRef(null);
-    const [ingredientsUpdate, setIngredientsUpdate] = useState(
-        plate.ingredients.map((item) => ({ ...item })) // Clone ingredients
-    );
+    const {user_id}=useContext(UserContext)
+    const [ingredientsUpdate, setIngredientsUpdate] = useState(plate.ingredients.map((item) => ({ ...item })) );
     const [foodPlate, setFoodPlate]=useState(ingredientsUpdate.map((item) => {
         const foodItem = foodData.find((food) => food.id === item.ingredientId);
         return foodItem ? { ...foodItem, amount: item.quantity } : null;
@@ -102,7 +102,7 @@ export const PlateItem = ({ plateDetail, foodData, handleupdatePlates,setSuccess
         };
 
         try {
-            await updatePlate(updatedPlate, plate.id);
+            await updatePlate({...updatedPlate, id_User:user_id}, plate.id);
             setSuccessMessage("Plate updated successfully!");
 
             // Trigger review creation if the plate was made public
@@ -148,9 +148,9 @@ export const PlateItem = ({ plateDetail, foodData, handleupdatePlates,setSuccess
 
     const updateImage=async(e)=>{
         const imageUrl = await uploadImageToStorage(e.target.files[0]);
-        setPlateDetail({...plate, image: imageUrl })
+        setPlateDetail({...plate,id_User:user_id , image: imageUrl })
         setPlate({...plate, image: imageUrl});
-        await updatePlate({...plate, image: imageUrl}, plate.id);
+        await updatePlate({...plate, image: imageUrl, id_User:user_id }, plate.id);
         
     }
 

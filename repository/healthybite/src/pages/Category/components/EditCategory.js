@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSquarePlus} from '@fortawesome/free-solid-svg-icons'; 
 import FoodItem from './FoodItem';
@@ -8,6 +8,7 @@ import Data from '../../Data'
 import IconDrop from './IconDrop';
 import Category from '../Category';
 import { updateCategory } from '../../../firebaseService';
+import { UserContext } from '../../../App';
 
 
 function EditCategory({setEditCategory, setAddFood, category, icon, food, handleUpdate, selection}) {
@@ -17,6 +18,7 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
     const [catFoods, setCatFoods] = useState(category.foods.map((item) => food.find((element) => element.id === item)));
     const [name, setName]=useState(category.name)
     const [clickable, setClickable] = useState(true);
+    const {user_id}=useContext(UserContext)
 
     const handleChanges= async ()=>{
         const data={
@@ -28,7 +30,7 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
         }
         if(data !== category) {
             try{
-                await updateCategory(data,category.id)
+                await updateCategory(user_id, data,category.id)
                 console.log(data)
                 setEditCategory(false)
                 handleUpdate()

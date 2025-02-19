@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import FoodItem from './FoodItem';
 import {createplate,createReview, fetchUser} from '../../../firebaseService'
 import { auth, uploadImageToStorage, } from "../../../firebaseConfig";
@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Visibility } from './Visibility';
 import { plateAchivements } from '../../../components/AchivementsValidation'
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { UserContext } from '../../../App';
 
 
 const NewPlate = ({ foodData, setPlates, plates, setNewPlate, setSuccessMessage, setLoading }) => {
@@ -21,6 +22,7 @@ const NewPlate = ({ foodData, setPlates, plates, setNewPlate, setSuccessMessage,
   const fileInputRef = useRef(null);
   const [publicPlate, setPublicPlate]=useState(false)
   const [user]= useAuthState(auth)
+  const {user_id}=useContext(UserContext)
 
   // Function to handle adding/removing food items
   const handleImageChange = (e) => {
@@ -100,10 +102,10 @@ const NewPlate = ({ foodData, setPlates, plates, setNewPlate, setSuccessMessage,
 
         
         const newPlates=plates.concat({ name: plateName, ingredients: ingredientsArray, calories_portion: totals.calories, sodium_portion: totals.sodium, carbohydrates_portion: totals.carbohydrates, protein_portion: totals.protein, fats_portion:  totals.fats, image: imageUrl,public:publicPlate,verified: user.validation  })
-        plateAchivements(newPlates.length)
+        plateAchivements(user_id, newPlates.length)
         setPlates(newPlates);
 
-        const plate_id= await createplate(data);
+        const plate_id= await createplate(user_id, data);
         if(data.public == true){
           await createReviewForPublicPlate(plate_id)
         }

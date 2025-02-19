@@ -1,4 +1,4 @@
-import React,{useEffect, useState} from 'react'
+import React,{useContext, useEffect, useState} from 'react'
 import NavBar from '../../components/NavBar'
 import userImg from '../../assets/userImg.jpg'
 import { fetchUser } from '../../firebaseService'
@@ -16,6 +16,7 @@ import Goals from '../../components/Goals'
 import AllergiePopUp from './components/AllergiePopUp'
 import Data from '../Data'
 import Achivement from './components/Achivement'
+import { UserContext } from '../../App'
 
 
 
@@ -35,6 +36,7 @@ function UserProfile() {
     const [openGoals, setOpenGoals]=useState(false)
     const [allergiePopUp,setAllergiePopUp]=useState(false)
     const [allergies, setAllergies]=useState(null)
+    const {user_id}=useContext(UserContext)
     const [myachievements, setMyAchievements] = useState([]);
     const handleWeightChange = (e) => {
         handleInputChange(e.target.value, 0, 500, setWeight);
@@ -60,7 +62,7 @@ function UserProfile() {
 
     const getUser = async () => {
         try {
-            const userData = await fetchUser();
+            const userData = await fetchUser(user_id);
             setUser(userData);
             setName(userData.name);
             setSurname(userData.surname);
@@ -92,7 +94,7 @@ function UserProfile() {
             schedule:user.schedule,
         };
         try {
-            await editUserData(data);
+            await editUserData(user_id, data);
             console.log('User edited successfully in Firestore');
         } catch (err) {
             console.log('Error editing user: ' + err.message);
@@ -102,7 +104,7 @@ function UserProfile() {
     const editGoals=()=>{
         setOpenGoals(false)
         const updateGoals=async()=>{
-            await editUserData(user)
+            await editUserData(user_id, user)
         }
         updateGoals()
     }

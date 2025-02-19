@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import bgImage from '../../assets/bgImage.jpg';
 import bgImageMobile from "../../assets/bgImageMobile.jpg";
 import Input from "../../components/Input";
@@ -6,6 +6,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { resetPassword } from "../../firebaseService"; // Ensure firebaseService is configured correctly
 import { confirmPasswordReset, getAuth, verifyPasswordResetCode } from "firebase/auth";
 import { auth } from "../../firebaseConfig";
+import { UserContext } from "../../App";
 
 
 function ResetPassword() {
@@ -19,16 +20,11 @@ function ResetPassword() {
     const [searchParams] = useSearchParams()
     const mode = searchParams.get("mode");
     const oobCode = searchParams.get("oobCode");
-
-    console.log("Mode:", mode);
-    console.log("OOB Code:", oobCode);
-
+    const {user_id, setUser_id}=useContext(UserContext)
     
     const resetPass=async()=>{
-        const queryParams = new URLSearchParams(location.search);
-        console.log("queryParams ", queryParams )
+        const queryParams = new URLSearchParams(location.search)
         const oobCode = searchParams.get('oobCode')
-        console.log("oobCode ", oobCode )
         if (!oobCode) {
             setMessage("Invalid or expired reset link");
             return;
@@ -36,7 +32,6 @@ function ResetPassword() {
         try {
             const auth = getAuth()
             const rta=await confirmPasswordReset(auth, oobCode, password);
-            console.log('respuestaaa' , rta)
             navigate("/");
             setLoading(false);
         } catch (error) {
@@ -49,7 +44,8 @@ function ResetPassword() {
         if(password && confirmPw && password===confirmPw){
             try {
                 await verifyPasswordResetCode(auth, oobCode); // Verificar el código
-                await confirmPasswordReset(auth, oobCode, password); // Establecer nueva contraseña
+                await confirmPasswordReset(auth, oobCode, password);
+                setUser_id(auth.currentUser.uid) // Establecer nueva contraseña
                 navigate("/");
             } catch (err) {
                 setMessage("The link is invalid or has expired.");

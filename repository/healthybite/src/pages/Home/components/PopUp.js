@@ -28,7 +28,6 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
         try{
             const data= await getProducts()
             setMenu(data)
-            console.log(data)
             setIdFoodMenu(data.map((item)=>item.id))
             setLoading(false)
         }catch(error){

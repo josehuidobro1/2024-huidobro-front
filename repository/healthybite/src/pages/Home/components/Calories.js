@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { createTotCal, UpdateTotCal, fetchTotCalByDay } from "../../../firebaseService";
+import { UserContext } from '../../../App';
 
 const Calories = ({ userFood }) => {
+    const {user_id} =useContext(UserContext)
     const [addTotCal, setAddTotCal] = useState(null);
     const [totals, setTotals] = useState({
         calories: 0,
@@ -34,23 +36,18 @@ const Calories = ({ userFood }) => {
 
     const createOrUpdateTotCalories = async (totals, selectedDate) => {
         try {
-            const totCalByDay = await fetchTotCalByDay(selectedDate);
-            console.log("totcalbyday", totCalByDay);
-    
+            const totCalByDay = await fetchTotCalByDay(user_id, selectedDate);    
             const dataToSend = {
                 ...totals,
             };
-    
-            console.log("Data to send:", dataToSend); 
-    
             if (totCalByDay.length === 0) {
-                const createdTotCal = await createTotCal(dataToSend, selectedDate);
+                const createdTotCal = await createTotCal(user_id, dataToSend, selectedDate);
                 if (createdTotCal) {
                     setAddTotCal(createdTotCal);
                 }
             } else {
                 const existingTotCal = totCalByDay[0];
-                await UpdateTotCal(existingTotCal.id, dataToSend,selectedDate );
+                await UpdateTotCal(user_id, existingTotCal.id, dataToSend,selectedDate );
                 setAddTotCal(existingTotCal);
             }
         } catch (error) {

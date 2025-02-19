@@ -1,18 +1,19 @@
 import { faAngleDown, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { editUserData } from '../../../firebaseService';
+import { UserContext } from '../../../App';
 
 const AllergiesData = ({name,id, food,setAllergies, allergies,userData}) => {
     const [details, setDetails]=useState(false)
+    const {user_id}=useContext(UserContext)
 
     const handleAllergie=async ()=>{
         const newList=[...allergies, id]
-        await editUserData({...userData,allergies:newList})
+        await editUserData(user_id, {...userData,allergies:newList})
         setAllergies(newList)
-
-
     }
+
   return (
     <div className='flex flex-col w-full sm:w-48 py-2 px-2 m-1 rounded-md bg-healthyGray1/70 ' >
         <div className='flex justify-between items-center pb-1'>

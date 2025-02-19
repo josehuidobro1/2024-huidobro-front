@@ -1,14 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { deleteUserAc } from '../../../firebaseService';
 import { auth } from "../../../firebaseConfig";
+import { UserContext } from '../../../App';
 
 export default function PopUp({setDeleteAc}) {
     const navigate = useNavigate();
+    const {user_id}=useContext(UserContext)
 
     const deleteAccount=async ()=>{
         try{
-            await deleteUserAc()
+            await deleteUserAc(user_id)
             auth.signOut()
             navigate("/")
             setDeleteAc(false)

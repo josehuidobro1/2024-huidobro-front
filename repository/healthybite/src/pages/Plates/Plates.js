@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import NavBar from '../../components/NavBar'
 import plateBG from '../../assets/plateBG.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -13,6 +13,7 @@ import emptyPlate from '../../assets/emptyPlate.png'
 import PopUpPlate from './components/PopUpPlates'
 import { PickersSectionListSectionContent } from '@mui/x-date-pickers/PickersSectionList/PickersSectionList'
 import { plateAchivements } from '../../components/AchivementsValidation'
+import { UserContext } from '../../App'
 
 export const Plates = () => {
     const [addFood, setAddFood]=useState(false)
@@ -24,19 +25,17 @@ export const Plates = () => {
     const [newPlate, setNewPlate]=useState(false)
     const [successMessage, setSuccessMessage] = useState('');
     const [selection , setSelection]=useState(null)
+    const {user_id} = useContext(UserContext);
 
     const fetchPlates = async () => {
-        const unsubscribe = auth.onAuthStateChanged(async (user) => {
-                try {
-                    const plates = await getUserPlates();
-                    setPlates(plates);
-                    plateAchivements(plates.length)
-                    setLoading(false)
-                } catch (err) {
-                    console.log('Error al obtener las platos: ' + err);
-                }
-        })
-        return () => unsubscribe();
+        try {
+            const plates = await getUserPlates(user_id);
+            setPlates(plates);
+            plateAchivements(user_id, plates.length)
+            setLoading(false)
+        } catch (err) {
+            console.log('Error al obtener las platos: ' + err);
+        }
     };
 
 
@@ -52,7 +51,7 @@ export const Plates = () => {
     const handleupdatePlates = ()=>{
         setLoading(true)
         fetchPlates()
-        plateAchivements(plates.length)
+        plateAchivements(user_id, plates.length)
     }
 
     useEffect(()=>{

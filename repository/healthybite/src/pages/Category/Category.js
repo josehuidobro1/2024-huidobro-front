@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import NavBar from '../../components/NavBar'
 import categoryImg from '../../assets/categoryBg.jpg'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -9,6 +9,7 @@ import { fetchAllFoods, getCategories, getProducts, getPublicPlates, getUserDrin
 import PopUpCat from "./components/PopUpCat";
 import { auth } from "../../firebaseConfig";
 import Loading from "../../components/Loading";
+import { UserContext } from "../../App";
 
 function Category() {
     const [foodData, setFoodData] = useState([])
@@ -18,13 +19,14 @@ function Category() {
     const [addCategory, setAddCategory]=useState(false)
     const [categories, setCategories]=useState([])
     const [loading, setLoading] = useState(true);
+    const {user_id}=useContext(UserContext)
 
     const fetchCategories = async () => {
         setLoading(true)
         const unsubscribe = auth.onAuthStateChanged(async (user) => {
             if (user) {
                 try {
-                    const cats = await getCategories();
+                    const cats = await getCategories(user_id);
                     setCategories(cats);
                 } catch (err) {
                     console.log('Error al obtener las categorias: ' + err);
@@ -42,8 +44,8 @@ function Category() {
         try{
             const food = await fetchAllFoods()
             const barFood=await getProducts()
-            const drinks = await getUserDrinks()
-            const plates = await getUserPlates()
+            const drinks = await getUserDrinks(user_id)
+            const plates = await getUserPlates(user_id)
             const publicPlates= await getPublicPlates()
             const combinedFoodData = [
                 ...food, 

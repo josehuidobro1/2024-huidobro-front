@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from "react";
+import React, {useState,useEffect, useContext} from "react";
 import loginImg from '../../assets/login.jpg'
 import loginMobile from '../../assets/loginMobile.png'
 import Input from "../../components/Input";
@@ -7,7 +7,9 @@ import { collection, addDoc } from 'firebase/firestore';
 import { auth,firestore } from '../../firebaseConfig';
 import {handleInputChange} from '../inputValidation';
 import { forgotPassword, loginUser, registerUser } from "../../firebaseService";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { UserContext } from "../../App";
+
 function Login() {
     const [inValidation,setInValidation]=useState(false)
     const [signUp, setSignUp]=useState(false)
@@ -24,13 +26,17 @@ function Login() {
     const [infoOk, setInfoOk]=useState(false);
     const [forgot, setForgot]=useState(false);
     const [loginError, setLoginError] = useState('');
+    const {setUser_id}=useContext(UserContext)
+    const navigate=useNavigate()
 
     const handleWeightChange = (e) => {
-        handleInputChange(e.target.value, 0, 500, setWeight);
+        const value = parseFloat(e.target.value);
+        setWeight(value >= 0 ? value : null);
     };
     
     const handleHeightChange = (e) => {
-        handleInputChange(e.target.value, 0, 500, setHeight);
+        const value = parseFloat(e.target.value);
+        setHeight(value >= 0 ? value : null);
     };
     
     
@@ -96,25 +102,28 @@ function Login() {
         e.preventDefault();
         handleValidation();
         try {
-            const user = await registerUser(email, password, name, surname, weight, height, birthDate)
-            console.log('Usuario registrado y agregado a Firestore:', user.uid);
+            setMessage('Creating new user...')
+            const user_id = await registerUser(email, password, name, surname, weight, height, birthDate)
+            user_id && setMessage('User corretly added!')
+            setUser_id(user_id)
+            navigate("/");
         } catch (error) {
-            if (error.code==="auth/email-already-in-use"){
+            if (error===" Error: Firebase: Error (auth/email-already-in-use)."){
                 setMessage("That email is already in use, please try another one.");
             }else{
                 console.error('Error al registrar usuario o agregar a Firestore:', error);
             }
             
         }
-
     };
     
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const userCredential = await loginUser(email,password)
-            console.log('Inicio de sesión exitoso:', userCredential.user);
+            const user_id = await loginUser(email,password)
+            setUser_id(user_id)
+            console.log('Inicio de sesión exitoso:', user_id);
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
             setLoginError('Invalid Email or Password, please try again')
@@ -122,31 +131,35 @@ function Login() {
     }
 
     return (
-        <div className="  bg-healthyGray h-screen flex justify-center items-center  ">
+        <div className="  bg-healthyGray h-screen flex justify-start sm:justify-center lg:justify-between items-center flex-col sm:flex-row-reverse  ">
             {window.innerWidth<640 ? 
-            <img src={loginMobile} alt="Login" className=" h-full w-full z-0 relative object-cover" />
+            <div className="flex w-full max-h-[280px] items-start justify-start " >
+                <img src={loginMobile} alt="Login" className="w-full object-cover" />
+            </div>
             :
-            <img src={loginImg} alt="Login" className="w-full h-full z-0 relative object-cover" />
+            <div className="flex  z-5 items-start justify-center lg:justify-end  h-screen w-full" >
+                <img src={loginImg} alt="Login" className="h-full z-0 relative object-cover " />
+            </div>
             }
-            <div className={`bg-healthyGray w-full sm:w-2/5 lg:w-2/5 xl:w-5/12 absolute flex  sm:left-20 lg:left-40 top-64 flex-col ${signUp ? ' sm:top-12 md:top-20 xl:top-10':'  sm:top-40'} `} >
-                <div className={`flex  h-full  sm:mt-0  px-12 xs:px-16 sm:px-0   w-full flex-col `}>
-                    <h1 className= {`font-belleza text-4xl md:text-5xl lg:text-6xl xl:text-7xl text-darkGray ${forgot ? 'text-center':'text-left'}`}>Healthy Bite</h1>
+            <div className={`bg-healthyGray w-full sm:w-3/5 lg:w-3/5   md:py-8 md:h-screen xl:w-5/12 sm:absolute flex sm:items-center justify-center  md:items-end sm:z-10 sm:left-0 sm:top-0 flex-col`} >
+                <div className={`flex px-12 xs:px-16 sm:px-0  w-full xs:mt-12 sm:mt-0 sm:w-3/4 flex-col md:overflow-y-auto`}>
+                    <h1 className= {`font-belleza text-4xl md:text-5xl  xl:text-7xl text-darkGray ${forgot ? 'text-center':'text-left'}`}>Healthy Bite</h1>
                     
                     {signUp ? (
-                        <div classname='  w-full h-screen bg-red-500 '>
-                            <div className="sm:mt-6 flex flex-col bg-healthyGray w-full sm:max-h-[580px] md:max-h-[1000px]   lg:max-h-[480px] xl:max-h-[430px] 2xl:max-h-[500px]  sm:overflow-y-auto  lg:max-w-[400px] ">
+                        <div className='  w-full   '>
+                            <div className="sm:mt-6 flex flex-col bg-healthyGray w-full  sm:overflow-y-auto ">
                                 <div className="flex w-full bg-healthyGray sm:sticky sm:top-0">
                                     <button onClick={()=>{setSignUp(false); setPassword('')} } className="font-quicksand  bg-healthyGreen p-2   w-full rounded-xl  text-white font-semibold my-4 hover:bg-healthyDarkGreen">Go Back to Login</button>
                                 </div>
-                                <div className="flex flex-col w-full px-2">
+                                <div className="flex flex-col w-full px-2 ">
                                     <Input required={inValidation && name===''} label="Name" inputType="text" inputValue={name} placeholder="Jane" onChange={(e)=>setName(e.target.value)} />
                                     <Input required={inValidation && surname===''} label="Surname" inputType="text" inputValue={surname} placeholder="Doe" onChange={(e)=>setSurname(e.target.value)} />
                                     <Input required={inValidation && email===''} label="Email" inputType="email" inputValue={email} placeholder="jane@example.com" onChange={(e)=>setEmail(e.target.value)} />
-                                    <Input required={inValidation && birthDate===''} label="Date of birth" inputType="date" inputValue={birthDate} placeholder="DD-MM-YYYY" onChange={(e)=>setBirthDate(e.target.value)} />
-                                    <Input required={inValidation && weight <= 0}label="Weight" inputType="number" inputValue={weight} placeholder="e.g., 70 kg" onChange={handleWeightChange}/>
+                                    <Input required={inValidation && birthDate===''} max={new Date().toISOString().split('T')[0]} label="Date of birth" inputType="date" inputValue={birthDate} placeholder="DD-MM-YYYY" onChange={(e)=>setBirthDate(e.target.value)} />
+                                    <Input required={inValidation && weight <= 0} min="0" max="500"  label="Weight" inputType="number" inputValue={weight} placeholder="e.g., 70 kg" onChange={handleWeightChange}/>
                                     {inValidation && weight < 0 && <p className='text-red-500 text-xs'>weight must be a positive number.</p>}
                                     {inValidation && weight >= 500 && <p className='text-red-500 text-xs'>weight must be under 600kg.</p>}
-                                    <Input required={inValidation && height <= 0} label="Height" inputType="number" inputValue={height} placeholder="e.g., 170 cm" onChange={handleHeightChange}/>
+                                    <Input required={inValidation && height <= 0} label="Height" min="0" max="500"   inputType="number" inputValue={height} placeholder="e.g., 170 cm" onChange={handleHeightChange}/>
                                     {inValidation && height < 0 && <p className='text-red-500 text-xs'>height must be a positive number.</p>}
                                     {inValidation && height >= 500 && <p className='text-red-500 text-xs'>height must under 600cm.</p>}
                                     <Input required={inValidation && password===''} label="Password" inputType="password" inputValue={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
@@ -161,7 +174,7 @@ function Login() {
                     : ( forgot ?
                         (
                         <div className="w-full flex justify-center items-center">
-                            <div className="flex flex-col  w-full px-0 xs:px-8 xs:px-0 sm:w-1/3 sm:w-full sm:max-w-[450px]  my-8">
+                            <div className="flex flex-col  w-full px-0 xs:px-8 sm:w-full my-8">
                                 <p className="font-quicksand font-semibold text-lg text-center text-darkGray ">Forgot your password?</p>
                                 <p className="font-quicksand text-md text-center text-darkGray">If you have forgotten your password, please enter your email address below. We will send you a link to a page where you can easily create a new&nbsp;password.</p>
                                 <Input required={inValidation && email===''} label="Email" inputType="email" inputValue={email} placeholder="jane@example.com" onChange={(e)=>setEmail(e.target.value)} />
@@ -173,7 +186,7 @@ function Login() {
                             </div>
                         </div>
                         )
-                        :(<div className="w-full lg:w-2/3 ">
+                        :(<div className="w-full  ">
                             <div className="sm:mt-6 flex flex-col">
                                 {inValidation && !infoOk && <p className="font-quicksand mt-4 sm:mt-0 text-sm font-semibold bg-darkGray text-white p-1 rounded-md text-center">{message}</p>}
                                 {loginError && (<p className="font-quicksand mt-4 text-sm font-semibold bg-red-200 text-red-600 p-1 rounded-md text-center">{loginError}</p>)}

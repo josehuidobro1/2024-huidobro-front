@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import SelectItem from '../../../components/SelectItem'
 import { createSchedule, editSchedule, editUserData } from '../../../firebaseService'
 import Item from './Item'
+import { UserContext } from '../../../App'
 
 const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksData, setLoading}) => {
-
+    const {user_id}=useContext(UserContext)
     const [schedule, setSched]=useState((scheduleList.length>0 && scheduleList.find(item=>item.day==day)) || null)
     const [edit,setEdit]=useState(false)
     const [selectedFood, setSelectedFood]=useState(scheduleList.length>0 && scheduleList.find(item=>item.day==day) ? scheduleList.find(item=>item.day==day).foodList: [])
@@ -18,14 +19,11 @@ const DateList = ({day,scheduleList,foodData ,setSchedule, platesData, drinksDat
 
     const handleEdit=async()=>{
         if(edit){
-            const data={day:day, foodList:selectedFood.filter(item=>item.quantity>0)}
+            const data={id_user:user_id,day:day, foodList:selectedFood.filter(item=>item.quantity>0)}
             setSched(data)
             setLoading(true)
             schedule ? await editSchedule(schedule.id, data) : await createSchedule(data)
-            console.log('Scheduleee ', schedule)
-            console.log('Scheduleee now ', data)
             const schedulEdited= scheduleList.find(item=>item.day===day) ? scheduleList.map(item=>item.day===schedule.day ? {...item,foodList:data.foodList} : item) : [...scheduleList,{...data}]
-            console.log('ScheduleEdited ', schedulEdited)
             setSchedule(schedulEdited)
             setLoading(false)
         }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { deleteUserAc, fetchAllFoods, getAllergies } from '../../../firebaseService';
 import { auth } from "../../../firebaseConfig";
@@ -8,6 +8,7 @@ import loader from '../../../assets/loader.gif'
 import AllergieItem from './AllergieItem';
 import AllergiesData from './AllergiesData';
 import CreateAllergie from './CreateAllergie';
+import { UserContext } from '../../../App';
 
 export default function AllergiePopUp({allergiePopUp,setAllergiePopUp, allergies,setAllergies,userData}) {
     const navigate = useNavigate();
@@ -15,10 +16,11 @@ export default function AllergiePopUp({allergiePopUp,setAllergiePopUp, allergies
     const [loading, setLoading]=useState(true)
     const [allergiesData, setAllergiesData]=useState([])
     const [option, setOption]=useState(0)
+    const {user_id}=useContext(UserContext)
 
     const deleteAccount=async ()=>{
         try{
-            await deleteUserAc()
+            await deleteUserAc(user_id)
             auth.signOut()
             navigate("/")
             setAllergiePopUp(false)
@@ -37,9 +39,6 @@ export default function AllergiePopUp({allergiePopUp,setAllergiePopUp, allergies
             setAllergiesData(allergieData)
 
             if(food.length!==0 && allergies.length!==0){
-                console.log('ALLERGIEEES ', allergies)
-                console.log('ALLERGIEEES DATA ', allergieData)
-                console.log('FOOOD ', food)
                 setLoading(false)
             }
         } catch (e) {
