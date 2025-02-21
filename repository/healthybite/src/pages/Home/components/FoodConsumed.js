@@ -41,7 +41,7 @@ const FoodConsumed = ({ usfood, handleDeleteMeal , handleEditFoodConsumed, drink
         : [
             {
                 name: 'Carbohydrates',
-                ammount: usfood.carbohydrate_portion * usfood.amount_eaten,
+                ammount: usfood.carbohydrates_portion * usfood.amount_eaten,
                 measure: usfood.measure_portion,
                 unit: 'g',
                 carb: true,

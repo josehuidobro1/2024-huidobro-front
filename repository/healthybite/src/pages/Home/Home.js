@@ -38,6 +38,7 @@ function Home() {
     const [goalConsumed, setGoalConsumed]=useState(0)
     const [streak, setStreak] = useState(0);
     const [allergiesData, setAllergiesData]=useState([])
+    const [askForGoals, setAskForGoals]=useState(false)
 
     useEffect(()=>{
         let value=0
@@ -87,8 +88,20 @@ function Home() {
             }
         };
 
-        fetchStreak();
+        user && fetchStreak();
     }, [userFood]);
+
+    const updateUserGoals=async()=>{
+        setLoading(true)
+        setAskForGoals(false)
+        await editUserData(user_id, user)
+        setLoading(false)
+    }
+
+    useEffect(()=>{
+
+        user && askForGoals && updateUserGoals()
+    },[user])
 
 
     useEffect(()=>{
@@ -167,22 +180,35 @@ function Home() {
                 );
     
                 const userFoodDetails = await Promise.all(userFood.map(async (item) => {
-                let foodDetails = await fetchFoodByID(item.id_Food);
-            if (!foodDetails || Object.keys(foodDetails).length === 0) {
-                console.log('No food found in food table, checking plates');
-                foodDetails = await getPlate_ByID(item.id_Food);
-                console.log("Fetched plate details:", foodDetails);
-
-                if (!foodDetails) {
-                    console.log('No food found in plate, checking drinks');
-                    foodDetails = await getDrinkByID(item.id_Food);
-
-                    if (!foodDetails) {
-                        console.log('No food found in drinks, checking products');
-                        foodDetails = await getProdByID(item.id_Food);
+                    let foodDetails
+                    try{
+                        foodDetails = await fetchFoodByID(item.id_Food);
+                    } catch (error) {
+                        console.warn(`Error fetching food for ID ${item.id_Food}:`, error);
                     }
-                }
-            }
+                
+                    if (!foodDetails || Object.keys(foodDetails).length === 0) {
+                        try {
+                            foodDetails = await getPlate_ByID(item.id_Food);
+                        } catch (error) {
+                            console.warn(`Error fetching plate for ID ${item.id_Food}:`, error);
+                        }
+
+                        if (!foodDetails) {
+                            console.log('No food found in plates, checking drinks');
+
+                            try {
+                                foodDetails = await getDrinkByID(item.id_Food);
+                            } catch (error) {
+                                console.warn(`Error fetching drink for ID ${item.id_Food}:`, error);
+                            }
+                        };
+
+                        if (!foodDetails) {
+                            console.log('No food found in drinks, checking products');
+                            foodDetails = await getProdByID(item.id_Food);
+                        }
+                    }
     
                     const calories = foodDetails?.calories_portion !== undefined 
                         ? Math.round(foodDetails?.calories_portion) 
@@ -193,7 +219,7 @@ function Home() {
                         name: foodDetails?.name || 'Unknown',
                         measure: foodDetails?.measure || 'Plate/s',
                         measure_portion: foodDetails?.measure_portion || 1,
-                        calories_portion: calories,
+                        calories_portion: calories || 0,
                         carbohydrates_portion: foodDetails?.carbohydrates_portion || 0,
                         sodium_portion: foodDetails?.sodium_portion || 0,
                         fats_portion: foodDetails?.fats_portion || 0,
@@ -234,7 +260,6 @@ function Home() {
             const cats = await getCategories(user_id);
             const defaultCats= await getDefaultCategories();
             const drinkCats = await getGroupedDrinkTypes(user_id);
-            await handleChangesCat()
             const combinedCats = [
                 ...cats, 
                 ...defaultCats,
@@ -247,13 +272,6 @@ function Home() {
         }
     };
 
-    useEffect(()=>{
-        if(user){
-            const updateGoals= async()=>{
-                await editUserData(user_id, user)}
-            updateGoals()
-        }
-    },[user])
     
     const allergies=async()=>{
         const allergiesData=await getAllergies()
@@ -322,8 +340,8 @@ function Home() {
 
     useEffect(()=>{
         setLoading(true)
-        fetchFoods(date)
-        fetchCategories();
+        user_id && fetchFoods(date)
+        user_id && fetchCategories();
     },[date])
 
     const selectDate=(date)=>{
@@ -378,7 +396,7 @@ function Home() {
                                     }}
                                 />}
                                 {user && <div className={`font-quicksand text center flex flex-col absolute  text center justify-center items-center ${goalConsumed> user.goals[(goalName.find(goal=>goal.id===index)).name] ? ' rounded-full sm:rounded-2xl bg-healthyOrange text-white shadow-md py-2 px-4 sm:px-2 md:px-1 ':'w-full text-healthyOrange h-full'}  `}>
-                                    {goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="font-bold text-xl  text-center">{((goalConsumed*100)/(user.goals[(goalName.find(goal=>goal.id===index)).name])).toFixed(1)}%</p>}
+                                    {goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="font-bold text-xl  text-center">{user.goals[(goalName.find(goal=>goal.id===index)).name] && ((goalConsumed*100)/(user.goals[(goalName.find(goal=>goal.id===index)).name])).toFixed(1)}%</p>}
                                     {goalConsumed>user.goals[(goalName.find(goal=>goal.id===index)).name] && <p className="text-xs font-bold text-center w-full pb-2 pl-2 ">You've already passed your&nbsp;goal!</p>}
                                     <p className="text-center text-xs font-bold ">{goalConsumed<=user.goals[(goalName.find(goal=>goal.id===index)).name] ? 'completed' : `${formatNumber(goalConsumed)} / ${formatNumber(user.goals[(goalName.find(goal=>goal.id===index)).name])}`}</p>
                                 </div>}
@@ -418,7 +436,7 @@ function Home() {
             {addMeal &&
                 <PopUp user={user} allergiesData={allergiesData} newFood={newFood} setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
             }
-            {user_id && user?.goals && Object.values(user.goals).some(goal => Number(goal) === 0) && <Goals user={user} setUser={setUser}/> }
+            {user_id && user?.goals && Object.values(user.goals).some(goal => Number(goal) === 0) && <Goals user={user} setUser={setUser} /> }
         </div>
         
     );

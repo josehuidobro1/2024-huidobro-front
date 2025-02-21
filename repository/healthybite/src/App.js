@@ -13,12 +13,13 @@ import { Drinks } from './pages/Drinks/Drinks';
 import { Community } from './pages/Community/Community';
 import Schedule from './pages/Schedule/Schedule';
 import { createContext, useEffect, useState } from 'react';
-import { getUserNotification, markNotificationAsRead } from './firebaseService';
+import { getIdToken, getUserNotification, markNotificationAsRead } from './firebaseService';
 import NotificationPopup from './components/NotificationPopup';
 
 export const UserContext = createContext(null);
 
 function App() {
+  const [token, setToken]=useState(null)
   const [user] = useAuthState(auth);
   const [user_id, setUser_id]= useState(useAuthState(auth))
   const [notifications, setNotifications] = useState([]);
@@ -36,9 +37,21 @@ function App() {
       }
   };
 
+  const get_token=async()=>{
+    const token = await getIdToken()
+    setToken(token)
+  }
+
+
   useEffect(()=>{
-    user_id && fetchNotification(user_id)
-  },[user_id])
+    user && get_token()
+    user && token && fetchNotification(user_id)
+    user && get_token()
+  },[user])
+
+  useEffect(()=>{ 
+    user && get_token()
+  },[])
   
   useEffect(()=>{
     if(user){
@@ -53,8 +66,7 @@ function App() {
       <Router>
         {user_id && notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
         <Routes>
-          <Route path="/healthyBite" element={<Login />}/>
-          <Route path="/" element={<Home />}/>
+          <Route path="/" element={user && token ? <Home />:<Login />}/>
           <Route path="/plates" element={<Plates/>}/>
           <Route path="/drinks" element={<Drinks/>}/>
           <Route path='/schedule' element={<Schedule/>}/>

@@ -63,6 +63,7 @@ function UserProfile() {
     const getUser = async () => {
         try {
             const userData = await fetchUser(user_id);
+            console.log("User Data ", userData)
             setUser(userData);
             setName(userData.name);
             setSurname(userData.surname);
@@ -73,7 +74,7 @@ function UserProfile() {
             // Store the date in ISO format
             const date = new Date(userData.birthDate);
             setLoading(false)
-            setBirthDate(date.toISOString().split('T')[0]); // "YYYY-MM-DD" format
+            setBirthDate(new Date(date).toISOString().split('T')[0]); // "YYYY-MM-DD" format
         } catch (e) {
             console.log("Error obtaining user data in UserProfile.js: ", e);
         }
@@ -101,13 +102,16 @@ function UserProfile() {
         }
     }
 
-    const editGoals=()=>{
+    const editGoals=async()=>{
         setOpenGoals(false)
-        const updateGoals=async()=>{
-            await editUserData(user_id, user)
-        }
-        updateGoals()
+        await editUserData(user_id, user)
     }
+
+    useEffect(()=>{
+        if(user && openGoals){
+            editGoals()
+        }
+    },[user])
     
 
     useEffect(()=>{
@@ -196,7 +200,7 @@ function UserProfile() {
         }
         {
             openGoals &&
-            <Goals user={user} setUser={setUser} editGoals={editGoals}/>
+            <Goals user={user} setUser={setUser} editGoals={true}/>
         }
         {
             allergiePopUp &&

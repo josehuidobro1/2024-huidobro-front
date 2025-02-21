@@ -6,13 +6,41 @@ import axios from "axios"; // para hacer solicitudes HTTP al servidor externo
 import { onAuthStateChanged } from "firebase/auth";
 
 
-const ruta='https://two024-huidobro-back.onrender.com'
-//const ruta='http://127.0.0.1:8000'
+//const ruta='https://two024-huidobro-back.onrender.com'
+const ruta='http://127.0.0.1:8000'
 let cachedUserUid = null;
+
+export const getIdToken = async () => {
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+        throw new Error("No user is currently logged in.");
+    }
+    return await currentUser.getIdToken();
+};
+
+axios.interceptors.request.use(
+    async (config) => {
+        try{
+            const token = await getIdToken();
+            console.log("Token:", token); 
+            if (token ) {
+                axios.defaults.headers.common['Authorization'] = `${token}`;
+            }
+            return config
+        }catch(error){
+            console.error("No token available:", error);
+        }
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export const registerUser = async (email, password, name, surname, weight, height, birthDate)=>{
     try{
         const userCredential=await createUserWithEmailAndPassword(auth, email, password)
+        await loginUser(email, password)
         const data= {
             id_user: userCredential.user.uid,  // ID único del usuario generado por Firebase Auth
             name: name,
@@ -33,7 +61,16 @@ export const registerUser = async (email, password, name, surname, weight, heigh
             achievements: [],
             allergies:[]
         }
-        await axios.post(`${ruta}/user/`, data);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        await axios.post(`${ruta}/user/${userCredential.user.uid}`, data,{
+            headers: {
+                Authorization: `${token}`
+            }
+        });
+        
         return userCredential.user.uid;
     }catch(error){
         console.error("Error al registrar el usuario:", error);
@@ -44,6 +81,7 @@ export const registerUser = async (email, password, name, surname, weight, heigh
 export const loginUser = async (email, password) => {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        await userCredential.user.getIdToken()
         return userCredential.user.uid;
     } catch (error) {
         throw error.message;
@@ -52,6 +90,10 @@ export const loginUser = async (email, password) => {
 
 export const forgotPassword = async (email) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         await sendPasswordResetEmail(auth, email);
         return "Reset email sent";
     } catch (error) {
@@ -61,6 +103,10 @@ export const forgotPassword = async (email) => {
 
 export const logoutUser = async () => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         await signOut(auth);
     } catch (error) {
         throw error.message;
@@ -85,8 +131,16 @@ export const getUserUid = async () => {
 
 export const fetchUser=async(user_id)=>{
     try {
-        const response = await axios.get(`${ruta}/User/${user_id}`);
-        return response.data; // Adjust this based on your backend response structure
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/User/${user_id}`,{
+            headers: {
+                Authorization: `${token}`
+            }
+        });
+        return response.data.user; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching user by ID:', error);
         return null; // Return null or handle the error as needed
@@ -95,8 +149,16 @@ export const fetchUser=async(user_id)=>{
 
 export const editUserData=async(user_id, data)=>{
     try {
-        console.log('Data que se envia para editar usuario: ', data)
-        const response = await axios.put(`${ruta}/update_user/${user_id}`, data);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.put(`${ruta}/update_user/${user_id}`, data.user, {
+            headers: {
+                Authorization: `${token}`
+            }
+        });
+        console.log('Data que se envia para editar usuario: ', data.user)
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error editing user data by ID:', error);
@@ -106,7 +168,16 @@ export const editUserData=async(user_id, data)=>{
 
 export const deleteUserAc=async(user_id)=>{
     try {
-        await axios.delete(`${ruta}/delete-user/${user_id}`); // Adjust this based on your backend response structure
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.delete(`${ruta}/delete_user/${user_id}`, {
+            headers: {
+                Authorization: `${token}`
+            }
+        }); 
+        return response
     } catch (error) {
         console.error('Error deleting user by ID:', error);
         return null; // Return null or handle the error as needed
@@ -140,6 +211,10 @@ export const fetchUserFoods = async (user_id, date) => {
 
 export const fetchFoodByID = async (foodId) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         const response = await axios.get(`${ruta}/Foods/${foodId}`);
         return response.data.message.food; // Adjust this based on your backend response structure
     } catch (error) {
@@ -150,7 +225,15 @@ export const fetchFoodByID = async (foodId) => {
 
 const userFoodMeals = async(user_id)=>{
     try {
-        const response = await axios.get(`${ruta}/mealUserDay/${user_id}`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/mealUserDay/${user_id}`, {
+            headers: {
+                Authorization: `${token}`
+            }
+        }); 
         return response.data.message.foods; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
@@ -162,7 +245,14 @@ const userFoodMeals = async(user_id)=>{
 
 export const fetchAllFoods = async () => {
     try {
-        const response = await axios.get(`${ruta}/Foods/`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/Foods/`, {
+            headers: {
+                Authorization: `${token}`
+            }})
         return response.data.message.food; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching foods:', error);
@@ -173,10 +263,15 @@ export const fetchAllFoods = async () => {
 
 export const addUserFood = async (user_id,selection, date, amount) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         const response = await fetch(`${ruta}/UserFood_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `${token}`
             },
             body: JSON.stringify( {
                 "id_User": user_id,
@@ -201,10 +296,15 @@ export const addUserFood = async (user_id,selection, date, amount) => {
 
 export const addNewFood = async (newFood) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         const response = await fetch(`${ruta}/Food_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `${token}`
             },
             body: JSON.stringify( {
                 "name": newFood.name,
@@ -234,7 +334,14 @@ export const addNewFood = async (newFood) => {
 export const deleteUserFood = async (doc_id) => {
 
     try {
-        await axios.delete(`${ruta}/DeleteMealUser/${doc_id}`); // Adjust this based on your backend response structure
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        await axios.delete(`${ruta}/DeleteMealUser/${doc_id}`, {
+            headers: {
+                Authorization: `${token}`
+            }})
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
@@ -245,7 +352,14 @@ export const deleteUserFood = async (doc_id) => {
 export const editUserFood = async (doc_id,data) => {
 
     try {
-        await axios.put(`${ruta}/UpdateUserFood/${doc_id}`,data); // Adjust this based on your backend response structure
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        await axios.put(`${ruta}/UpdateUserFood/${doc_id}`,data, {
+            headers: {
+                Authorization: `${token}`
+            }}) // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching food by ID:', error);
         return null; // Return null or handle the error as needed
@@ -254,7 +368,14 @@ export const editUserFood = async (doc_id,data) => {
 
 export const getCategories = async(user_id)=>{
     try {
-        const response = await axios.get(`${ruta}/GetCategoryUser/${user_id}`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/GetCategoryUser/${user_id}`, {
+            headers: {
+                Authorization: `${token}`
+            }})
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
@@ -264,7 +385,14 @@ export const getCategories = async(user_id)=>{
 
 export const getDefaultCategories = async () => {
     try {
-        const response = await axios.get(`${ruta}/GetCategoryUser/default`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/GetCategoryUser/default`, {
+            headers: {
+                Authorization: `${token}`
+            }})
         return response.data.message.categories; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching default categories:', error);
@@ -274,6 +402,10 @@ export const getDefaultCategories = async () => {
 
 export const getBarCategory = async () => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         const defaultCategories = await getDefaultCategories();
         console.log('Default Categories:', defaultCategories); // Log all categories
 
@@ -293,7 +425,11 @@ export const getBarCategory = async () => {
 
 export const createCategory =async (user_id, data)=>{
     try{
-        const response = await axios.post(`${ruta}/CreateCategory/`, {...data,id_User: user_id });
+        const token = await getIdToken();
+        const response = await axios.post(`${ruta}/CreateCategory/`, {...data,id_User: user_id }, {
+            headers: {
+                Authorization: `${token}`
+            }})
         return response.data
     }catch(error){
         console.error('Error adding new category: ', error);
@@ -303,7 +439,11 @@ export const createCategory =async (user_id, data)=>{
 
 export const updateCategory=async(user_id, data,category_id)=>{
     try{
-        const response = await axios.put(`${ruta}/UpdateCategory/${category_id}`,{...data,id_User: user_id });
+        const token = await getIdToken();
+        const response = await axios.put(`${ruta}/UpdateCategory/${category_id}`,{...data,id_User: user_id }, {
+            headers: {
+                Authorization: `${token}`
+            }})
         return response.data
     }catch(error){
         console.error('Error updating category by id: ', error);
@@ -312,7 +452,11 @@ export const updateCategory=async(user_id, data,category_id)=>{
 }
 export const updateCategoryDefault=async(data,category_id)=>{
     try{
-        const response = await axios.put(`${ruta}/UpdateCategory/${category_id}`,{...data,id_User: 'default' });
+        const token = await getIdToken();
+        const response = await axios.put(`${ruta}/UpdateCategory/${category_id}`,{...data,id_User: 'default' }, {
+            headers: {
+                Authorization: `${token}`
+            }})
         return response.data
     }catch(error){
         console.error('Error updating category by id: ', error);
@@ -322,7 +466,15 @@ export const updateCategoryDefault=async(data,category_id)=>{
 
 export const deleteCategory=async(category_id)=>{
     try {
-        await axios.delete(`${ruta}/DeleteCategory/${category_id}`); 
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        await axios.delete(`${ruta}/DeleteCategory/${category_id}`, {
+            headers: {
+                Authorization: `${token}`
+            }})
+
     } catch (error) {
         console.error('Error deleting category by ID:', error);
         return null; 
@@ -331,11 +483,16 @@ export const deleteCategory=async(category_id)=>{
 
 export const createTotCal = async (user_id, data, date) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
         const response = await fetch(`${ruta}/CreateTotCaloriesUser/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `${token}`
             },
             body: JSON.stringify({
                 "id_user": user_id,
@@ -367,6 +524,10 @@ export const createTotCal = async (user_id, data, date) => {
 
 export const UpdateTotCal = async (user_id, totcal_id, data, date) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         // Ensure the date is in the correct format
         const validDate = date instanceof Date && !isNaN(date) ? date.toISOString() : new Date().toISOString(); // Fallback to current date if invalid
         const payload = {
@@ -382,7 +543,10 @@ export const UpdateTotCal = async (user_id, totcal_id, data, date) => {
         console.log("Payload:", payload); // Log to confirm structure before sending
 
         // Send the request
-        await axios.put(`${ruta}/UpdateTotCaloriesUser/${totcal_id}`, payload); 
+        await axios.put(`${ruta}/UpdateTotCaloriesUser/${totcal_id}`, payload, {
+            headers: {
+                Authorization: `${token}`
+            }});
     } catch (error) {
         console.error('Error updating total calories:', error);
         return null; // Return null or handle the error as needed
@@ -416,6 +580,10 @@ export const fetchTotCalByDay = async (user_id, date) => {
 
 export const getCategoriesAndDefaults = async (user_id) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         const categories = await Promise.all([
             getCategories(user_id),
             getDefaultCategories()
@@ -484,7 +652,14 @@ export const getCaloriesByCategories= ( userCalories, categories, foods, barFood
 
 export const getTotCalUser=async(user_id)=>{
     if(user_id){try {
-        const response = await axios.get(`${ruta}/GetTotCalUser/${user_id}`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/GetTotCalUser/${user_id}`, {
+            headers: {
+                Authorization: `${token}`
+            }});
         return response.data.message.totCals; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching categories :', error);
@@ -504,6 +679,7 @@ export const formatDate = (date) => {
 
 export const getFilterData = async (user_id) => {
     try{
+        const token = await getIdToken();
         const [userCalories,foods, barFoods, categories, drinksType,drinks, plates, user ] = await Promise.all([ userFoodMeals(user_id), fetchAllFoods(), getProducts(), getCategoriesAndDefaults(user_id), await fechDrinkTypes(user_id), getUserDrinks(user_id), getUserPlates(user_id), fetchUser(user_id)])
         userCalories.sort((a, b) => new Date(a.date_ingested) - new Date(b.date_ingested));
         const groupedByDate = userCalories.reduce((acc, current) => {
@@ -557,6 +733,10 @@ export const getFilterData = async (user_id) => {
 
 export const resetPassword = async (oobCode, newPassword) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         await verifyPasswordResetCode(auth, oobCode);
         await confirmPasswordReset(auth, oobCode, newPassword);
         return true;
@@ -587,10 +767,15 @@ export const getProdByID= async(prod_id)=>{
 // things that need to be deployed
 export const createplate = async (user_id, selection) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         const response = await fetch(`${ruta}/CreatePlate/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `${token}`
             },
             body: JSON.stringify( {
                 "id_User": user_id,
@@ -626,7 +811,14 @@ export const createplate = async (user_id, selection) => {
 
 export const getUserPlates = async (user_id) => {
     try {
-        const response = await axios.get(`${ruta}/GetPlatesUser/${user_id}`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/GetPlatesUser/${user_id}`, {
+            headers: {
+                Authorization: `${token}`
+            }});
         return response.data.message.Plates; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching plates :', error);
@@ -635,7 +827,12 @@ export const getUserPlates = async (user_id) => {
 };
 export const updatePlate=async(data,plate_id)=>{
     try{
-        const response = await axios.put(`${ruta}/UpdatePlate/${plate_id}`,data);
+        const token = await getIdToken();
+        const response = await axios.put(`${ruta}/UpdatePlate/${plate_id}`,data, {
+            headers: {
+                Authorization: `${token}`
+            }});
+
         return response.data
     }catch(error){
         console.error('Error updating plate by id: ', error);
@@ -644,7 +841,15 @@ export const updatePlate=async(data,plate_id)=>{
 }
 export const deleteplate=async(plate_id)=>{
     try {
-        await axios.delete(`${ruta}/DeletePlate/${plate_id}`); 
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        await axios.delete(`${ruta}/DeletePlate/${plate_id}`, {
+            headers: {
+                Authorization: `${token}`
+            }});
+
     } catch (error) {
         console.error('Error deleting plate by ID:', error);
         return null; 
@@ -652,7 +857,15 @@ export const deleteplate=async(plate_id)=>{
 }
 export const fechDrinkTypes = async (user_id) =>{
     try {
-        const response = await axios.get(`${ruta}/getUserDrinkType/${user_id}`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/getUserDrinkType/${user_id}`, {
+            headers: {
+                Authorization: `${token}`
+            }});
+
         return response.data.message.drinkType; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching typedrinks :', error);
@@ -661,10 +874,15 @@ export const fechDrinkTypes = async (user_id) =>{
 }
 export const createDrinkType = async (user_id, selection) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         const response = await fetch(`${ruta}/drinkType_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `${token}`
             },
             body: JSON.stringify( {
                 "name": selection.name,
@@ -690,7 +908,14 @@ export const createDrinkType = async (user_id, selection) => {
 };
 export const getUserDrinks = async (user_id) =>{
     try {
-        const response = await axios.get(`${ruta}/GetDrinks/${user_id}`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/GetDrinks/${user_id}`,{
+            headers: {
+                Authorization: `${token}`
+            }});
         return response.data.message.Drinks; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error fetching typedrinks :', error);
@@ -699,10 +924,15 @@ export const getUserDrinks = async (user_id) =>{
 }
 export const createDrink = async (user_id, selection) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         const response = await fetch(`${ruta}/drink_log`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `${token}`
             },
             body: JSON.stringify( {
                 "name": selection.name,
@@ -734,7 +964,15 @@ export const createDrink = async (user_id, selection) => {
 };
 export const deleteDrink=async(drink_id)=>{
     try {
-        await axios.delete(`${ruta}/DeleteDrink/${drink_id}`); 
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        await axios.delete(`${ruta}/DeleteDrink/${drink_id}`,{
+            headers: {
+                Authorization: `${token}`
+            }});
+
     } catch (error) {
         console.error('Error deleting plateFood by ID:', error);
         return null; 
@@ -743,7 +981,14 @@ export const deleteDrink=async(drink_id)=>{
 export const updateDrink = async (user_id, doc_id,data) => {
 
     try {
-        await axios.put(`${ruta}/UpdateDrink/${doc_id}`,{...data,id_User: user_id }); // Adjust this based on your backend response structure
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        await axios.put(`${ruta}/UpdateDrink/${doc_id}`,{...data,id_User: user_id },{
+            headers: {
+                Authorization: `${token}`
+            }});
     } catch (error) {
         console.error('Error updating drink by ID:', error);
         return null; // Return null or handle the error as needed
@@ -751,51 +996,126 @@ export const updateDrink = async (user_id, doc_id,data) => {
 };
 export const deleteDrinkType = async (doc_id) => {
     try {
-        await axios.delete(`${ruta}/DeleteDrinkType/${doc_id}`); // Adjust this based on your backend response structure
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        await axios.delete(`${ruta}/DeleteDrinkType/${doc_id}`,{
+            headers: {
+                Authorization: `${token}`
+            }});
     } catch (error) {
         console.error('Error deleting drinktype by ID:', error);
         return null; // Return null or handle the error as needed
     }
 };
 export const getDrinkByID = async (drink_id) => {
-    const response = await axios.get(`${ruta}/DrinkById/${drink_id}`);
-    const drink=response.data.message.drink
-    console.log("drink", drink)
-    return drink
+    try{
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/DrinkById/${drink_id}`,{
+        headers: {
+            Authorization: `${token}`
+        }});
+
+        const drink=response.data.message.drink
+        console.log("drink", drink)
+        return drink
+    }catch (error){
+        console.error('Error getDrinkByID :' ,error)
+        return error
+    }
 
 }
-export const getPlate_ByID = async (plate_id) => {
-    const response = await axios.get(`${ruta}/GetPlateByID/${plate_id}`);
-    const drink=response.data.message.plate
-    return drink
 
+export const getPlate_ByID = async (plate_id) => {
+    try{
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/GetPlateByID/${plate_id}`,{
+        headers: {
+            Authorization: `${token}`
+        }});
+
+        const drink=response.data.message.plate
+        return drink
+    }catch(error){
+        console.error('Error getPlate_ByID :' ,error)
+        return error
+    }
 }
 
 export const getGroupedDrinkTypes = async (user_id) => {
-    const response = await axios.get(`${ruta}/getUserGroupDrinkType/${user_id}`);
+    try{
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/getUserGroupDrinkType/${user_id}`,{
+        headers: {
+            Authorization: `${token}`
+        }});
+
     const drink=response.data.Drinks
     return drink
-
+}catch(error){
+    console.error('Error getGroupedDrinkTypes :' ,error)
+    return error
+}
 }
 
 export const getPublicPlates = async () => {
-    const response = await axios.get(`${ruta}/GetPlatePublicPlates/`)
-    const plates = response.data.Plates
-    return plates
+    try{
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/GetPlatePublicPlates/`,{
+        headers: {
+            Authorization: `${token}`
+        }});
+
+        const plates = response.data.Plates
+        return plates
+    }catch(error){
+        console.error('Error getPublicPlates :' ,error)
+        return error
+    }
 }
 export const PlateReviews = async () => {
-    const response = await axios.get(`${ruta}/PlateReviews/`)
-    const review = response.data.Review
-    return review
+    try{
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/PlateReviews/`,{
+        headers: {
+            Authorization: `${token}`
+        }});
+
+        const review = response.data.Review
+        return review
+    }catch(error){
+        console.error('Error PlateReviews :' ,error)
+        return error
+    }
 }
 
 export const updateComments = async (doc_id, data) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         console.log("Updating comments:", { doc_id, data });
-        const response = await axios.put(`${ruta}/UpdateReview/${doc_id}`, data); // Check if you need {...data}
-        
-        // Log the response from the server
-        console.log("Server response:", response.data);
+        const response = await axios.put(`${ruta}/UpdateReview/${doc_id}`, data,{
+        headers: {
+            Authorization: `${token}`
+        }});
 
         // Return success or handle response as needed
         return response.data;
@@ -806,11 +1126,16 @@ export const updateComments = async (doc_id, data) => {
 };
 export const createReview = async (selection) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         console.log(selection)
         const response = await fetch(`${ruta}/newReview`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                Authorization: `${token}`
             },
             body: JSON.stringify( {
                 "plate_Id": selection.id_plate,
@@ -837,19 +1162,42 @@ export const createReview = async (selection) => {
 };
 
 export const getstreak = async (user_id) => {
-    const response = await axios.get(`${ruta}/Streak/${user_id}`,)
+    const token = await getIdToken()
+    if( !token){
+        throw new Error ('Token not found')
+    }
+    const response = await axios.get(`${ruta}/Streak/${user_id}`,{
+        headers: {
+            Authorization: `${token}`
+        }});
+
     const streak = response.data.message
     return streak
 }
 export const getUserNotification = async (user_id) => {
-    const response = await axios.get(`${ruta}/getUserNotifications/${user_id}`,)
+    const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+    const response = await axios.get(`${ruta}/getUserNotifications/${user_id}`,{
+        headers: {
+            Authorization: `${token}`
+        }});
+
     const notifications = response.data.notifications
     return notifications
 }
 export const markNotificationAsRead = async (doc_id) => {
     try {
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
         console.log("Updating comments:", { doc_id });
-        const response = await axios.put(`${ruta}/markNotificationAsRead/${doc_id}`); // Check if you need {...data}
+        const response = await axios.delete(`${ruta}/markNotificationAsRead/${doc_id}`,{
+            headers: {
+                Authorization: `${token}`
+            }});
         
         console.log("Server response:", response);
 
@@ -862,7 +1210,12 @@ export const markNotificationAsRead = async (doc_id) => {
 };
 export const getPlatesNotUser = async (user_id) => {
     try{
-        const response = await axios.get(`${ruta}/PublicplatesNotFromUser/${user_id}`,)
+        const token = await getIdToken();
+        const response = await axios.get(`${ruta}/PublicplatesNotFromUser/${user_id}`,{
+            headers: {
+                Authorization: `${token}`
+            }});
+
         const plates = response.data.Plates
         return plates
     }catch(error){
@@ -880,7 +1233,15 @@ export const addGoal = async (user_id,goal_id) => {
 
 export const getAllergies = async () => {
     try {
-        const response = await axios.get(`${ruta}/allergies`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/allergies`,{
+            headers: {
+                Authorization: `${token}`
+            }});
+
         console.log(response.data.message.allergies)
         return response.data.message.allergies;
     } catch (error) {
@@ -891,8 +1252,13 @@ export const getAllergies = async () => {
 
 export const createAllergy =async (data)=>{
     try{
+        const token = await getIdToken();
 
-        const response = await axios.post(`${ruta}/allergie/`, data);
+        const response = await axios.post(`${ruta}/allergie/`, data,{
+            headers: {
+                Authorization: `${token}`
+            }});
+
         return response.data
     }catch(error){
         console.error('Error adding new allergy: ', error);
@@ -902,7 +1268,15 @@ export const createAllergy =async (data)=>{
 
 export const editAllergie=async(data)=>{
     try {
-        const response = await axios.put(`${ruta}/allergie/${data.id}`, {name:data.name, foods_ids:data.foods_ids});
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.put(`${ruta}/allergie/${data.id}`, {name:data.name, foods_ids:data.foods_ids},{
+            headers: {
+                Authorization: `${token}`
+            }});
+
         
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
@@ -913,7 +1287,15 @@ export const editAllergie=async(data)=>{
 
 export const getSchedule=async(user_id)=>{
     try {
-        const response = await axios.get(`${ruta}/schedule/${user_id}`);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.get(`${ruta}/schedule/${user_id}`,{
+            headers: {
+                Authorization: `${token}`
+            }});
+
         return response.data.schedules;
     } catch (error) {
         console.error('Error fetching schedule data:', error);
@@ -923,7 +1305,15 @@ export const getSchedule=async(user_id)=>{
 
 export const editSchedule=async(id,data)=>{
     try {
-        const response = await axios.put(`${ruta}/schedule/${id}`,data);
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        const response = await axios.put(`${ruta}/schedule/${id}`,data,{
+            headers: {
+                Authorization: `${token}`
+            }});
+
         return response.data; 
     } catch (error) {
         console.error('Error editing schedule by ID:', error);
@@ -933,7 +1323,12 @@ export const editSchedule=async(id,data)=>{
 
 export const createSchedule =async (data)=>{
     try{
-        const response = await axios.post(`${ruta}/schedule/`, data);
+        const token = await getIdToken();
+        const response = await axios.post(`${ruta}/schedule/`, data,{
+            headers: {
+                Authorization: `${token}`
+            }});
+
         return response.data.schedules
     }catch(error){
         console.error('Error adding new schedule: ', error);
@@ -943,7 +1338,14 @@ export const createSchedule =async (data)=>{
 
 export const deleteSchedule = async (user_id) => {
     try {
-        await axios.delete(`${ruta}/schedule/${user_id}`); // Adjust this based on your backend response structure
+        const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+        await axios.delete(`${ruta}/schedule/${user_id}`,{
+            headers: {
+                Authorization: `${token}`
+            }});
     } catch (error) {
         console.error('Error deleting schedule by ID:', error);
         return null; // Return null or handle the error as needed

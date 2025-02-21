@@ -15,7 +15,6 @@ function Goals({user, setUser, editGoals}) {
 
     const saveChanges=()=>{
         setUser({...user, goals: {calories:calories, fats:fat, carbohydrates:carbohydrate, protein:protein, sodium:sodium, sugar:sugar, caffeine:caffeine}})
-        editGoals && editGoals()
     }
     return (
         <div className="w-full absolute z-50 top-0 left-0 h-screen bg-black/40 ">

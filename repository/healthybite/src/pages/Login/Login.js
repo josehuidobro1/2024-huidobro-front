@@ -124,6 +124,7 @@ function Login() {
             const user_id = await loginUser(email,password)
             setUser_id(user_id)
             console.log('Inicio de sesión exitoso:', user_id);
+            navigate("/");
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
             setLoginError('Invalid Email or Password, please try again')
