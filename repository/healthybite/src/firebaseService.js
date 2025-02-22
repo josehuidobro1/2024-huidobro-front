@@ -6,8 +6,8 @@ import axios from "axios"; // para hacer solicitudes HTTP al servidor externo
 import { onAuthStateChanged } from "firebase/auth";
 
 
-//const ruta='https://two024-huidobro-back.onrender.com'
-const ruta='http://127.0.0.1:8000'
+const ruta='https://two024-huidobro-back.onrender.com'
+//const ruta='http://127.0.0.1:8000'
 let cachedUserUid = null;
 
 export const getIdToken = async () => {
