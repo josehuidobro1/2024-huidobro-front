@@ -30,18 +30,16 @@ const Schedule = () => {
     }
 
     const getData=async()=>{
-        const otherPlates= await getPlatesNotUser(user_id)
-        const myPlates=await getUserPlates()
-        const [schedule, drinksData, foodData ]=await Promise.all([getSchedule(user_id),   getUserDrinks(user_id), fetchAllFoods()])
-        foodData && otherPlates && setter(foodData, myPlates.concat(otherPlates),drinksData,schedule || [])
+        const [otherPlates,myPlates,  schedule, drinksData, foodData ]=await Promise.all([getPlatesNotUser(user_id),getUserPlates(user_id), getSchedule(user_id),   getUserDrinks(user_id), fetchAllFoods()])
+        foodData && otherPlates && setter(foodData, myPlates,drinksData,schedule || [])
     }
 
     useEffect(()=>{
-        if(!schedule || !food){
-            setLoading(true)
+        setLoading(true)
+        if((!schedule || !food) && user_id){
             getData()
         }
-    },[])
+    },[user_id])
 
     const handleClean=async ()=>{
         setLoading(true)

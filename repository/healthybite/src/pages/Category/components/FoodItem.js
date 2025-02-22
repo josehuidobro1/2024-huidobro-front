@@ -4,7 +4,6 @@ import { faCircleMinus} from '@fortawesome/free-solid-svg-icons';
 
 
 function FoodItem({food, setCatFoods,catFoods}) {
-
   const handleDeleteFood=()=>{
     setCatFoods(catFoods.filter((item)=>item!==food))
   }

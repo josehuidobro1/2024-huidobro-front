@@ -14,7 +14,18 @@ function Goals({user, setUser, editGoals}) {
     const [sugar, setSugar]=useState(user.goals.sugar ? user.goals.sugar : 0)
 
     const saveChanges=()=>{
-        setUser({...user, goals: {calories:calories, fats:fat, carbohydrates:carbohydrate, protein:protein, sodium:sodium, sugar:sugar, caffeine:caffeine}})
+        const data= {
+            name: user.name,
+            surname: user.surname,
+            weight: user.weight,
+            height: user.height,
+            birthDate: user.birthDate,
+            goals: {calories:calories, fats:fat, carbohydrates:carbohydrate, protein:protein, sodium:sodium, sugar:sugar, caffeine:caffeine},
+            validation: user.validation,
+            achievements: user.achievements,
+            allergies: user.allergies,
+        }
+        editGoals(data)
     }
     return (
         <div className="w-full absolute z-50 top-0 left-0 h-screen bg-black/40 ">

@@ -63,9 +63,9 @@ export const Drinks = () => {
 
     useEffect(()=>{
         setLoading(true)
-        fetchUserDrinkTypes();
+        user_id && fetchUserDrinkTypes();
         
-    },[])
+    },[user_id])
 
     return (
     <div className="h-screen w-full overflow-y-hidden">

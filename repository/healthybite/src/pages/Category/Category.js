@@ -5,11 +5,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faIceCream, faTrash, faPen, faPlus} from '@fortawesome/free-solid-svg-icons'; 
 import CategoryItem from './components/CategoryItem';
 import NewCategory from './components/NewCategory';
-import { fetchAllFoods, getCategories, getProducts, getPublicPlates, getUserDrinks,getUserPlates} from "../../firebaseService";
+import { fetchAllFoods, getCategories, getPlatesNotUser, getProducts, getPublicPlates, getUserDrinks,getUserPlates} from "../../firebaseService";
 import PopUpCat from "./components/PopUpCat";
 import { auth } from "../../firebaseConfig";
 import Loading from "../../components/Loading";
 import { UserContext } from "../../App";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 function Category() {
     const [foodData, setFoodData] = useState([])
@@ -19,53 +20,59 @@ function Category() {
     const [addCategory, setAddCategory]=useState(false)
     const [categories, setCategories]=useState([])
     const [loading, setLoading] = useState(true);
-    const {user_id}=useContext(UserContext)
+    const {user_id,setUser_id}=useContext(UserContext)
 
     const fetchCategories = async () => {
         setLoading(true)
-        const unsubscribe = auth.onAuthStateChanged(async (user) => {
-            if (user) {
-                try {
-                    const cats = await getCategories(user_id);
-                    setCategories(cats);
-                } catch (err) {
-                    console.log('Error al obtener las categorias: ' + err);
-                }
-            }else{
-                console.log('No user is signed in');
+        console.log(user_id)
+        if (user_id) {
+            try {
+                const cats = await getCategories(user_id);
+                console.log('categories', cats)
+                setCategories(cats);
+            } catch (err) {
+                console.log('Error al obtener las categorias: ' + err);
             }
-            setLoading(false);
-        })
-        return () => unsubscribe();
+        }else{
+            console.log('No user is signed in');
+        }
+        setLoading(false);
+        
     };
 
     const fetchFoods =async()=>{ 
-        setLoading(true)
         try{
-            const food = await fetchAllFoods()
-            const barFood=await getProducts()
-            const drinks = await getUserDrinks(user_id)
-            const plates = await getUserPlates(user_id)
-            const publicPlates= await getPublicPlates()
-            const combinedFoodData = [
-                ...food, 
-                ...barFood.map((item) => ({ ...item, bar: true })),
-                ...drinks.map((item) => ({ ...item, drink: true })),
-                ...plates.map((item) => ({ ...item, plate: true, private:true })),
-                ...publicPlates.filter(item=>!(plates.map(e=>e.id)).includes(item.id)).map((item) => ({ ...item, plate: true, private:false }))
-            ];
-    
-            setFoodData(combinedFoodData)
-            combinedFoodData && setLoading(false)
+            setLoading(true)
+            if(user_id){
+                const [food, barFood, privatePlates, publicPlates, drinks] = await Promise.all([
+                    fetchAllFoods(),
+                    getProducts(),
+                    getUserPlates(user_id),
+                    getPlatesNotUser(user_id),
+                    getUserDrinks(user_id)
+                ]);
+                const combinedFoodData = [
+                    ...food, 
+                    ...barFood.map((item) => ({ ...item, bar: true })),
+                    ...drinks.map((item) => ({ ...item, drink: true })),
+                    ...privatePlates.map((item) => ({ ...item, plate: true, private:true })),
+                    ...publicPlates.filter(item=>!(privatePlates.map(e=>e.id)).includes(item.id)).map((item) => ({ ...item, plate: true, private:false }))
+                ];
+                setFoodData(combinedFoodData)
+                combinedFoodData && setLoading(false)
+            }
         }catch(error){
             console.log("Error fetching foods in Category page: ", error)
         }
     }
 
     useEffect(()=>{
-        fetchCategories ();
-        fetchFoods();
-    },[])
+        console.log(`USer id ${user_id}`)
+        if(user_id){
+            fetchCategories ();
+            !foodData && fetchFoods();
+        }
+    },[user_id])
 
     const handleUpdate=()=>{
         fetchCategories()

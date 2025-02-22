@@ -54,7 +54,7 @@ export default function AllergiePopUp({allergiePopUp,setAllergiePopUp, allergies
     },[allergiePopUp])
 
   return (
-    <div className="w-full h-screen absolute top-0 z-10 flex justify-center items-center bg-black/50">
+    <div className="w-full h-screen absolute top-0 z-50 flex justify-center items-center bg-black/50">
         <div className="w-11/12 sm:w-full flex flex-col text-md font-quicksand text-darkGray font-semibold justify-center shadow-lg items-center max-w-[700px] bg-healthyDarkBlue rounded-2xl py-8 pt-4  relative">
             <div className='flex justify-between items-center w-11/12 my-3'>
                 <p className='text-xl text-left font-bold text-white'>Allergies</p>

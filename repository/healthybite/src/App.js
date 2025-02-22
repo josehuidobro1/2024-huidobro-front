@@ -20,8 +20,8 @@ export const UserContext = createContext(null);
 
 function App() {
   const [token, setToken]=useState(null)
-  const [user] = useAuthState(auth);
-  const [user_id, setUser_id]= useState(useAuthState(auth))
+  const [user]=useAuthState(auth);
+  const [user_id, setUser_id]= useState(null)
   const [notifications, setNotifications] = useState([]);
   const fetchNotification=async()=>{
     const fetchedNotifications = await getUserNotification(user_id);
@@ -38,28 +38,28 @@ function App() {
   };
 
   const get_token=async()=>{
-    const token = await getIdToken()
-    setToken(token)
+    try {
+      const token = await getIdToken();
+      setToken(token);
+    } catch (err) {
+      console.error("Error obteniendo el token:", err);
+    }
   }
 
-
-  useEffect(()=>{
-    user && get_token()
-    user && token && fetchNotification(user_id)
-    user && get_token()
-  },[user])
-
-  useEffect(()=>{ 
-    user && get_token()
-  },[])
-  
-  useEffect(()=>{
-    if(user){
+  useEffect(() => {
+    if (user) {
+      get_token();
       setUser_id(user.uid);
-    }else{
+    } else {
       setUser_id(null);
     }
-  },[user])
+  }, [user]);
+
+  useEffect(() => {
+    if (user_id && token) {
+      fetchNotification();
+    }
+  }, [user_id, token]);
 
   return (
     <UserContext.Provider value={{user_id, setUser_id}} >

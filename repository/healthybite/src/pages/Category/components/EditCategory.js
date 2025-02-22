@@ -19,7 +19,7 @@ function EditCategory({setEditCategory, setAddFood, category, icon, food, handle
     const [name, setName]=useState(category.name)
     const [clickable, setClickable] = useState(true);
     const {user_id}=useContext(UserContext)
-
+    
     const handleChanges= async ()=>{
         const data={
             name:name, 

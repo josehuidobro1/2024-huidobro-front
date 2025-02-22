@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import NavBar from '../../components/NavBar';
@@ -6,11 +6,13 @@ import NotificationPopup from '../../components/NotificationPopup'; // Corrected
 import Card from './components/Card';
 import { getPublicPlates, getUserNotification, markNotificationAsRead } from '../../firebaseService';
 import Loading from "../../components/Loading";
+import { UserContext } from "../../App";
 
 export const Community = () => {
     const [plates, setPlates] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const {user_id}=useContext(UserContext)
 
     const fetchPublicPlatesAndNotifications = async () => {
         try {
@@ -24,8 +26,9 @@ export const Community = () => {
     };
 
     useEffect(() => {
-        fetchPublicPlatesAndNotifications();
-    }, []);
+        console.log(`ID USER ${user_id}`)
+        user_id && fetchPublicPlatesAndNotifications();
+    }, [user_id]);
 
 
     const filteredPlates = plates.filter(plate =>

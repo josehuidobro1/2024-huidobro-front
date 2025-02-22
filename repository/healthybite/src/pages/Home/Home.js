@@ -91,16 +91,18 @@ function Home() {
         user && fetchStreak();
     }, [userFood]);
 
-    const updateUserGoals=async()=>{
-        setLoading(true)
+    const updateUserGoals=async(userEdited)=>{
         setAskForGoals(false)
-        await editUserData(user_id, user)
-        setLoading(false)
+        setUser(userEdited)
+        await editUserData(user_id, userEdited)
     }
 
     useEffect(()=>{
-
-        user && askForGoals && updateUserGoals()
+        if (user && Object.values(user.goals).some(goal => goal === 0)) {
+            setAskForGoals(true);
+        } else {
+            setAskForGoals(false);
+        }
     },[user])
 
 
@@ -114,7 +116,6 @@ function Home() {
     },[filterSelected])
 
     const getUserData = async()=> {
-        setLoading(true)
         try{
             const userInfo = await fetchUser(user_id)
             if(userInfo){
@@ -123,134 +124,100 @@ function Home() {
             }else{
                 console.error('Error in fetchUser() in userData ', userInfo)
             }
-            const privatePlates = await  getUserPlates(user_id)
-            const otherPlates=await getPlatesNotUser(user_id) 
-            const plates={mines: privatePlates, others:otherPlates}
-            setPlatesData(plates)
-            const drinks=await getUserDrinks(user_id)
-            setDrinksData (drinks)
-            setLoading(false);
         }catch(error){
             console.log('Error in getUserData() Home')
         }
 
     }
     
-    const handleChangesCat = async () => {
-        try {
-            // Get the foods and bar category
-            const barFoods = await getProducts(); // Assuming this returns a list of foods
-            const BarCat = await getBarCategory(); // Assuming this returns a category object
-            
-            if (!BarCat) {
-                throw new Error('Bar category not found');
-            }
-    
-            // Filter barFoods to include only the items that are not in BarCat.foods
-            const filteredFoods = barFoods.filter(food => !BarCat.foods.includes(food.id)); // Assuming food.id is the unique identifier
-    
-            // Prepare the data for the update
-            const data = {
-                name: BarCat.name,
-                icon: BarCat.icon, // Fixed this to use BarCat.icon (instead of BarCat.name for both)
-                plates:[...BarCat.foods, ...filteredFoods.map(food => food.id)],
-                foods: [],
-                drinks: []
-            };
 
-            await updateCategoryDefault(data, BarCat.id);    
-            console.log("Category updated successfully");
-        } catch (error) {
-            console.error("Error saving category changes by ID:", error);
+    const get_Food_plates_drinks=async()=>{
+        try{
+            const [food, privatePlates, otherPlates, drinks] = await Promise.all([
+                fetchAllFoods(),
+                getUserPlates(user_id),
+                getPlatesNotUser(user_id),
+                getUserDrinks(user_id)
+            ]);
+            const sortedFood = food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1);
+            const plates = { mines: privatePlates, others: otherPlates };
+            return { food: sortedFood, plates, drinks };
+        }catch (error) {
+            console.log('Error fetching food plates and drinks in Home:', error);
+            throw new Error('No se pudo cargar la información de comida, platos y bebidas');
         }
-    };
-    
+        
+    }
+
+
 
     const fetchFoods = async (daySelected) => {
-        const loadData = async () => {
-            try {
-                if (isNaN(new Date(date).getTime())) {
-                    throw new Error('Invalid date value');
-                }
-                const userFood = await fetchUserFoods(user_id, daySelected ? daySelected:  date );
-                const food = await fetchAllFoods();
-    
-                setFoodData(
-                    food.sort((a, b) => a.name.toUpperCase() < b.name.toUpperCase() ? -1 : 1)
-                );
-    
-                const userFoodDetails = await Promise.all(userFood.map(async (item) => {
-                    let foodDetails
-                    try{
-                        foodDetails = await fetchFoodByID(item.id_Food);
+        try {
+            setLoading(true)
+            if (isNaN(new Date(date).getTime())) {
+                throw new Error('Invalid date value');
+            }
+            const userFood = await fetchUserFoods(user_id, daySelected ? daySelected:  date );
+            let { food, plates, drinks } ={foodData, platesData, drinksData}
+            console.log('USER FOOD ', userFood)
+            if (food?.length===0 || !plates ||!drinks) {
+                ({ food, plates, drinks}= await get_Food_plates_drinks());
+                setFoodData(food);
+                setPlatesData(plates);
+                setDrinksData(drinks);
+            }
+            
+            if (!food?.length || !plates || !drinks) {
+                console.error('Faltan datos para completar la carga de información.');
+                return;
+            }
+            const userFoodDetails = await Promise.all(userFood.map(async (item)=>{
+                let foodDetails  =  food?.find(food=>food.id===item.id_Food) || plates.mines?.find(plate=>plate.id===item.id_Food) ||  plates.others?.find(plate=>plate.id===item.id_Food) ||  drinks?.find(drink=>drink.id===item.id_Food) 
+                if(!foodDetails){
+                    try {
+                        foodDetails = await getProdByID(parseInt(item.id_Food));
+                        if (!foodDetails) {
+                            console.warn(`Producto con ID ${item.id_Food} no encontrado.`);
+                        }
                     } catch (error) {
-                        console.warn(`Error fetching food for ID ${item.id_Food}:`, error);
+                        console.error('Error buscando el producto:', error);
                     }
-                
-                    if (!foodDetails || Object.keys(foodDetails).length === 0) {
-                        try {
-                            foodDetails = await getPlate_ByID(item.id_Food);
-                        } catch (error) {
-                            console.warn(`Error fetching plate for ID ${item.id_Food}:`, error);
-                        }
-
-                        if (!foodDetails) {
-                            console.log('No food found in plates, checking drinks');
-
-                            try {
-                                foodDetails = await getDrinkByID(item.id_Food);
-                            } catch (error) {
-                                console.warn(`Error fetching drink for ID ${item.id_Food}:`, error);
-                            }
-                        };
-
-                        if (!foodDetails) {
-                            console.log('No food found in drinks, checking products');
-                            foodDetails = await getProdByID(item.id_Food);
-                        }
-                    }
-    
-                    const calories = foodDetails?.calories_portion !== undefined 
-                        ? Math.round(foodDetails?.calories_portion) 
-                        : Math.round(foodDetails?.calories || 0);
-    
-                    return {
-                        ...item,
-                        name: foodDetails?.name || 'Unknown',
-                        measure: foodDetails?.measure || 'Plate/s',
-                        measure_portion: foodDetails?.measure_portion || 1,
-                        calories_portion: calories || 0,
-                        carbohydrates_portion: foodDetails?.carbohydrates_portion || 0,
-                        sodium_portion: foodDetails?.sodium_portion || 0,
-                        fats_portion: foodDetails?.fats_portion || 0,
-                        protein_portion: foodDetails?.protein_portion || 0,
-                        caffeine_portion: foodDetails?.caffeine_portion || 0,
-                        sugar_portion: foodDetails?.sugar_portion || 0,
-                        public: foodDetails?.public || false,
-                        verified: foodDetails?.verified || false
-                    };
-                }));
-    
-                console.log('User food details:', userFoodDetails);
-    
-                // Check if required data is defined before setting state
-                if (userFood && platesData && drinksData && categories) {
-                    setLoading(false);
-                } else {
-                    console.error("Some required data is missing:", { userFood, platesData, drinksData, categories });
+                    console.log('FOOD DETAIL ', foodDetails)
                 }
+                
+                const calories = foodDetails?.calories_portion !== undefined 
+                    ? Math.round(foodDetails?.calories_portion) 
+                    : Math.round(foodDetails?.calories || 0);
     
-                // Set user food with the resolved details
+                return foodDetails && {
+                    ...item,
+                    name: foodDetails?.name || 'Unknown',
+                    measure: foodDetails?.measure || 'Plate/s',
+                    measure_portion: foodDetails?.measure_portion || 1,
+                    calories_portion: calories || 0,
+                    carbohydrates_portion: foodDetails?.carbohydrates_portion || 0,
+                    sodium_portion: foodDetails?.sodium_portion || 0,
+                    fats_portion: foodDetails?.fats_portion || 0,
+                    protein_portion: foodDetails?.protein_portion || 0,
+                    caffeine_portion: foodDetails?.caffeine_portion || 0,
+                    sugar_portion: foodDetails?.sugar_portion || 0,
+                    public: foodDetails?.public || false,
+                    verified: foodDetails?.verified || false
+                } 
+                
+            }))
+            if (userFoodDetails.length > 0) {
                 setUserFood(userFoodDetails);
                 setFilteredFood(userFoodDetails);
-    
-            } catch (err) {
-                console.error('Error fetching data:', err.message);
+            } else {
+                console.error("⚠ No se pudo crear ningún userFoodDetails.");
             }
-        };
-    
-        loadData();
-    };
+        }catch (err) {
+            console.error('Error fetching data:', err.message);
+        }finally {
+            setLoading(false);
+        }
+    }
     
     
 
@@ -266,9 +233,8 @@ function Home() {
                 ...drinkCats
             ];
             setCategories(combinedCats);
-            userFood && categories && platesData && drinksData && setLoading(false)
         } catch (err) {
-            console.log('Error al obtener las categorias: ' + err);
+            console.log('Error al obtener las categorias: ' , err);
         }
     };
 
@@ -278,38 +244,34 @@ function Home() {
         setAllergiesData(allergiesData) 
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true)
-            await getUserData();
-            await allergies()
-            setLoading(false)
-        };
-    
-        user_id && fetchData();
-    }, []);
-
     const handleAddMeal = async () => {
         try {
+            setLoading(true)
             await addUserFood(user_id, selection, date, amount);
             setAmount(null);
             setSelection(null);
             setAddMeal(false);
             console.log('Comida consumida agregada a UserFood > Firestore con éxito');
-            setLoading(true)
-            fetchFoods()
+            if(platesData.length>0 && drinksData && foodData){
+                fetchFoods()
+            }else{
+                await get_Food_plates_drinks().then(fetchFoods())
+            }
+            setLoading(false)
         } catch (error) {
             console.error('Error al agregar la comida consumida en UserFood > Firestore:', error);
         }
     }
 
     useEffect(() => {
-        newFood && addNewFood(newFood).then(() => {
-            setNewFood(null);
+        if(newFood){
             setLoading(true)
-            fetchFoods();
-        })
-        
+            newFood && addNewFood(newFood).then(() => {
+                setNewFood(null);
+                fetchFoods()
+            })
+            setLoading(false)
+        }
     }, [newFood]);
     
     const handleDeleteMeal = async (idDoc_user_food) => {
@@ -322,7 +284,7 @@ function Home() {
             
             console.log('Comida eliminada de UserFood > Firestore con éxito');
         } catch (err) {
-            console.log('Error al eliminar la comida: ' + err.message);
+            console.log('Error al eliminar la comida: ' , err.message);
         }
     };
     
@@ -333,16 +295,31 @@ function Home() {
             setLoading(true)
             fetchFoods()
             console.log('Comida editada de UserFood > Firestore con éxito');
+            setLoading()
         } catch (err) {
-            console.log('Error al editar la comida: ' + err.message);
+            console.log('Error al editar la comida: '  ,err.message);
         }
+    };
+
+    const fetchData = async() => {
+        console.log("SE ESTA EJECUTANDO FETCH DATA")
+        !user && getUserData()
+        !allergiesData && await allergies()
+        console.log("TERMINO DE EJECUTARSE FETCH DATA")
     };
 
     useEffect(()=>{
         setLoading(true)
-        user_id && fetchFoods(date)
-        user_id && fetchCategories();
-    },[date])
+        console.log("SE ESTA EJECUTANDO useEffect [date]")
+
+        if(user_id){
+            fetchData().then(()=> fetchFoods(date));
+            fetchCategories();
+            setLoading(false)
+        }
+        
+        console.log("TERMINO DE  EJECUTARSE useEffect [date]")
+    },[date, user_id])
 
     const selectDate=(date)=>{
         setDate(new Date(date))
@@ -436,7 +413,7 @@ function Home() {
             {addMeal &&
                 <PopUp user={user} allergiesData={allergiesData} newFood={newFood} setAddMeal={setAddMeal} foodData={foodData} handleAddMeal={handleAddMeal} setNewFood={setNewFood} setSelection={setSelection} selection={selection} platesData={platesData} drinksData={drinksData} />
             }
-            {user_id && user?.goals && Object.values(user.goals).some(goal => Number(goal) === 0) && <Goals user={user} setUser={setUser} /> }
+            {askForGoals && <Goals user={user} setUser={setUser} editGoals={updateUserGoals} /> }
         </div>
         
     );

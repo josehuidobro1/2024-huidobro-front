@@ -55,7 +55,7 @@ export const Plates = () => {
     }
 
     useEffect(()=>{
-        if(plates.length>0 && selection){
+        if(plates.length>0 && selection && user_id){
         const platesEdited=plates.map(plateItem => plateItem.id===selection.plate ? {...plates.find((item)=>item.id===selection.plate), ingredients: selection.ingridients} : plateItem)
         setPlates(platesEdited);
         setSelection(null)
@@ -63,8 +63,8 @@ export const Plates = () => {
 
     useEffect(()=>{
         setLoading(true)
-        fetchFood()
-    },[])
+        user_id && fetchFood()
+    },[user_id])
 
     useEffect(()=>{
         setTimeout(() => {
@@ -77,8 +77,8 @@ export const Plates = () => {
         <NavBar/>
         {loading ? 
             <Loading />
-        :<div className='flex flex-col-reverse md:flex-row justify-between items-center bg-healthyGray2  w-full h-screen overflow-y-auto md:overflow-y-hidden'>
-            <div className='w-full md:w-4/5 lg:w-2/5 flex justify-end items-center md:items-end md:h-full'>
+        :<div className='flex flex-col-reverse md:flex-row justify-between items-center bg-healthyGray2   w-full h-screen overflow-y-auto md:overflow-y-hidden'>
+            <div className='w-full md:w-4/5 lg:w-2/5 flex justify-end items-center md:items-end md:h-screen md-fixed '>
                 <img src={plateBG} alt="Background image" className=' w-full' />
             </div>
             

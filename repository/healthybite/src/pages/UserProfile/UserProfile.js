@@ -83,16 +83,15 @@ function UserProfile() {
 
     const editUser = async () => {
         const data = {
-            ...user,
-            birthDate: birthDate, // This is already in the correct format
-            height: height,
-            name: name,
-            surname: surname,
-            weight: weight,
+            name: user.name,
+            surname: user.surname,
+            weight: user.weight,
+            height: user.height,
+            birthDate: user.birthDate,
             goals: user.goals,
             validation: user.validation,
-            achivements: user.achievements,
-            schedule:user.schedule,
+            achievements: user.achievements,
+            allergies: user.allergies,
         };
         try {
             await editUserData(user_id, data);
@@ -102,21 +101,19 @@ function UserProfile() {
         }
     }
 
-    const editGoals=async()=>{
+    const editGoals=async(userEdited)=>{
         setOpenGoals(false)
-        await editUserData(user_id, user)
-    }
-
-    useEffect(()=>{
-        if(user && openGoals){
-            editGoals()
+        if (JSON.stringify(user.goals) !== JSON.stringify(userEdited.goals)) {
+            await editUserData(user_id, userEdited);
         }
-    },[user])
+        setUser(userEdited)
+        
+    }
     
 
     useEffect(()=>{
-        getUser()
-    },[])
+        user_id && getUser()
+    },[user_id])
 
     const saveChanges=()=>{
         edit && editUser()
@@ -200,7 +197,7 @@ function UserProfile() {
         }
         {
             openGoals &&
-            <Goals user={user} setUser={setUser} editGoals={true}/>
+            <Goals user={user} setUser={setUser} editGoals={editGoals}/>
         }
         {
             allergiePopUp &&

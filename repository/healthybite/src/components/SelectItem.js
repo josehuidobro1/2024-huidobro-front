@@ -1,21 +1,20 @@
 import { Checkbox } from '@mui/material'
 import React, { useState } from 'react'
 
-const SelectItem = ({value,setSelectedFood, selectedFood, checkedNow}) => {
+const SelectItem = ({value,setSelectedFood, selectedFood, createAll,checkedNow}) => {
 
     const [checked, setChecked]=useState(checkedNow)
     
-    const handleChange = (event) => {
-        setChecked(event.target.checked);
-        event.target.checked ? setSelectedFood([...selectedFood, value.id]) : setSelectedFood(selectedFood.filter(e=>e!==value.id))
-
-    };
+    const handleChange=(status) => {
+      console.log('El status ',status)
+      !status ? setSelectedFood([...selectedFood, value.id]) : setSelectedFood(selectedFood.filter(e=>e!==value.id))
+      setChecked(!status);
+    }
         
   return (
-    <div className='flex justify-start items-center w-full pb-1'>
-        <Checkbox checked={checked} onChange={handleChange}  inputProps={{ 'aria-label': 'controlled' }}  sx={{color: '#418FDE',margin: 0,padding: 0, '& .MuiSvgIcon-root': { fontSize: 20 } }} />
-        <p className='text-healthyDarkGray1 text-sm ml-2 '>{value.name}</p>
-    </div>
+    <button onClick={()=>handleChange(checked)}  className={`flex justify-start items-center cursor-pointer py-1 ${createAll ? 'rounded-full border-2' :'w-full'} px-2  mb-1 mr-1 ${checked ? 'bg-healthyBlue border-healthyBlue': ' border-healthyGray1'}`}>
+        <p className={`${checked ? 'text-white' :'text-healthyDarkGray1'} text-sm text-left  `}>{value.name}</p>
+    </button>
   )
 }
 

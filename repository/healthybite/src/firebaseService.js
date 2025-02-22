@@ -22,7 +22,6 @@ axios.interceptors.request.use(
     async (config) => {
         try{
             const token = await getIdToken();
-            console.log("Token:", token); 
             if (token ) {
                 axios.defaults.headers.common['Authorization'] = `${token}`;
             }
@@ -153,12 +152,12 @@ export const editUserData=async(user_id, data)=>{
         if( !token){
             throw new Error ('Token not found')
         }
-        const response = await axios.put(`${ruta}/update_user/${user_id}`, data.user, {
+        const response = await axios.put(`${ruta}/update_user/${user_id}`, data, {
             headers: {
                 Authorization: `${token}`
             }
         });
-        console.log('Data que se envia para editar usuario: ', data.user)
+        console.log('Data que se envia para editar usuario: ', data)
         return response.data; // Adjust this based on your backend response structure
     } catch (error) {
         console.error('Error editing user data by ID:', error);

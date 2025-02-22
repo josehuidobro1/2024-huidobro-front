@@ -50,7 +50,7 @@ const AllergieItem = ({food, id,userdata, allergies, setAllergies, allergiesData
                 food.map((item,index)=><SelectItem key={index} checkedNow={selectedFood.includes(item.id)} value={item} setSelectedFood={setSelectedFood} selectedFood={selectedFood}  />)
                 :(food.filter(i=>selectedFood.includes(i.id))).map((item,index)=>(<p key={index} className=' pb-1 w-full text-healthyDarkGray1'>{item.name}</p>))}
             </div>
-            {message && <p className='text-xs bg-healthyOrange text-white font-semibold my-1 px-2 rounded-md '>{message}</p>}
+            {message && <p className='text-xs bg-red-700 text-white font-semibold my-2 px-1 rounded-full text-center '>{message}</p>}
             <div className='flex w-full justify-end items-center pt-1'>
                 <button onClick={handleEdit}  className='text-xs font-bold text-healthyGray1 bg-white px-2 rounded-full mr-2  hover:shadow-lg ' >{edit ? 'Save': 'Edit'}</button>
                 <button onClick={deleteAllergie} className='text-xs font-bold text-healthyGray1 bg-white px-2 rounded-full   hover:shadow-lg '>Delete</button>

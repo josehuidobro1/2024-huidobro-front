@@ -268,8 +268,8 @@ export default function Dashboard() {
 
     useEffect(()=>{
         setLoading(true)
-        fetchData()
-    },[])
+        user_id && fetchData()
+    },[user_id])
 
     
     useEffect(()=>{
