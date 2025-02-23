@@ -17,6 +17,7 @@ import { fetchUser, getIdToken, getUserNotification, markNotificationAsRead } fr
 import NotificationPopup from './components/NotificationPopup';
 import NotFound from './pages/NotFound/NotFound';
 import Loading from './components/Loading';
+import ProtectedRoute from './components/ProtectedRoute';
 
 export const UserContext = createContext(null);
 
@@ -25,7 +26,6 @@ function App() {
   const [user]=useAuthState(auth);
   const [user_id, setUser_id]= useState(null)
   const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading]=useState(false)
   const fetchNotification=async()=>{
     const fetchedNotifications = await getUserNotification(user_id);
     setNotifications(fetchedNotifications || []);
@@ -70,24 +70,20 @@ function App() {
     <UserContext.Provider value={{user_id, setUser_id}} >
       <Router>
         {user_id && notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
-        {loading ?
-         (
-          <Loading />
-         ):
-        (<Routes>
-          <Route path="/home" element={<Home />}/>
+        <Routes>
           <Route path="/" element={<Login />}/>
-          <Route path="/plates" element={<Plates/>}/>
-          <Route path="/drinks" element={<Drinks/>}/>
-          <Route path='/schedule' element={<Schedule/>}/>
-          <Route path="/user-profile" element={<UserProfile />} />
           <Route path="/resetPassword" element={<ResetPassword />} />
-          <Route path="/category" element={<Category/>} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/community" element={<Community />} />
+
+          <Route path="/home" element={<ProtectedRoute element={<Home />}/>} />
+          <Route path="/plates" element={<ProtectedRoute element={<Plates/>}/>} />
+          <Route path="/drinks" element={<ProtectedRoute element={<Drinks/>}/>} />
+          <Route path='/schedule' element={<ProtectedRoute element={<Schedule/>}/>} />
+          <Route path="/user-profile" element={<ProtectedRoute element={<UserProfile />} />} />
+          <Route path="/category" element={<ProtectedRoute element={<Category/>} />} />
+          <Route path="/dashboard" element={<ProtectedRoute element={<Dashboard />} />} />
+          <Route path="/community" element={<ProtectedRoute element={<Community />} />} />
           <Route path="*" element={<NotFound/>} />
         </Routes>
-        )}
       </Router>
     </UserContext.Provider>
   );
