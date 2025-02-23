@@ -35,7 +35,7 @@ function NavBar() {
                 </div>
                 {window.innerWidth > '768'  &&
                 <div className="flex justify-around items-center w-full pt-2 ">
-                    <NavItem route='/' name='Home' icon={faHouse}  />
+                    <NavItem route='/home' name='Home' icon={faHouse}  />
                     <NavItem route='/plates' name='Plates' icon={faUtensils}/>
                     <NavItem route='/drinks' name='Drinks' icon={faMugHot}/>
                     <NavItem route='/schedule' name='Schedule' icon={faCartShopping}/>
@@ -50,7 +50,7 @@ function NavBar() {
                     <div className="w-full   z-10 right-0 bg-healthyGreen  h-full flex items-center justify-center overflow-y-hidden">
                         <div className="   w-full h-screen  pb-12 py-2  px-2  flex flex-col items-center justify-around ">
                             <div className=" h-full grid grid-cols-2 gap-1 justify-around   w-full ">
-                                <NavItem route='/' name='Home' icon={faHouse} setOpenBar={setOpenBar} />
+                                <NavItem route='/home' name='Home' icon={faHouse} setOpenBar={setOpenBar} />
                                 <NavItem route='/plates' name='Plates' icon={faUtensils} setOpenBar={setOpenBar}/>
                                 <NavItem route='/drinks' name='Drinks' icon={faMugHot}  setOpenBar={setOpenBar}/>
                                 <NavItem route='/schedule' name='Schedule' icon={faCartShopping} setOpenBar={setOpenBar}/>

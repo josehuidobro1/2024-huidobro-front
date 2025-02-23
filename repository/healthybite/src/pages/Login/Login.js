@@ -108,7 +108,7 @@ function Login() {
                 
                 setMessage('Creating new user...')
                 const user_id = await registerUser(email, password, name, surname, weight, height, birthDate)
-                
+                user_id && navigate("/home")
             } catch (error) {
                 switch (error.code) {
                     case "auth/email-already-in-use":
@@ -141,7 +141,7 @@ function Login() {
             const user_id = await loginUser(email,password)
             setUser_id(user_id)
             console.log('Inicio de sesión exitoso:', user_id);
-            navigate("/");
+            user_id && navigate("/home")
         } catch (error) {
             switch (error.code) {
                 case "auth/invalid-email":

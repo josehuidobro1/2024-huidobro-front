@@ -69,7 +69,10 @@ export const registerUser = async (email, password, name, surname, weight, heigh
                 Authorization: `${token}`
             }
         });
-        
+        const user=await fetchUser(userCredential.user.uid)
+        if(user){
+            return userCredential.user.uid
+        }
     }catch(error){
         throw error
     }

@@ -25,7 +25,7 @@ function App() {
   const [user]=useAuthState(auth);
   const [user_id, setUser_id]= useState(null)
   const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading]=useState(true)
+  const [loading, setLoading]=useState(false)
   const fetchNotification=async()=>{
     const fetchedNotifications = await getUserNotification(user_id);
     setNotifications(fetchedNotifications || []);
@@ -49,22 +49,13 @@ function App() {
     }
   }
 
-  const getUserData=async()=>{
-    get_token();
-    setUser_id(user.uid);
-    const userData = await fetchUser(user.uid);
-    if (userData) {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
     console.log("USEEER ", user_id)
     if (user) {
-      getUserData()
+      get_token();
+      setUser_id(user.uid);
     } else {
       setUser_id(null);
-      setLoading(false);
     }
   }, [user]);
 
@@ -84,7 +75,8 @@ function App() {
           <Loading />
          ):
         (<Routes>
-          <Route path="/" element={user_id && token ? <Home />:<Login />}/>
+          <Route path="/home" element={<Home />}/>
+          <Route path="/" element={<Login />}/>
           <Route path="/plates" element={<Plates/>}/>
           <Route path="/drinks" element={<Drinks/>}/>
           <Route path='/schedule' element={<Schedule/>}/>
