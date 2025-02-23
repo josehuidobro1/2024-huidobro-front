@@ -100,7 +100,8 @@ function Home() {
 
     useEffect(()=>{
         if(filterSelected) {
-            const aplyingFilter=filteredFood.filter((item)=>filterSelected.foods.includes(item.id_Food))
+            console.log('se aplico filtro filterselected ',filterSelected)
+            const aplyingFilter=filteredFood.filter((item)=>filterSelected.foods.includes(item.id_Food) || filterSelected.plates?.includes(item.id_Food) || filterSelected.drinks?.includes(item.id_Food) )
             setFilteredFood(aplyingFilter)
         }else{
             setFilteredFood(userFood)
