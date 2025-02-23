@@ -76,44 +76,64 @@ function Login() {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             setMessage("Invalid email address");
-            return; 
+            return false; 
         }
 
         const birthDateObj = new Date(birthDate);
         const today = new Date();
         if (birthDateObj >= today) {
             setMessage("Check the birth date");
-            return; 
+            return false; 
         }
 
         if(password !== confirmPw) {
             setMessage("Passwords do not match")
-            return 
+            return false 
         }
 
         if(password.length<6){
             setMessage("Password should be at least 6 characters")
-            return
+            return false
         }
+
+        return true
 
     }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        handleValidation();
-        try {
-            setMessage('Creating new user...')
-            const user_id = await registerUser(email, password, name, surname, weight, height, birthDate)
-            user_id && setMessage('User corretly added!')
-            setUser_id(user_id)
-            navigate("/");
-        } catch (error) {
-            if (error===" Error: Firebase: Error (auth/email-already-in-use)."){
-                setMessage("That email is already in use, please try another one.");
-            }else{
-                console.error('Error al registrar usuario o agregar a Firestore:', error);
+        const rta=handleValidation();
+        if(rta){
+            try {
+                
+                    setMessage('Creating new user...')
+                    const user_id = await registerUser(email, password, name, surname, weight, height, birthDate)
+                    user_id && setMessage('User corretly added!')
+                    setUser_id(user_id)
+                    navigate("/");
+                
+            } catch (error) {
+                switch (error.code) {
+                    case "auth/email-already-in-use":
+                        setMessage("Email is already in use.");
+                        break;
+                    case "auth/invalid-email":
+                        setMessage("Invalid email format.");
+                        break;
+                    case "auth/weak-password":
+                        setMessage("Password is too weak. Use at least 6 characters.");
+                        break;
+                    case "auth/operation-not-allowed":
+                        setMessage("Email/password authentication is not enabled.");
+                        break;
+                    case "auth/network-request-failed":
+                        setMessage("Network error. Check your internet connection.");
+                        break;
+                    default:
+                        setMessage("An unexpected error occurred. Please try again.");
+                        break;
+                }
             }
-            
         }
     };
     
@@ -126,8 +146,26 @@ function Login() {
             console.log('Inicio de sesión exitoso:', user_id);
             navigate("/");
         } catch (error) {
-            console.error('Error al iniciar sesión:', error);
-            setLoginError('Invalid Email or Password, please try again')
+            switch (error.code) {
+                case "auth/invalid-email":
+                    setMessage("Invalid email format.");
+                    break;
+                case "auth/user-disabled":
+                    setMessage("This user account has been disabled.");
+                    break;
+                case "auth/user-not-found":
+                    setMessage("No user found with this email.");
+                    break;
+                case "auth/wrong-password":
+                    setMessage("Incorrect password.");
+                    break;
+                case "auth/network-request-failed":
+                    setMessage("Network error. Check your internet connection.");
+                    break;
+                default:
+                    setMessage("An unexpected error occurred. Please try again.");
+                    break;
+            }
         }
     }
 

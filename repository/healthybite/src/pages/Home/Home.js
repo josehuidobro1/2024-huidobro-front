@@ -97,14 +97,6 @@ function Home() {
         await editUserData(user_id, userEdited)
     }
 
-    useEffect(()=>{
-        if (user && Object.values(user.goals).some(goal => goal === 0)) {
-            setAskForGoals(true);
-        } else {
-            setAskForGoals(false);
-        }
-    },[user])
-
 
     useEffect(()=>{
         if(filterSelected) {
@@ -120,6 +112,9 @@ function Home() {
             const userInfo = await fetchUser(user_id)
             if(userInfo){
                 const { email, ...filteredUserData } = userInfo;
+                if (Object.values(filteredUserData.goals).some(goal => goal === 0)) {
+                    setAskForGoals(true);
+                }
                 setUser(filteredUserData)
             }else{
                 console.error('Error in fetchUser() in userData ', userInfo)
@@ -206,12 +201,8 @@ function Home() {
                 } 
                 
             }))
-            if (userFoodDetails.length > 0) {
-                setUserFood(userFoodDetails);
-                setFilteredFood(userFoodDetails);
-            } else {
-                console.error("⚠ No se pudo crear ningún userFoodDetails.");
-            }
+            setUserFood(userFoodDetails);
+            setFilteredFood(userFoodDetails);
         }catch (err) {
             console.error('Error fetching data:', err.message);
         }finally {
@@ -252,12 +243,11 @@ function Home() {
             setSelection(null);
             setAddMeal(false);
             console.log('Comida consumida agregada a UserFood > Firestore con éxito');
-            if(platesData.length>0 && drinksData && foodData){
-                fetchFoods()
+            if(platesData && drinksData && foodData){
+                fetchFoods(date)
             }else{
-                await get_Food_plates_drinks().then(fetchFoods())
+                await get_Food_plates_drinks().then(fetchFoods(date))
             }
-            setLoading(false)
         } catch (error) {
             console.error('Error al agregar la comida consumida en UserFood > Firestore:', error);
         }
@@ -293,9 +283,9 @@ function Home() {
         try {
             await editUserFood(idDoc_user_food, data); 
             setLoading(true)
-            fetchFoods()
+            fetchFoods(date)
             console.log('Comida editada de UserFood > Firestore con éxito');
-            setLoading()
+            setLoading(false)
         } catch (err) {
             console.log('Error al editar la comida: '  ,err.message);
         }
@@ -310,15 +300,14 @@ function Home() {
 
     useEffect(()=>{
         setLoading(true)
-        console.log("SE ESTA EJECUTANDO useEffect [date]")
+        console.log(`SE ESTA EJECUTANDO useEffect [${date}}]`)
 
         if(user_id){
-            fetchData().then(()=> fetchFoods(date));
+            user ? fetchFoods(date) : fetchData().then(()=> fetchFoods(date));
             fetchCategories();
             setLoading(false)
         }
         
-        console.log("TERMINO DE  EJECUTARSE useEffect [date]")
     },[date, user_id])
 
     const selectDate=(date)=>{

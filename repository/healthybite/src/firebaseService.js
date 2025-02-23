@@ -72,8 +72,7 @@ export const registerUser = async (email, password, name, surname, weight, heigh
         
         return userCredential.user.uid;
     }catch(error){
-        console.error("Error al registrar el usuario:", error);
-        throw new Error(error.message || "Error al registrar el usuario.");
+        return error
     }
 }
 
@@ -83,7 +82,7 @@ export const loginUser = async (email, password) => {
         await userCredential.user.getIdToken()
         return userCredential.user.uid;
     } catch (error) {
-        throw error.message;
+        return error
     }
 };
 
