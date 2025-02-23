@@ -13,9 +13,10 @@ import { Drinks } from './pages/Drinks/Drinks';
 import { Community } from './pages/Community/Community';
 import Schedule from './pages/Schedule/Schedule';
 import { createContext, useEffect, useState } from 'react';
-import { getIdToken, getUserNotification, markNotificationAsRead } from './firebaseService';
+import { fetchUser, getIdToken, getUserNotification, markNotificationAsRead } from './firebaseService';
 import NotificationPopup from './components/NotificationPopup';
 import NotFound from './pages/NotFound/NotFound';
+import Loading from './components/Loading';
 
 export const UserContext = createContext(null);
 
@@ -24,6 +25,7 @@ function App() {
   const [user]=useAuthState(auth);
   const [user_id, setUser_id]= useState(null)
   const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading]=useState(true)
   const fetchNotification=async()=>{
     const fetchedNotifications = await getUserNotification(user_id);
     setNotifications(fetchedNotifications || []);
@@ -47,13 +49,22 @@ function App() {
     }
   }
 
+  const getUserData=async()=>{
+    get_token();
+    setUser_id(user.uid);
+    const userData = await fetchUser(user.uid);
+    if (userData) {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
     console.log("USEEER ", user_id)
     if (user) {
-      get_token();
-      setUser_id(user.uid);
+      getUserData()
     } else {
       setUser_id(null);
+      setLoading(false);
     }
   }, [user]);
 
@@ -68,7 +79,11 @@ function App() {
     <UserContext.Provider value={{user_id, setUser_id}} >
       <Router>
         {user_id && notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
-        <Routes>
+        {loading ?
+         (
+          <Loading />
+         ):
+        (<Routes>
           <Route path="/" element={user_id && token ? <Home />:<Login />}/>
           <Route path="/plates" element={<Plates/>}/>
           <Route path="/drinks" element={<Drinks/>}/>
@@ -80,6 +95,7 @@ function App() {
           <Route path="/community" element={<Community />} />
           <Route path="*" element={<NotFound/>} />
         </Routes>
+        )}
       </Router>
     </UserContext.Provider>
   );

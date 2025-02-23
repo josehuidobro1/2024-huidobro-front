@@ -308,7 +308,14 @@ function Home() {
             setLoading(false)
         }
         
-    },[date, user, user_id])
+    },[date, user_id])
+
+    useEffect(()=>{
+        if(!user && user_id){
+            setLoading(true)
+            fetchData()
+        }
+    },[user])
 
     const selectDate=(date)=>{
         setDate(new Date(date))

@@ -108,16 +108,7 @@ function Login() {
                 
                 setMessage('Creating new user...')
                 const user_id = await registerUser(email, password, name, surname, weight, height, birthDate)
-                let userExists = false;
-                for (let i = 0; i < 5; i++) { // Reintentar hasta 5 veces
-                    const userData = await fetchUser(user_id); // Función que obtiene el usuario desde el backend
-                    if (userData) {
-                        console.log(userData)
-                        userExists = true;
-                        break;
-                    }
-                    await new Promise(res => setTimeout(res, 1000)); // Esperar 1 segundo
-                }
+                
             } catch (error) {
                 switch (error.code) {
                     case "auth/email-already-in-use":
