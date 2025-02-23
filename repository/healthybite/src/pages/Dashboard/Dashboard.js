@@ -285,7 +285,7 @@ export default function Dashboard() {
   return (
     <div className=' w-full xs:flex  xs:flex-col xs:justify-around lg:items-center sm:h-full lg:h-screen overflow-y-hidden'>
         <NavBar  className='z-50'/>
-        {loading ? <Loading />
+        {loading ? <Loading dashboard={true}/>
         :<div className='flex flex-col lg:flex-row justify-start  lg:justify-center md:items-start lg:mt-24 items-start md:pt-24  lg:pt-8  w-full   px-2 xs:px-6 overflow-y-scroll  '>
             <div className="w-full lg:w-2/5 mt-4 xs:mt-8 md:mt-0  flex flex-col  items-center font-quicksand justify-center  ">
                 <div className="flex justify-center items-center w-full ">

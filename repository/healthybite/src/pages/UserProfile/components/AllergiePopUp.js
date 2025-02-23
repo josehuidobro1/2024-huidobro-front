@@ -34,11 +34,13 @@ export default function AllergiePopUp({allergiePopUp,setAllergiePopUp, allergies
         try {
             const food = await fetchAllFoods();
             setFood(food);
+            console.log('food, ',food)
 
             const allergieData= await getAllergies();
             setAllergiesData(allergieData)
+            console.log('allergie Data' , allergieData)
 
-            if(food.length!==0 && allergies.length!==0){
+            if(food && allergieData){
                 setLoading(false)
             }
         } catch (e) {
@@ -50,6 +52,7 @@ export default function AllergiePopUp({allergiePopUp,setAllergiePopUp, allergies
         if(allergiePopUp && food.length===0 ){
             setLoading(true)
             getData()
+            console.log('allergie')
         }
     },[allergiePopUp])
 
@@ -76,9 +79,14 @@ export default function AllergiePopUp({allergiePopUp,setAllergiePopUp, allergies
                     :
                         option===0 ?
                         <div className='flex flex-wrap justify-start items-start w-full  '>
-                        {allergies.map((item, index)=>(
+                        {allergies.length>0 ?
+                        allergies.map((item, index)=>(
                             <AllergieItem key={index} setAllergiesData={setAllergiesData}  id={item} allergies={allergies} setAllergies={setAllergies} userdata={userData} allergiesData={allergiesData}  food={food} />
-                        ))}
+                        )):
+                        <div className='flex w-full justify-center items-center'>
+                            <p className='text-healthyBlue/70 font-semibold text-sm px-3 py-5 '>You haven't uploaded your allergies&nbsp;yet</p>
+                        </div>
+                        }
                         </div>
                         : option===1 ?
                         <div className='flex flex-wrap justify-center items-start w-full p-1 '>
