@@ -15,6 +15,7 @@ import Schedule from './pages/Schedule/Schedule';
 import { createContext, useEffect, useState } from 'react';
 import { getIdToken, getUserNotification, markNotificationAsRead } from './firebaseService';
 import NotificationPopup from './components/NotificationPopup';
+import NotFound from './pages/NotFound/NotFound';
 
 export const UserContext = createContext(null);
 
@@ -47,6 +48,7 @@ function App() {
   }
 
   useEffect(() => {
+    console.log("USEEER ", user_id)
     if (user) {
       get_token();
       setUser_id(user.uid);
@@ -56,6 +58,7 @@ function App() {
   }, [user]);
 
   useEffect(() => {
+    console.log('user_id ', user_id)
     if (user_id && token) {
       fetchNotification();
     }
@@ -66,7 +69,7 @@ function App() {
       <Router>
         {user_id && notifications.length> 0 && <NotificationPopup notifications={notifications} onDismiss={handleDismissNotification}/>}
         <Routes>
-          <Route path="/" element={user && token ? <Home />:<Login />}/>
+          <Route path="/" element={user_id && token ? <Home />:<Login />}/>
           <Route path="/plates" element={<Plates/>}/>
           <Route path="/drinks" element={<Drinks/>}/>
           <Route path='/schedule' element={<Schedule/>}/>
@@ -75,6 +78,7 @@ function App() {
           <Route path="/category" element={<Category/>} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/community" element={<Community />} />
+          <Route path="*" element={<NotFound/>} />
         </Routes>
       </Router>
     </UserContext.Provider>

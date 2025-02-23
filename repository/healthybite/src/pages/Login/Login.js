@@ -6,7 +6,7 @@ import { createUserWithEmailAndPassword,signInWithEmailAndPassword,sendPasswordR
 import { collection, addDoc } from 'firebase/firestore';
 import { auth,firestore } from '../../firebaseConfig';
 import {handleInputChange} from '../inputValidation';
-import { forgotPassword, loginUser, registerUser } from "../../firebaseService";
+import { fetchUser, forgotPassword, loginUser, registerUser } from "../../firebaseService";
 import { Navigate, useNavigate } from "react-router-dom";
 import { UserContext } from "../../App";
 
@@ -106,12 +106,18 @@ function Login() {
         if(rta){
             try {
                 
-                    setMessage('Creating new user...')
-                    const user_id = await registerUser(email, password, name, surname, weight, height, birthDate)
-                    user_id && setMessage('User corretly added!')
-                    setUser_id(user_id)
-                    navigate("/");
-                
+                setMessage('Creating new user...')
+                const user_id = await registerUser(email, password, name, surname, weight, height, birthDate)
+                let userExists = false;
+                for (let i = 0; i < 5; i++) { // Reintentar hasta 5 veces
+                    const userData = await fetchUser(user_id); // Función que obtiene el usuario desde el backend
+                    if (userData) {
+                        console.log(userData)
+                        userExists = true;
+                        break;
+                    }
+                    await new Promise(res => setTimeout(res, 1000)); // Esperar 1 segundo
+                }
             } catch (error) {
                 switch (error.code) {
                     case "auth/email-already-in-use":
@@ -162,8 +168,11 @@ function Login() {
                 case "auth/network-request-failed":
                     setMessage("Network error. Check your internet connection.");
                     break;
+                case "auth/invalid-credential":
+                    setMessage("Invalid login credentials. Please check your email and password.");
+                    break;
                 default:
-                    setMessage("An unexpected error occurred. Please try again.");
+                    setMessage("Login failed. Please try again.")
                     break;
             }
         }
@@ -228,6 +237,7 @@ function Login() {
                         :(<div className="w-full  ">
                             <div className="sm:mt-6 flex flex-col">
                                 {inValidation && !infoOk && <p className="font-quicksand mt-4 sm:mt-0 text-sm font-semibold bg-darkGray text-white p-1 rounded-md text-center">{message}</p>}
+                                {message && <p className="font-quicksand mt-4 sm:mt-0 text-sm font-semibold bg-healthyBlue text-white p-1 rounded-md text-center">{message}</p>}
                                 {loginError && (<p className="font-quicksand mt-4 text-sm font-semibold bg-red-200 text-red-600 p-1 rounded-md text-center">{loginError}</p>)}
                                 <Input required={inValidation && email===''} label="Email" inputType="email" inputValue={email} placeholder="jane@example.com" onChange={(e)=>setEmail(e.target.value)} />
                                 <Input required={inValidation && password===''} label="Password" inputType="password" inputValue={password} placeholder="Password" onChange={(e) => setPassword(e.target.value)} />

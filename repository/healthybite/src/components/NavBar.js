@@ -60,7 +60,7 @@ function NavBar() {
                                 <NavItem route='/user-profile' name='User Profile' icon={faUser} setOpenBar={setOpenBar} />
                                 
                             </div>
-                            <Link to="/" onClick={handleLogOut} className="font-quicksand text-center relative bottom-2 my-5 font-semibold max-h-12 text-xl  text-healthyGreen hover:mt-1  w-1/5 py-2  xs:px-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log out</Link>
+                            <Link to="/" onClick={handleLogOut} className="font-quicksand text-center relative bottom-2 my-5 font-semibold max-h-12 text-lg xm:text-xl  text-healthyGreen hover:mt-1   py-2 px-5 xs:px-1 rounded-3xl bg-white hover:bg-hbGreen  underline-offset-2">Log&nbsp;out</Link>
                         </div>
                     </div>
 

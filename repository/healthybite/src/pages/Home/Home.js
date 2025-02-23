@@ -304,11 +304,11 @@ function Home() {
 
         if(user_id){
             user ? fetchFoods(date) : fetchData().then(()=> fetchFoods(date));
-            fetchCategories();
+            categories && fetchCategories();
             setLoading(false)
         }
         
-    },[date, user_id])
+    },[date, user, user_id])
 
     const selectDate=(date)=>{
         setDate(new Date(date))

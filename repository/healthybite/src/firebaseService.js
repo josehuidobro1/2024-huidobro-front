@@ -70,9 +70,8 @@ export const registerUser = async (email, password, name, surname, weight, heigh
             }
         });
         
-        return userCredential.user.uid;
     }catch(error){
-        return error
+        throw error
     }
 }
 
@@ -82,7 +81,7 @@ export const loginUser = async (email, password) => {
         await userCredential.user.getIdToken()
         return userCredential.user.uid;
     } catch (error) {
-        return error
+        throw error
     }
 };
 
