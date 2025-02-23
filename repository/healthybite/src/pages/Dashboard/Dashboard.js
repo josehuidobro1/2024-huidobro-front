@@ -268,6 +268,7 @@ export default function Dashboard() {
 
     useEffect(()=>{
         setLoading(true)
+        console.log('USER ID: ', user_id)
         user_id && fetchData()
     },[user_id])
 

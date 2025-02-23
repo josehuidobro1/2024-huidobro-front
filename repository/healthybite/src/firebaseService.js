@@ -749,16 +749,43 @@ export const resetPassword = async (oobCode, newPassword) => {
 // APP MESIIDEPAUL
 
 export const getProducts=async()=>{
-    const response = await axios.get('https://candv-back.onrender.com/products');
+    const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+    const response = await axios.get(`${ruta}/products/`,{
+        headers: {
+                "Content-Type": "application/json",
+                Authorization: `${token}`
+            },
+    });
     return response.data.products ? response.data.products : [];
 }
 
 export const editCalories=async(id,calories)=>{
-    await axios.put(`https://candv-back.onrender.com/add-calories/${id}/${calories}`); 
+    const token = await getIdToken()
+        if( !token){
+            throw new Error ('Token not found')
+        }
+    await axios.put(`${ruta}/products/${id}/calories/${calories}`, {}, {
+        headers: {
+                "Content-Type": "application/json",
+                Authorization: `${token}`
+            },
+    });
 
 }
 export const getProdByID= async(prod_id)=>{
-    const response = await axios.get(`https://candv-back.onrender.com/products/${prod_id}`);
+    const token = await getIdToken()
+    if( !token){
+        throw new Error ('Token not found')
+    }
+    const response = await axios.get(`${ruta}/products/${prod_id}`, {
+        headers: {
+                "Content-Type": "application/json",
+                Authorization: `${token}`
+            },
+    });
     const food=response.data.product
     return food
 }
