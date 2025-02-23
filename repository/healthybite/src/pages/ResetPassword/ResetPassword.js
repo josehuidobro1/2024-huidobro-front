@@ -46,7 +46,7 @@ function ResetPassword() {
                 await verifyPasswordResetCode(auth, oobCode); // Verificar el código
                 await confirmPasswordReset(auth, oobCode, password);
                 setUser_id(auth.currentUser.uid) // Establecer nueva contraseña
-                navigate("/");
+                navigate("/home");
             } catch (err) {
                 setMessage("The link is invalid or has expired.");
             }
