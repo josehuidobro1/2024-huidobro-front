@@ -110,6 +110,7 @@ function Home() {
 
     const getUserData = async()=> {
         try{
+            await allergies()
             const userInfo = await fetchUser(user_id)
             if(userInfo){
                 const { email, ...filteredUserData } = userInfo;
@@ -232,6 +233,7 @@ function Home() {
     
     const allergies=async()=>{
         const allergiesData=await getAllergies()
+        console.log('allergies ', allergiesData)
         setAllergiesData(allergiesData) 
     }
 
@@ -294,7 +296,6 @@ function Home() {
     const fetchData = async() => {
         console.log("SE ESTA EJECUTANDO FETCH DATA")
         !user && getUserData()
-        !allergiesData && await allergies()
         console.log("TERMINO DE EJECUTARSE FETCH DATA")
     };
 

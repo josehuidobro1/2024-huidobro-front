@@ -23,7 +23,7 @@ const PopUp = ({newFood, setAddMeal, foodData, handleAddMeal, setNewFood, select
     const [show, setShow] =useState(1);
     const [clickable, setClickable] = useState(true);
     const foodAllergie=allergiesData.filter(e=> user.allergies.includes(e.id)).map(i=>i.foods_ids).flat()
-
+    console.log('food allergie : ',foodAllergie)
     const fetchMenu=async()=>{
         try{
             const data= await getProducts()

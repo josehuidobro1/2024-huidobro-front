@@ -34,7 +34,7 @@ const FoodItem = ({ food, setSelection, publicPlates, allergie }) => {
                     <FontAwesomeIcon 
                         onClick={handleAddFood} 
                         icon={faCirclePlus} 
-                        className="text-xl sm:text-3xl text-darkGray mx-1 hover:text-healthyDarkGray1 hover:cursor-pointer"
+                        className= {`text-xl sm:text-3xl ${allergie ? 'text-white' : 'text-darkGray'} mx-1 hover:text-healthyDarkGray1 hover:cursor-pointer`}
                     />
                     <p className="font-bold text-sm sm:text-lg text-darkGray px-2">{food.name}</p>
                 </div>
